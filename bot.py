@@ -167,6 +167,23 @@ def build_scoreboard_embed(scores: dict) -> discord.Embed:
 # ─── QUESTION HELPERS ───────────────────────────────────────────────────────────
 
 def pick_questions(count: int) -> list:
+    # Try loading from questions.json first
+    if os.path.exists("questions.json"):
+        try:
+            with open("questions.json", "r", encoding="utf-8") as f:
+                external = json.load(f)
+            if external:
+                # Add type and subject defaults if missing
+                for q in external:
+                    if "type" not in q:
+                        q["type"] = "mcq"
+                    if "subject" not in q:
+                        q["subject"] = "General"
+                print(f"Loaded {len(external)} questions from questions.json")
+                pool = external
+                return random.sample(pool, min(count, len(pool)))
+        except Exception as e:
+            print(f"Failed to load questions.json: {e}, using built-in bank")
     return random.sample(QUESTION_BANK, min(count, len(QUESTION_BANK)))
 
 
