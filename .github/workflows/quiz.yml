@@ -24,9 +24,10 @@ jobs:
 
       - name: Run Quiz Bot
         env:
+          PYTHONUNBUFFERED: "1"
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          JSONBIN_API_KEY: ${{ secrets.JSONBIN_API_KEY }}
-          JSONBIN_BIN_ID: ${{ secrets.JSONBIN_BIN_ID }}
-        run: python bot.py
-        
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          GIST_ID: ${{ secrets.GIST_ID }}
+        run: |
+          python -u bot.py
