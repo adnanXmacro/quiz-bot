@@ -1,0 +1,32 @@
+name: Daily Quiz Bot
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 3:00 PM UTC = 9:00 PM Bangladesh (UTC+6)
+  workflow_dispatch:        # Also allows manual trigger from GitHub
+
+jobs:
+  run-quiz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200    # 3h 20min max (covers 3h alive + buffer)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install discord.py
+
+      - name: Run Quiz Bot
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          JSONBIN_API_KEY: ${{ secrets.JSONBIN_API_KEY }}
+          JSONBIN_BIN_ID: ${{ secrets.JSONBIN_BIN_ID }}
+        run: python bot.py
+        
