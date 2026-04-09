@@ -362,6 +362,15 @@ async def on_ready():
     print(f"✓ Logged in as {bot.user}")
     await bot.tree.sync()
 
+    # Diagnostics
+    print(f"CHANNEL_ID: {CHANNEL_ID}")
+    print(f"JSONBIN_BIN_ID: {JSONBIN_BIN_ID}")
+    print(f"JSONBIN_API_KEY length: {len(JSONBIN_API_KEY) if JSONBIN_API_KEY else 0}")
+
+    # Test JSONBin connection
+    test = load_scores()
+    print(f"JSONBin test load result: {test}")
+
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
         print(f"✗ Channel {CHANNEL_ID} not found")
