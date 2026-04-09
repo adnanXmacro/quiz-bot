@@ -77,6 +77,7 @@ QUESTION_BANK = [
 
 def load_scores() -> dict:
     if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
+        print("WARNING: JSONBin credentials missing!")
         return {}
     try:
         req = urllib.request.Request(
@@ -86,8 +87,15 @@ def load_scores() -> dict:
                 "X-Bin-Meta": "false"
             }
         )
-        with urllib.request.urlopen(req) as resp:
-            return json.loads(resp.read().decode())
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
+            # Strip "init" placeholder
+            if isinstance(data, dict) and "init" in data and len(data) == 1:
+                return {}
+            return data
+    except urllib.error.HTTPError as e:
+        print(f"JSONBin load HTTP error {e.code}: {e.read().decode()}")
+        return {}
     except Exception as e:
         print(f"Failed to load scores: {e}")
         return {}
@@ -97,7 +105,7 @@ def save_scores(scores: dict):
     if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
         return
     try:
-        payload = json.dumps(scores).encode()
+        payload = json.dumps(scores, ensure_ascii=False).encode("utf-8")
         req = urllib.request.Request(
             f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}",
             data=payload,
@@ -107,19 +115,22 @@ def save_scores(scores: dict):
             },
             method="PUT"
         )
-        urllib.request.urlopen(req)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            print(f"Scores saved! Status: {resp.status}")
+    except urllib.error.HTTPError as e:
+        print(f"JSONBin save HTTP error {e.code}: {e.read().decode()}")
     except Exception as e:
         print(f"Failed to save scores: {e}")
 
 
-def update_score(user_id: str, username: str, correct: bool):
+def update_score(user_id: str, username: str, correct: bool, points_to_add: int = 10):
     scores = load_scores()
     if user_id not in scores:
         scores[user_id] = {"username": username, "points": 0, "correct": 0, "total": 0}
-    scores[user_id]["username"] = username  # keep name updated
+    scores[user_id]["username"] = username
     scores[user_id]["total"] += 1
     if correct:
-        scores[user_id]["points"] += 10
+        scores[user_id]["points"] += points_to_add
         scores[user_id]["correct"] += 1
     save_scores(scores)
     return scores[user_id]["points"]
@@ -261,14 +272,19 @@ class FlashcardView(discord.ui.View):
             already = user_id in self.answered_users
             self.answered_users.add(user_id)
 
-            new_points = update_score(user_id, username, True) if not already else None
+            if not already:
+                new_points = update_score(user_id, username, True, points_to_add=5)
+            else:
+                scores = load_scores()
+                new_points = scores.get(user_id, {}).get("points", 0)
             badge = get_role_badge(new_points or 0)
 
             msg = (
                 f"💡 **উত্তর:** {self.question['answer']}\n"
                 f"_{self.question.get('explanation', '')}_"
             )
-            if not already and new_points is not None:
+            if not already:
+                badge = get_role_badge(new_points)
                 msg += f"\n\n**+5 pts!** তোমার মোট: `{new_points} pts` {badge}"
 
             await interaction.response.send_message(msg, ephemeral=True)
