@@ -14,10 +14,10 @@ executor = ThreadPoolExecutor(max_workers=4)
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN   = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID      = int(os.environ.get("CHANNEL_ID", "0"))
-JSONBIN_API_KEY = os.environ.get("JSONBIN_API_KEY")
-JSONBIN_BIN_ID  = os.environ.get("JSONBIN_BIN_ID")
+GIST_TOKEN      = os.environ.get("GIST_TOKEN")   # GitHub personal access token
+GIST_ID         = os.environ.get("GIST_ID")      # Gist ID
 QUESTIONS_PER_SESSION = 5
-ALIVE_MINUTES   = 180  # Stay alive 3 hours for button responses
+ALIVE_MINUTES   = 60  # 1 hour = 60 min (fits whole month in GitHub free tier)
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ─────────────────────────────────────────────────────────────
@@ -76,63 +76,66 @@ QUESTION_BANK = [
 # ────────────────────────────────────────────────────────────────────────────────
 
 
-# ─── JSONBIN SCOREBOARD ─────────────────────────────────────────────────────────
+# ─── GIST SCOREBOARD ────────────────────────────────────────────────────────────
 
 def _load_scores_sync() -> dict:
     try:
         req = urllib.request.Request(
-            f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}/latest",
+            f"https://api.github.com/gists/{GIST_ID}",
             headers={
-                "X-Master-Key": JSONBIN_API_KEY,
-                "X-Bin-Meta": "false"
+                "Authorization": f"token {GIST_TOKEN}",
+                "Accept": "application/vnd.github.v3+json"
             }
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode())
-            if isinstance(data, dict) and list(data.keys()) == ["init"]:
-                return {}
-            return data
-    except urllib.error.HTTPError as e:
-        print(f"JSONBin load error {e.code}: {e.read().decode()}")
-        return {}
+            content = data["files"]["scores.json"]["content"]
+            return json.loads(content)
     except Exception as e:
-        print(f"JSONBin load exception: {e}")
+        print(f"Gist load error: {e}")
         return {}
 
 
 def _save_scores_sync(scores: dict) -> bool:
     try:
-        payload = json.dumps(scores, ensure_ascii=False).encode("utf-8")
+        payload = json.dumps({
+            "files": {
+                "scores.json": {
+                    "content": json.dumps(scores, ensure_ascii=False, indent=2)
+                }
+            }
+        }).encode("utf-8")
         req = urllib.request.Request(
-            f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}",
+            f"https://api.github.com/gists/{GIST_ID}",
             data=payload,
             headers={
-                "Content-Type": "application/json",
-                "X-Master-Key": JSONBIN_API_KEY
+                "Authorization": f"token {GIST_TOKEN}",
+                "Accept": "application/vnd.github.v3+json",
+                "Content-Type": "application/json"
             },
-            method="PUT"
+            method="PATCH"
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
-            print(f"Scores saved OK, status={resp.status}, players={len(scores)}")
+            print(f"Gist saved OK, players={len(scores)}")
             return True
     except urllib.error.HTTPError as e:
-        print(f"JSONBin save error {e.code}: {e.read().decode()}")
+        print(f"Gist save error {e.code}: {e.read().decode()}")
         return False
     except Exception as e:
-        print(f"JSONBin save exception: {e}")
+        print(f"Gist save exception: {e}")
         return False
 
 
 async def load_scores() -> dict:
-    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
-        print("WARNING: JSONBin credentials missing!")
+    if not GIST_TOKEN or not GIST_ID:
+        print("WARNING: Gist credentials missing!")
         return {}
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(executor, _load_scores_sync)
 
 
 async def save_scores(scores: dict) -> bool:
-    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
+    if not GIST_TOKEN or not GIST_ID:
         return False
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(executor, _save_scores_sync, scores)
@@ -379,12 +382,10 @@ async def on_ready():
 
     # Diagnostics
     print(f"CHANNEL_ID: {CHANNEL_ID}")
-    print(f"JSONBIN_BIN_ID: {JSONBIN_BIN_ID}")
-    print(f"JSONBIN_API_KEY length: {len(JSONBIN_API_KEY) if JSONBIN_API_KEY else 0}")
-
-    # Test JSONBin connection
+    print(f"GIST_ID: {GIST_ID}")
+    print(f"GIST_TOKEN length: {len(GIST_TOKEN) if GIST_TOKEN else 0}")
     test = await load_scores()
-    print(f"JSONBin test load result: {test}")
+    print(f"Gist test load: {test}")
 
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
