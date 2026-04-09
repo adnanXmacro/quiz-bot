@@ -7,6 +7,9 @@ import asyncio
 import datetime
 import urllib.request
 import urllib.error
+from concurrent.futures import ThreadPoolExecutor
+
+executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN   = os.environ.get("DISCORD_TOKEN")
@@ -75,10 +78,7 @@ QUESTION_BANK = [
 
 # ─── JSONBIN SCOREBOARD ─────────────────────────────────────────────────────────
 
-def load_scores() -> dict:
-    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
-        print("WARNING: JSONBin credentials missing!")
-        return {}
+def _load_scores_sync() -> dict:
     try:
         req = urllib.request.Request(
             f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}/latest",
@@ -87,23 +87,20 @@ def load_scores() -> dict:
                 "X-Bin-Meta": "false"
             }
         )
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode())
-            # Strip "init" placeholder
-            if isinstance(data, dict) and "init" in data and len(data) == 1:
+            if isinstance(data, dict) and list(data.keys()) == ["init"]:
                 return {}
             return data
     except urllib.error.HTTPError as e:
-        print(f"JSONBin load HTTP error {e.code}: {e.read().decode()}")
+        print(f"JSONBin load error {e.code}: {e.read().decode()}")
         return {}
     except Exception as e:
-        print(f"Failed to load scores: {e}")
+        print(f"JSONBin load exception: {e}")
         return {}
 
 
-def save_scores(scores: dict):
-    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
-        return
+def _save_scores_sync(scores: dict) -> bool:
     try:
         payload = json.dumps(scores, ensure_ascii=False).encode("utf-8")
         req = urllib.request.Request(
@@ -115,16 +112,34 @@ def save_scores(scores: dict):
             },
             method="PUT"
         )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            print(f"Scores saved! Status: {resp.status}")
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            print(f"Scores saved OK, status={resp.status}, players={len(scores)}")
+            return True
     except urllib.error.HTTPError as e:
-        print(f"JSONBin save HTTP error {e.code}: {e.read().decode()}")
+        print(f"JSONBin save error {e.code}: {e.read().decode()}")
+        return False
     except Exception as e:
-        print(f"Failed to save scores: {e}")
+        print(f"JSONBin save exception: {e}")
+        return False
 
 
-def update_score(user_id: str, username: str, correct: bool, points_to_add: int = 10):
-    scores = load_scores()
+async def load_scores() -> dict:
+    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
+        print("WARNING: JSONBin credentials missing!")
+        return {}
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(executor, _load_scores_sync)
+
+
+async def save_scores(scores: dict) -> bool:
+    if not JSONBIN_API_KEY or not JSONBIN_BIN_ID:
+        return False
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(executor, _save_scores_sync, scores)
+
+
+async def update_score(user_id: str, username: str, correct: bool, points_to_add: int = 10) -> int:
+    scores = await load_scores()
     if user_id not in scores:
         scores[user_id] = {"username": username, "points": 0, "correct": 0, "total": 0}
     scores[user_id]["username"] = username
@@ -132,7 +147,7 @@ def update_score(user_id: str, username: str, correct: bool, points_to_add: int 
     if correct:
         scores[user_id]["points"] += points_to_add
         scores[user_id]["correct"] += 1
-    save_scores(scores)
+    await save_scores(scores)
     return scores[user_id]["points"]
 
 
@@ -233,7 +248,7 @@ class MCQView(discord.ui.View):
                 explanation = self.question.get("explanation", "")
 
                 # Update score
-                new_points = update_score(user_id, username, is_correct)
+                new_points = await update_score(user_id, username, is_correct)
                 badge = get_role_badge(new_points)
 
                 if is_correct:
@@ -273,9 +288,9 @@ class FlashcardView(discord.ui.View):
             self.answered_users.add(user_id)
 
             if not already:
-                new_points = update_score(user_id, username, True, points_to_add=5)
+                new_points = await update_score(user_id, username, True, points_to_add=5)
             else:
-                scores = load_scores()
+                scores = await load_scores()
                 new_points = scores.get(user_id, {}).get("points", 0)
             badge = get_role_badge(new_points or 0)
 
@@ -345,7 +360,7 @@ async def run_quiz_session(channel: discord.TextChannel):
 
 
 async def post_scoreboard(channel: discord.TextChannel):
-    scores = load_scores()
+    scores = await load_scores()
     embed = build_scoreboard_embed(scores)
     await channel.send("📊 **আজকের সেশনের স্কোরবোর্ড:**", embed=embed)
 
@@ -368,7 +383,7 @@ async def on_ready():
     print(f"JSONBIN_API_KEY length: {len(JSONBIN_API_KEY) if JSONBIN_API_KEY else 0}")
 
     # Test JSONBin connection
-    test = load_scores()
+    test = await load_scores()
     print(f"JSONBin test load result: {test}")
 
     channel = bot.get_channel(CHANNEL_ID)
