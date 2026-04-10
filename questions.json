@@ -1314,6 +1314,966 @@
     "explanation": "কঠিন মাধ্যমে (যেমন ইস্পাত) শব্দের বেগ সর্বাধিক।",
     "subject": "Physics"
   }
+ {
+"question": "নিচের কোনটিতে হাইড্রার বহিঃকোষীয় পরিপাক সংঘটিত হয়?",
+"options": {
+"A": "গ্যাসট্রোডার্মিস",
+"B": "হাইপোস্টোম",
+"C": "সিলেন্টেরন",
+"D": "কর্ষিকা"
+},
+"answer": "C",
+"explanation": "Hydra's extracellular digestion occurs in the coelenteron (gastrovascular cavity).",
+"subject": "Biology"
+},
+{
+"question": "মস্তিষ্কের কোন অংশ মানুষের ক্ষুধা নিয়ন্ত্রণ করে?",
+"options": {
+"A": "মেডুলা অবলংগাটা",
+"B": "সেরিবেলাম",
+"C": "হাইপোথ্যালামাস",
+"D": "সেরিব্রাম"
+},
+"answer": "C",
+"explanation": "The hypothalamus is responsible for controlling hunger and thirst.",
+"subject": "Biology"
+},
+{
+"question": "ডেলটয়েড টিউবারসিটি কোন অস্থির অংশ?",
+"options": {
+"A": "আলনা",
+"B": "স্ক্যাপুলা",
+"C": "রেডিয়াস",
+"D": "হিউমেরাস"
+},
+"answer": "D",
+"explanation": "The deltoid tuberosity is a rough, triangular area on the anterolateral surface of the middle of the humerus.",
+"subject": "Biology"
+},
+{
+"question": "ফুসফুসের আবরণকে কি বলে?",
+"options": {
+"A": "গ্লিসন ক্যাপসুল",
+"B": "পেরিকার্ডিয়াম",
+"C": "ডায়াফ্রাম",
+"D": "প্লিওরা"
+},
+"answer": "D",
+"explanation": "The pleura is the serous membrane enveloping the lungs.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি মানুষের দ্বিতীয় মস্তিষ্ক হিসাবে পরিচিত?",
+"options": {
+"A": "সুষুম্না কাণ্ড",
+"B": "এন্টেরিক স্নায়ুতন্ত্র",
+"C": "এক্সট্রিনসিক স্নায়ুতন্ত্র",
+"D": "মেডুলা অবলংগাটা"
+},
+"answer": "B",
+"explanation": "The enteric nervous system is often referred to as the 'second brain'.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি বিজারক পদার্থের বৈশিষ্ট্য?",
+"options": {
+"A": "সংশ্লিষ্ট পরমাণুর O.N. হ্রাস করা",
+"B": "নিজের বিজারণ ঘটানো",
+"C": "ইলেকট্রন হারানো",
+"D": "জারণ ঘটানো"
+},
+"answer": "C",
+"explanation": "Reducing agents (reductants) lose electrons during a chemical reaction.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি সামঞ্জস্যতা (oxidation-reduction) বিক্রিয়া?",
+"options": {
+"A": "H2S + SO2 -> 2H2O + 3S",
+"B": "CaCO3 -> CaO + CO2",
+"C": "NaOH + HCl -> NaCl + H2O",
+"D": "CaF2 + 2AgNO3 -> 2AgF + Ca(NO3)2"
+},
+"answer": "A",
+"explanation": "Option A is a redox reaction where sulfur is both oxidized and reduced.",
+"subject": "Chemistry"
+},
+{
+"question": "দুটি ভেক্টর রাশির মান যথাক্রমে 8 ও 6 একক। এরা পরস্পর 30° কোণে ক্রিয়াশীল হলে এদের ভেক্টর গুণফল কত?",
+"options": {
+"A": "16",
+"B": "20",
+"C": "48",
+"D": "24"
+},
+"answer": "D",
+"explanation": "Vector product magnitude = |A|*|B|*sin(θ) = 8 * 6 * sin(30°) = 48 * 0.5 = 24.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি অসংরক্ষণশীল বল?",
+"options": {
+"A": "অভিকর্ষ বল",
+"B": "স্প্রিং বল",
+"C": "তড়িৎ বল",
+"D": "সান্দ্র বল"
+},
+"answer": "D",
+"explanation": "Viscous force is a non-conservative force because the work done depends on the path.",
+"subject": "Physics"
+},
+{
+"question": "The synonym of the word 'anarchy' is:",
+"options": {
+"A": "serenity",
+"B": "placidity",
+"C": "lawlessness",
+"D": "discipline"
+},
+"answer": "C",
+"explanation": "Anarchy refers to a state of disorder due to absence or non-recognition of authority, synonymous with lawlessness.",
+"subject": "English"
+},
+{
+"question": "কানের কোন অংশ ভারসাম্য রক্ষায় কাজ করে?",
+"options": {
+"A": "কর্ণাস্থি",
+"B": "ভেস্টিবুলার যন্ত্র",
+"C": "টিমপেনিক পর্দা",
+"D": "ককলিয়ার বডি"
+},
+"answer": "B",
+"explanation": "The vestibular apparatus in the inner ear is primarily responsible for maintaining balance.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোন হরমোনটি মানুষের ডিম্বাশয় থেকে নিঃসৃত হয়?",
+"options": {
+"A": "অক্সিটোসিন",
+"B": "প্রোল্যাকটিন",
+"C": "প্রজেস্টেরন",
+"D": "থাইরোনিন"
+},
+"answer": "C",
+"explanation": "Progesterone is a hormone produced mainly by the ovaries.",
+"subject": "Biology"
+},
+{
+"question": "কোন চক্রের মাধ্যমে যকৃতে ইউরিয়া তৈরী হয়?",
+"options": {
+"A": "কার্বন চক্র",
+"B": "অরনিথিন চক্র",
+"C": "ক্রেবল চক্র",
+"D": "নাইট্রোজেন চক্র"
+},
+"answer": "B",
+"explanation": "The ornithine cycle (urea cycle) occurs in the liver to produce urea.",
+"subject": "Biology"
+},
+{
+"question": "কোন এন্টিবডি প্রধানত এলার্জির সাথে সংশ্লিষ্ট?",
+"options": {
+"A": "IgA",
+"B": "IgM",
+"C": "IgG",
+"D": "IgE"
+},
+"answer": "D",
+"explanation": "Immunoglobulin E (IgE) is the primary antibody involved in allergic reactions.",
+"subject": "Biology"
+},
+{
+"question": "মানবদেহে সপ্তম করোটিক স্নায়ুর নাম কি?",
+"options": {
+"A": "ট্রকলিয়ার স্নায়ু",
+"B": "ফেসিয়াল স্নায়ু",
+"C": "ভেগাস স্নায়ু",
+"D": "অপটিক স্নায়ু"
+},
+"answer": "B",
+"explanation": "The seventh cranial nerve is the Facial nerve.",
+"subject": "Biology"
+},
+{
+"question": "এনজিওপ্লাস্টি করলে কি হয়?",
+"options": {
+"A": "হৃদস্পন্দন বৃদ্ধি পায়",
+"B": "সরু ধমনী প্রশস্ত হয়",
+"C": "হৃদস্পন্দনের গতি ধীর হয়",
+"D": "রক্ত সঞ্চালনের গতি বৃদ্ধি পায়"
+},
+"answer": "B",
+"explanation": "Angioplasty is a procedure used to widen narrowed or obstructed arteries.",
+"subject": "Biology"
+},
+{
+"question": "কোন কোষ হেপারিন তৈরী ও নিঃসরণ করে?",
+"options": {
+"A": "নিউট্রোফিল",
+"B": "লিম্ফোসাইট",
+"C": "মোনোসাইট",
+"D": "বেসোফিল"
+},
+"answer": "D",
+"explanation": "Basophils produce and release heparin, an anticoagulant.",
+"subject": "Biology"
+},
+{
+"question": "ডাক্টাস ক্যুভেইরি রুই মাছের কোন তন্ত্রের অংশ?",
+"options": {
+"A": "শ্বসনতন্ত্র",
+"B": "শিরাতন্ত্র",
+"C": "রেচনতন্ত্র",
+"D": "ধমনিতন্ত্র"
+},
+"answer": "B",
+"explanation": "The Ductus Cuvieri is a part of the venous system in Rohu fish.",
+"subject": "Biology"
+},
+{
+"question": "পেসমেকারের কাজ কি?",
+"options": {
+"A": "রক্তকে তরল রাখে",
+"B": "রক্ত সঞ্চালন বৃদ্ধি করে",
+"C": "হৃদরোগ প্রতিরোধ করে",
+"D": "হৃদস্পন্দনের ধীরগতি নিয়ন্ত্রণ করে"
+},
+"answer": "D",
+"explanation": "A pacemaker regulates the heartbeat, especially when it is too slow.",
+"subject": "Biology"
+},
+{
+"question": "পূর্ণবয়স্ক সুস্থ মানুষের দুই বৃক্কে প্রতি মিনিটে মোট রক্ত সঞ্চালনের পরিমাণ-",
+"options": {
+"A": "২৫০ মিঃ লিঃ",
+"B": "১২৫ মিঃ লিঃ",
+"C": "৩৭৫ মিঃ লিঃ",
+"D": "১২০০ মিঃ লিঃ"
+},
+"answer": "D",
+"explanation": "In a healthy adult, about 1200 mL of blood flows through both kidneys every minute.",
+"subject": "Biology"
+},
+{
+"question": "কোনটির উপস্থিতিতে স্নেহ পদার্থের ইমালসিফিকেশন হয়?",
+"options": {
+"A": "বাইল সল্ট",
+"B": "এনজাইম",
+"C": "ভিটামিন",
+"D": "হরমোন"
+},
+"answer": "A",
+"explanation": "Bile salts are essential for the emulsification of fats.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি নাইট্রোজেনবিহীন পদার্থ?",
+"options": {
+"A": "পেকটিন",
+"B": "ক্রিয়েটিনিন",
+"C": "ইউরিয়া",
+"D": "অ্যামিনো এসিড"
+},
+"answer": "A",
+"explanation": "Pectin is a structural heteropolysaccharide (carbohydrate) and does not contain nitrogen.",
+"subject": "Biology"
+},
+{
+"question": "কোষ বিভাজনের সময় কোষপ্লেট তৈরিতে সাহায্য করে কোন অঙ্গাণু?",
+"options": {
+"A": "লাইসোসোম",
+"B": "গলগি বস্তু",
+"C": "মাইক্রোটিবিউলস",
+"D": "রাইবোসোম"
+},
+"answer": "B",
+"explanation": "The Golgi apparatus contributes to forming the cell plate during cytokinesis in plants.",
+"subject": "Biology"
+},
+{
+"question": "রেসট্রিকশন এনজাইমের কাজ-",
+"options": {
+"A": "DNA অণু বৃদ্ধিকরণ",
+"B": "DNA খন্ডকে জোড়া লাগানো",
+"C": "নির্দিষ্ট জীবে রিকম্বিনেন্ট DNA প্রবেশ করানো",
+"D": "কাঙ্খিত DNA কে নির্দিষ্ট স্থানের ছেদন করা"
+},
+"answer": "D",
+"explanation": "Restriction enzymes cut DNA at specific nucleotide sequences.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোন ধরনের উদ্ভিদকে ইপিমেরালস (Ephemerals) বলা হয়?",
+"options": {
+"A": "খরা সহনশীল",
+"B": "লবণ সহনশীল",
+"C": "খরা এড়ানো",
+"D": "খড়া প্রতিরোধী"
+},
+"answer": "C",
+"explanation": "Ephemerals are plants that complete their life cycle quickly to avoid drought conditions.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি মালভেসি গোত্রের উদ্ভিদ?",
+"options": {
+"A": "কার্পাস তুলা",
+"B": "আখ",
+"C": "যব",
+"D": "চোরকাটা"
+},
+"answer": "A",
+"explanation": "Cotton (Gossypium) belongs to the Malvaceae family.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটিকে সংক্রমণক্ষম পূর্ণাঙ্গ ভাইরাস কণা বলে?",
+"options": {
+"A": "প্রিয়ন",
+"B": "ভিরিয়ন",
+"C": "ভিরয়েড",
+"D": "নিউক্লিওক্যাপসিড"
+},
+"answer": "B",
+"explanation": "A virion is a complete, infectious virus particle.",
+"subject": "Biology"
+},
+{
+"question": "ক্রেবল চক্র কোষের কোথায় সংঘটিত হয়?",
+"options": {
+"A": "মাইটোকন্ড্রিয়া",
+"B": "সাইটোপ্লাজম",
+"C": "রাইবোসোম",
+"D": "ক্লোরোপ্লাস্ট"
+},
+"answer": "A",
+"explanation": "The Krebs cycle takes place in the matrix of the mitochondria.",
+"subject": "Biology"
+},
+{
+"question": "জেনেটিক ইঞ্জিনিয়ারিং এর প্রধান জীবজ সাধনী (Living Tool) হলো-",
+"options": {
+"A": "এফ-ফ্যাক্টর",
+"B": "রেসট্রিকশন এনজাইম",
+"C": "এক্সপ্লান্ট",
+"D": "প্লাজমিড"
+},
+"answer": "D",
+"explanation": "Plasmids are essential biological tools used as vectors in genetic engineering.",
+"subject": "Biology"
+},
+{
+"question": "ভাইরাসের বংশবৃদ্ধিতে পোষকের কোন অঙ্গাণুতে প্রোটিন তৈরি হয়?",
+"options": {
+"A": "নিউক্লিয়াস",
+"B": "কোষ আবরণী",
+"C": "রাইবোসোম",
+"D": "মাইটোকন্ড্রিয়া"
+},
+"answer": "C",
+"explanation": "Viruses use the host cell's ribosomes to synthesize their proteins.",
+"subject": "Biology"
+},
+{
+"question": "টিস্যু কালচারের প্রাথমিক লক্ষ্য-",
+"options": {
+"A": "উন্নত বীজ তৈরী করা",
+"B": "নতুন ধরণের টিস্যু তৈরী করা",
+"C": "অধিক পরিমাণ টিস্যু তৈরী করা",
+"D": "প্রচুর পরিমাণে নতুন চারা উৎপাদন করা"
+},
+"answer": "D",
+"explanation": "The primary goal of tissue culture is the large-scale production of new plantlets.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি purine base?",
+"options": {
+"A": "Uracil",
+"B": "Cytosine",
+"C": "Thymine",
+"D": "Adenine"
+},
+"answer": "D",
+"explanation": "Adenine and Guanine are purine bases.",
+"subject": "Biology"
+},
+{
+"question": "জেনেটিকভাবে নিয়ন্ত্রিত কোষের মৃত্যুকে কি বলে?",
+"options": {
+"A": "অ্যাপোপটসিস",
+"B": "নেক্রোসিস",
+"C": "মেটাস্টেসিস",
+"D": "অ্যাপোফাইসিস"
+},
+"answer": "A",
+"explanation": "Apoptosis is the process of programmed (genetically controlled) cell death.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোন এনজাইমটি জমাট রক্ত গলাতে ব্যবহৃত হয়?",
+"options": {
+"A": "ট্রিপসিন",
+"B": "ইউরিয়েজ",
+"C": "ইউরোবাইলেজ",
+"D": "পেপসিন"
+},
+"answer": "C",
+"explanation": "Urokinase (often referred to in exams as urobilase or similar) is used as a thrombolytic agent to dissolve blood clots.",
+"subject": "Biology"
+},
+{
+"question": "রিকম্বিনেন্ট DNA টেকনলজির মাধ্যমে সৃষ্ট উদ্ভিদকে কি বলে?",
+"options": {
+"A": "হাইব্রিড (Hybrid)",
+"B": "সাইব্রিড (Cybrid)",
+"C": "ক্লোন (Clone)",
+"D": "ট্রান্সজেনিক (Transgenic)"
+},
+"answer": "D",
+"explanation": "Plants created through recombinant DNA technology are called transgenic plants.",
+"subject": "Biology"
+},
+{
+"question": "বাংলাদেশে পানীয় জলে As (Arsenic) এর গ্রহণযোগ্য মাত্রা কত?",
+"options": {
+"A": "0.01 ppm",
+"B": "0.05 ppm",
+"C": "0.5 g/L",
+"D": "0.1 ppm"
+},
+"answer": "B",
+"explanation": "The acceptable limit of Arsenic in drinking water in Bangladesh is 0.05 ppm.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি তাপহারী (endothermic) বিক্রিয়া?",
+"options": {
+"A": "C + O2 = CO2",
+"B": "N2 + O2 = 2NO",
+"C": "CH4 + 2O2 = CO2 + 2H2O",
+"D": "2H2 + O2 = 2H2O"
+},
+"answer": "B",
+"explanation": "The reaction between nitrogen and oxygen to form nitric oxide absorbs heat.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি ক্যান্সার সৃষ্টি করতে পারে?",
+"options": {
+"A": "CH3COOH",
+"B": "HCHO",
+"C": "C2H4OH",
+"D": "CH2OH"
+},
+"answer": "B",
+"explanation": "Formaldehyde (HCHO) is known to be carcinogenic.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি প্রধান গ্রিনহাউস গ্যাস?",
+"options": {
+"A": "CO2",
+"B": "CH4",
+"C": "O3",
+"D": "N2O"
+},
+"answer": "A",
+"explanation": "Carbon dioxide is the most significant greenhouse gas contributing to global warming.",
+"subject": "Chemistry"
+},
+{
+"question": "ডাউ প্রণালীতে নিচের কোনটি উৎপন্ন করা যায়?",
+"options": {
+"A": "ফেনল",
+"B": "টলুইন",
+"C": "ক্লোরোবেনজিন",
+"D": "বেনজিন"
+},
+"answer": "A",
+"explanation": "The Dow process is used for the commercial production of Phenol.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটির কারণে পচা মাছে গন্ধ হয়?",
+"options": {
+"A": "অ্যামাইড",
+"B": "ফ্যাটি এসিড",
+"C": "অ্যামিন",
+"D": "কিটোন"
+},
+"answer": "C",
+"explanation": "Amines, specifically trimethylamine, cause the characteristic smell of rotting fish.",
+"subject": "Chemistry"
+},
+{
+"question": "অস্ত্রের ইমেজিং কাজে ব্যবহৃত বেরিয়াম সালফেট মিশ্রণ কোন শ্রেণিভূক্ত?",
+"options": {
+"A": "কলয়েড",
+"B": "সাসপেনশন",
+"C": "অধঃক্ষেপ",
+"D": "কোয়াগুলেন্ট"
+},
+"answer": "B",
+"explanation": "Barium sulfate used in medical imaging is typically a suspension.",
+"subject": "Chemistry"
+},
+{
+"question": "বর্জ্য রিসাইক্লিং থেকে প্রধান কি সুফল পাওয়া যায়?",
+"options": {
+"A": "দূষণ হ্রাস পায়",
+"B": "বিদ্যুৎ খরচ কমে",
+"C": "কাঁচামালের ব্যবহার বাড়ে",
+"D": "পণ্য উৎপাদন খরচ কমে"
+},
+"answer": "A",
+"explanation": "The primary benefit of waste recycling is the reduction of environmental pollution.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোন মূলকটি বেনজিন বলয়ে অর্থো-প্যারা নির্দেশক?",
+"options": {
+"A": "-CH3",
+"B": "-NO2",
+"C": "-CHO",
+"D": "-CN"
+},
+"answer": "A",
+"explanation": "Alkyl groups like methyl (-CH3) are ortho-para directing.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি বিজারক পদার্থের বৈশিষ্ট্য?",
+"options": {
+"A": "সংশ্লিষ্ট পরমাণুর O.N. হ্রাস করা",
+"B": "নিজের বিজারণ ঘটানো",
+"C": "ইলেকট্রন হারানো",
+"D": "জারণ ঘটানো"
+},
+"answer": "C",
+"explanation": "Reducing agents lose electrons and are oxidized in a reaction.",
+"subject": "Chemistry"
+},
+{
+"question": "মানবদেহে কোন ধাতুর আধিক্যে হিমোগ্লোবিনের উৎপাদন বাধাপ্রাপ্ত হয়?",
+"options": {
+"A": "As",
+"B": "Fe",
+"C": "Cr",
+"D": "Pb"
+},
+"answer": "D",
+"explanation": "Lead (Pb) interferes with heme synthesis, leading to reduced hemoglobin production.",
+"subject": "Chemistry"
+},
+{
+"question": "ডেটলের মূল উপাদান কি?",
+"options": {
+"A": "ক্লোরো-বেনজিন",
+"B": "আইসোপ্রোপাইল এলকোহল",
+"C": "ক্লোরাল",
+"D": "ক্লোরো-জাইলিনল"
+},
+"answer": "D",
+"explanation": "Chloroxylenol is the active ingredient in Dettol.",
+"subject": "Chemistry"
+},
+{
+"question": "10% Na2CO3 দ্রবণের মোলারিটি কত?",
+"options": {
+"A": "0.95",
+"B": "9.15",
+"C": "1.94",
+"D": "0.94"
+},
+"answer": "D",
+"explanation": "Molarity = (10 * 10) / 106 ≈ 0.94 M.",
+"subject": "Chemistry"
+},
+{
+"question": "কোন বায়ু-দূষক এসিড বৃষ্টি ঘটায়?",
+"options": {
+"A": "SO3",
+"B": "CO2",
+"C": "N2O",
+"D": "CO"
+},
+"answer": "A",
+"explanation": "Sulfur trioxide (SO3) and nitrogen oxides are primary causes of acid rain.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি প্রাইমারী স্ট্যান্ডার্ড পদার্থ?",
+"options": {
+"A": "KHCO3",
+"B": "NaOH",
+"C": "NaHCO3",
+"D": "KMnO4"
+},
+"answer": "A",
+"explanation": "Potassium hydrogen carbonate (KHCO3) can be used as a primary standard.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি উভধর্মী যৌগ?",
+"options": {
+"A": "H2O",
+"B": "H3O+",
+"C": "NH3",
+"D": "NH4+"
+},
+"answer": "A",
+"explanation": "Water (H2O) is amphoteric as it can act as both an acid and a base.",
+"subject": "Chemistry"
+},
+{
+"question": "শিখা পরীক্ষায় ব্যবহৃত কোবাল্ট ব্লু-গ্লাস কোন আলো সম্পূর্ণ শোষণ করে?",
+"options": {
+"A": "হালকা বেগুনি",
+"B": "গোলাপী লাল",
+"C": "সোনালী হলুদ",
+"D": "নীলাভ সবুজ"
+},
+"answer": "C",
+"explanation": "Cobalt blue glass absorbs the golden-yellow light emitted by sodium.",
+"subject": "Chemistry"
+},
+{
+"question": "সোডিয়াম ক্লোরাইড দ্রবণের বৈশিষ্ট্য কোনটি?",
+"options": {
+"A": "এর কণাগুলো যে কোন মাধ্যমে দৃশ্যমান",
+"B": "এটি টিভাল প্রভাব দেখায়",
+"C": "এর ব্রাউনীয় গতি আছে",
+"D": "মিশ্রণের স্থিতি সুস্থিত"
+},
+"answer": "D",
+"explanation": "A true solution like NaCl in water is stable and does not show Tyndall effect or Brownian motion.",
+"subject": "Chemistry"
+},
+{
+"question": "শর্করো জাতীয় খাদ্য থেকে লিভারে সঞ্চিত উপাদান কোনটি?",
+"options": {
+"A": "ফ্রুক্টোজ",
+"B": "গ্লাইকোজেন",
+"C": "সুক্রোজ",
+"D": "গ্লুকোজ"
+},
+"answer": "B",
+"explanation": "Excess glucose is stored in the liver as glycogen.",
+"subject": "Biology"
+},
+{
+"question": "কুলম্বের সূত্র কোন ক্ষেত্রে প্রযোজ্য?",
+"options": {
+"A": "বিন্দু চার্জ",
+"B": "ক্ষুদ্র চার্জ",
+"C": "যে কোন চার্জ",
+"D": "বৃহৎ চার্জ"
+},
+"answer": "A",
+"explanation": "Coulomb's Law is strictly applicable to point charges.",
+"subject": "Physics"
+},
+{
+"question": "ফোকাস দূরত্ব 1000 cm হলে উত্তল লেন্সের ক্ষমতা কত?",
+"options": {
+"A": "+10 D",
+"B": "+100 D",
+"C": "+0.1 D",
+"D": "-0.1 D"
+},
+"answer": "C",
+"explanation": "Power P = 1/f(m) = 1/10 = +0.1 D.",
+"subject": "Physics"
+},
+{
+"question": "তাপের যান্ত্রিক সক্ষমতার একক-",
+"options": {
+"A": "ক্যালরি/জুল",
+"B": "জুল/ক্যালরি",
+"C": "জুল-ক্যালরি",
+"D": "ক্যালরি/গ্রাম"
+},
+"answer": "B",
+"explanation": "The mechanical equivalent of heat is measured in Joules per Calorie.",
+"subject": "Physics"
+},
+{
+"question": "একটি গোলকের ব্যাসার্ধ d = (10 ± 0.1) সে.মি. হলে এর আয়তনের শতকরা ত্রুটি কত?",
+"options": {
+"A": "3%",
+"B": "2%",
+"C": "1%",
+"D": "4%"
+},
+"answer": "A",
+"explanation": "Percentage error in volume = 3 * percentage error in radius = 3 * (0.1/10) * 100 = 3%.",
+"subject": "Physics"
+},
+{
+"question": "মান শূন্য নয় এমন ভেক্টরকে তার মান দিয়ে ভাগ করলে কি পাওয়া যায়?",
+"options": {
+"A": "একক ভেক্টর",
+"B": "নাল ভেক্টর",
+"C": "সমতলীয় ভেক্টর",
+"D": "অবস্থান ভেক্টর"
+},
+"answer": "A",
+"explanation": "Dividing a non-zero vector by its magnitude results in a unit vector.",
+"subject": "Physics"
+},
+{
+"question": "দুটি শব্দের কম্পাঙ্কের অনুপাত 5:6 হলে তাদের তরঙ্গ দৈর্ঘ্যের অনুপাত কত?",
+"options": {
+"A": "6:5",
+"B": "5:6",
+"C": "11:6",
+"D": "6:11"
+},
+"answer": "A",
+"explanation": "Wavelength is inversely proportional to frequency (λ ∝ 1/f), so the ratio is 6:5.",
+"subject": "Physics"
+},
+{
+"question": "পৃথিবীর ঘূর্ণন না থাকলে পৃথিবীপৃষ্ঠে কোন বস্তুর ওজন হবে-",
+"options": {
+"A": "বৃদ্ধিপ্রাপ্ত",
+"B": "শূন্য",
+"C": "অসীম",
+"D": "স্বাভাবিকের সমান"
+},
+"answer": "A",
+"explanation": "Without rotation, centripetal acceleration becomes zero, slightly increasing apparent weight at most latitudes.",
+"subject": "Physics"
+},
+{
+"question": "সরল দোলকের সাম্যবস্থায় কোনটি সর্বোচ্চ হয়?",
+"options": {
+"A": "বেগ",
+"B": "প্রত্যয়নী বল",
+"C": "সরণ",
+"D": "ত্বরণ"
+},
+"answer": "A",
+"explanation": "At the equilibrium position, the velocity of a simple pendulum is at its maximum.",
+"subject": "Physics"
+},
+{
+"question": "কোন শব্দ তীব্রতায় কানে শ্রুতি যন্ত্রণা শুরু হয়?",
+"options": {
+"A": "180 ডেসিবেল",
+"B": "120 ডেসিবেল",
+"C": "80 ডেসিবেল",
+"D": "150 ডেসিবেল"
+},
+"answer": "B",
+"explanation": "The threshold of pain for the human ear is approximately 120 decibels.",
+"subject": "Physics"
+},
+{
+"question": "এন্ট্রপি কোথায় সবচেয়ে বেশী?",
+"options": {
+"A": "মিথেন গ্যাসে",
+"B": "তরল পদার্থে",
+"C": "কঠিন পদার্থে",
+"D": "অক্সিজেন গ্যাসে"
+},
+"answer": "A",
+"explanation": "Entropy is highest in the gaseous state; among choices, methane (CH4) or oxygen (O2) gas depending on molecular complexity.",
+"subject": "Physics"
+},
+{
+"question": "এক আলোকবর্ষ সমান-",
+"options": {
+"A": "9.4 x 10^18 কি.মি.",
+"B": "9.4 x 10^15 কি.মি.",
+"C": "9.4 x 10^12 কি.মি.",
+"D": "9.4 x 10^9 কি.মি."
+},
+"answer": "C",
+"explanation": "One light year is approximately 9.46 x 10^12 kilometers.",
+"subject": "Physics"
+},
+{
+"question": "গ্যালভানোমিটারের তড়িৎ বর্তনীতে শান্ট ব্যবহারের উদ্দেশ্য-",
+"options": {
+"A": "বিদ্যুৎ প্রবাহ কমানো",
+"B": "বিদ্যুৎ প্রবাহ বাড়ানো",
+"C": "বিভল পার্থক্য কমানো",
+"D": "বিভব পার্থক্য বাড়ানো"
+},
+"answer": "A",
+"explanation": "A shunt is used to bypass excess current, protecting the galvanometer.",
+"subject": "Physics"
+},
+{
+"question": "ভূ-চুম্বকত্বের মৌলিক উপাদান কয়টি?",
+"options": {
+"A": "4",
+"B": "3",
+"C": "2",
+"D": "5"
+},
+"answer": "B",
+"explanation": "The three elements of Earth's magnetism are Declination, Inclination, and Horizontal Intensity.",
+"subject": "Physics"
+},
+{
+"question": "উন্নত প্রজাতির বীজ তৈরীতে নিচের কোনটি ব্যবহৃত হয়?",
+"options": {
+"A": "এক্স-রে",
+"B": "লেজার রশ্মি",
+"C": "হাইড্রোজেন",
+"D": "রেডিও আইসোটোপ"
+},
+"answer": "D",
+"explanation": "Radioactive isotopes are used in mutation breeding to develop improved seeds.",
+"subject": "Physics"
+},
+{
+"question": "একটি বস্তু 4.9 m/s বেগে খাড়া উপরের দিকে নিক্ষিপ্ত হলে এটি কত সময় শূন্যে থাকবে?",
+"options": {
+"A": "2 সেকেন্ড",
+"B": "1 সেকেন্ড",
+"C": "4 সেকেন্ড",
+"D": "3 সেকেন্ড"
+},
+"answer": "B",
+"explanation": "Time of flight T = 2u/g = (2 * 4.9) / 9.8 = 1 second.",
+"subject": "Physics"
+},
+{
+"question": "If you succeed, I shall be happy. The correct simple form is-",
+"options": {
+"A": "I am happy when you succeed.",
+"B": "I am happy for your success.",
+"C": "Your success makes me happy.",
+"D": "Your success will make me happy."
+},
+"answer": "D",
+"explanation": "The simple form retains the future tense meaning of the complex sentence.",
+"subject": "English"
+},
+{
+"question": "The active form of: 'My book has been lost by me.'",
+"options": {
+"A": "I had lost my book.",
+"B": "I lost my book.",
+"C": "I have lost my book.",
+"D": "A book of mine is lost."
+},
+"answer": "C",
+"explanation": "'Has been lost' is the passive form of the present perfect 'have lost'.",
+"subject": "English"
+},
+{
+"question": "The passive form of: 'You have to admit this.'",
+"options": {
+"A": "You are to have admitted this.",
+"B": "This has to be admitted by you.",
+"C": "This had to be admitted by you.",
+"D": "This is to be admitted by you."
+},
+"answer": "B",
+"explanation": "The passive of 'have to' is 'has to be'.",
+"subject": "English"
+},
+{
+"question": "The word 'anybody' is an example of -",
+"options": {
+"A": "distributive pronoun",
+"B": "relative pronoun",
+"C": "reciprocal pronoun",
+"D": "indefinite pronoun"
+},
+"answer": "D",
+"explanation": "Words like anybody, someone, and everyone are indefinite pronouns.",
+"subject": "English"
+},
+{
+"question": "The chairperson _________ a good speech.",
+"options": {
+"A": "gave a good speech",
+"B": "uttered a good speech",
+"C": "pronounced a good speech",
+"D": "made a good speech"
+},
+"answer": "D",
+"explanation": "One 'makes' a speech in correct English usage.",
+"subject": "English"
+},
+{
+"question": "He got the prize __________ hard work.",
+"options": {
+"A": "by dint of",
+"B": "by engaging",
+"C": "by",
+"D": "by using"
+},
+"answer": "A",
+"explanation": "'By dint of' is a phrase meaning by means of or because of.",
+"subject": "English"
+},
+{
+"question": "You may accept the gift ________ you may refuse it.",
+"options": {
+"A": "or",
+"B": "and",
+"C": "but",
+"D": "as"
+},
+"answer": "A",
+"explanation": "The conjunction 'or' is used to show a choice between alternatives.",
+"subject": "English"
+},
+{
+"question": "The term 'Bravo' is-",
+"options": {
+"A": "a conjunction",
+"B": "an interjection",
+"C": "an adverb",
+"D": "a preposition"
+},
+"answer": "B",
+"explanation": "'Bravo' is an interjection used to express approval.",
+"subject": "English"
+},
+{
+"question": "The adverb of the noun rotation is-",
+"options": {
+"A": "rotatory",
+"B": "rotating",
+"C": "rotationally",
+"D": "rotational"
+},
+"answer": "C",
+"explanation": "Adverbs are typically formed by adding '-ly' to the adjective form.",
+"subject": "English"
+},
+{
+"question": "The word 'artisan' means-",
+"options": {
+"A": "an artist",
+"B": "a producer",
+"C": "a crafts person",
+"D": "a craft"
+},
+"answer": "C",
+"explanation": "An artisan is a worker in a skilled trade, especially one that involves making things by hand.",
+"subject": "English"
+},
+{
+"question": "Which of the following sentences is correct?",
+"options": {
+"A": "Can you run as fast as he could?",
+"B": "Can you run as fast as he runs?",
+"C": "Can you run as fast as he?",
+"D": "Can you run as fast as he can?"
+},
+"answer": "D",
+"explanation": "The sentence requires parallel structure with a modal verb matching the beginning.",
+"subject": "English"
+}
 ]
   
 
