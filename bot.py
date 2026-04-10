@@ -17,7 +17,7 @@ CHANNEL_ID      = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN      = os.environ.get("GIST_TOKEN")   # GitHub personal access token
 GIST_ID         = os.environ.get("GIST_ID")      # Gist ID
 QUESTIONS_PER_SESSION = 5
-ALIVE_MINUTES   = 60  # 1 hour = 60 min (fits whole month in GitHub free tier)
+ALIVE_MINUTES   = 60  # 1 hour = fits whole month in GitHub free tier
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ─────────────────────────────────────────────────────────────
@@ -202,18 +202,21 @@ def pick_questions(count: int) -> list:
             with open("questions.json", "r", encoding="utf-8") as f:
                 external = json.load(f)
             if external:
-                # Add type and subject defaults if missing
                 for q in external:
                     if "type" not in q:
                         q["type"] = "mcq"
                     if "subject" not in q:
                         q["subject"] = "General"
                 print(f"Loaded {len(external)} questions from questions.json")
-                pool = external
-                return random.sample(pool, min(count, len(pool)))
+                # Shuffle fully then pick — ensures even distribution over time
+                pool = external.copy()
+                random.shuffle(pool)
+                return pool[:count]
         except Exception as e:
             print(f"Failed to load questions.json: {e}, using built-in bank")
-    return random.sample(QUESTION_BANK, min(count, len(QUESTION_BANK)))
+    pool = QUESTION_BANK.copy()
+    random.shuffle(pool)
+    return pool[:count]
 
 
 # ─── DISCORD VIEWS ──────────────────────────────────────────────────────────────
