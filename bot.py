@@ -16,7 +16,7 @@ DISCORD_TOKEN   = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID      = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN      = os.environ.get("GIST_TOKEN")   # GitHub personal access token
 GIST_ID         = os.environ.get("GIST_ID")      # Gist ID
-QUESTIONS_PER_SESSION = 5
+QUESTIONS_PER_SESSION = 10
 ALIVE_MINUTES   = 60  # 1 hour = fits whole month in GitHub free tier
 # ────────────────────────────────────────────────────────────────────────────────
 
