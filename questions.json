@@ -1314,5 +1314,630 @@
     "explanation": "কঠিন মাধ্যমে (যেমন ইস্পাত) শব্দের বেগ সর্বাধিক।",
     "subject": "Physics"
   }
-]
+
+  {
+    "question": "কানের কোন অংশ ভারসাম্য রক্ষায় কাজ করে?",
+    "options": {
+      "A": "কর্ণাস্থি",
+      "B": "ভেস্টিবুলার যন্ত্র",
+      "C": "টিমপেনিক পর্দা",
+      "D": "ককলিয়ার বডি"
+    },
+    "answer": "B",
+    [span_0](start_span)"explanation": "The vestibular apparatus in the inner ear is primarily responsible for maintaining balance[span_0](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন হরমোনটি মানুষের ডিম্বাশয় থেকে নিঃসৃত হয়?",
+    "options": {
+      "A": "অক্সিটোসিন",
+      "B": "প্রোল্যাকটিন",
+      "C": "প্রজেস্টেরন",
+      "D": "থাইরোনিন"
+    },
+    "answer": "C",
+    [span_1](start_span)[span_2](start_span)"explanation": "Progesterone is a hormone produced mainly by the ovaries[span_1](end_span)[span_2](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন চক্রের মাধ্যমে যকৃতে ইউরিয়া তৈরী হয়?",
+    "options": {
+      "A": "কার্বন চক্র",
+      "B": "অরনিথিন চক্র",
+      "C": "ক্রেবল চক্র",
+      "D": "নাইট্রোজেন চক্র"
+    },
+    "answer": "B",
+    [span_3](start_span)[span_4](start_span)"explanation": "The ornithine cycle (urea cycle) occurs in the liver to produce urea[span_3](end_span)[span_4](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন এন্টিবডি প্রধানত এলার্জির সাথে সংশ্লিষ্ট?",
+    "options": {
+      "A": "IgA",
+      "B": "IgM",
+      "C": "IgG",
+      "D": "IgE"
+    },
+    "answer": "D",
+    [span_5](start_span)[span_6](start_span)"explanation": "Immunoglobulin E (IgE) is the primary antibody involved in allergic reactions[span_5](end_span)[span_6](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "মানবদেহে সপ্তম করোটিক স্নায়ুর নাম কি?",
+    "options": {
+      "A": "ট্রকলিয়ার স্নায়ু",
+      "B": "ফেসিয়াল স্নায়ু",
+      "C": "ভেগাস স্নায়ু",
+      "D": "অপটিক স্নায়ু"
+    },
+    "answer": "B",
+    [span_7](start_span)[span_8](start_span)"explanation": "The seventh cranial nerve is the Facial nerve[span_7](end_span)[span_8](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "এনজিওপ্লাস্টি করলে কি হয়?",
+    "options": {
+      "A": "হৃদস্পন্দন বৃদ্ধি পায়",
+      "B": "সরু ধমনী প্রশস্ত হয়",
+      "C": "হৃদস্পন্দনের গতি ধীর হয়",
+      "D": "রক্ত সঞ্চালনের গতি বৃদ্ধি পায়"
+    },
+    "answer": "B",
+    [span_9](start_span)"explanation": "Angioplasty is a procedure used to widen narrowed or obstructed arteries[span_9](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন কোষ হেপারিন তৈরী ও নিঃসরণ করে?",
+    "options": {
+      "A": "নিউট্রোফিল",
+      "B": "লিম্ফোসাইট",
+      "C": "মোনোসাইট",
+      "D": "বেসোফিল"
+    },
+    "answer": "D",
+    [span_10](start_span)"explanation": "Basophils produce and release heparin, an anticoagulant[span_10](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "ডাক্টাস ক্যুভেইরি রুই মাছের কোন তন্ত্রের অংশ?",
+    "options": {
+      "A": "শ্বসনতন্ত্র",
+      "B": "শিরাতন্ত্র",
+      "C": "রেচনতন্ত্র",
+      "D": "ধমনিতন্ত্র"
+    },
+    "answer": "B",
+    [span_11](start_span)"explanation": "The Ductus Cuvieri is a part of the venous system in Rohu fish[span_11](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "পেসমেকারের কাজ কি?",
+    "options": {
+      "A": "রক্তকে তরল রাখে",
+      "B": "রক্ত সঞ্চালন বৃদ্ধি করে",
+      "C": "হৃদরোগ প্রতিরোধ করে",
+      "D": "হৃদস্পন্দনের ধীরগতি নিয়ন্ত্রণ করে"
+    },
+    "answer": "D",
+    [span_12](start_span)"explanation": "A pacemaker regulates the heartbeat, especially when it is too slow[span_12](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "পূর্ণবয়স্ক সুস্থ মানুষের দুই বৃক্কে প্রতি মিনিটে মোট রক্ত সঞ্চালনের পরিমাণ-",
+    "options": {
+      "A": "২৫০ মিঃ লিঃ",
+      "B": "১২৫ মিঃ লিঃ",
+      "C": "৩৭৫ মিঃ লিঃ",
+      "D": "১২০০ মিঃ লিঃ"
+    },
+    "answer": "D",
+    [span_13](start_span)"explanation": "In a healthy adult, about 1200 mL of blood flows through both kidneys every minute[span_13](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোনটির উপস্থিতিতে স্নেহ পদার্থের ইমালসিফিকেশন হয়?",
+    "options": {
+      "A": "বাইল সল্ট",
+      "B": "এনজাইম",
+      "C": "ভিটামিন",
+      "D": "হরমোন"
+    },
+    "answer": "A",
+    [span_14](start_span)"explanation": "Bile salts are essential for the emulsification of fats[span_14](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি নাইট্রোজেনবিহীন পদার্থ?",
+    "options": {
+      "A": "পেকটিন",
+      "B": "ক্রিয়েটিনিন",
+      "C": "ইউরিয়া",
+      "D": "অ্যামিনো এসিড"
+    },
+    "answer": "A",
+    [span_15](start_span)"explanation": "Pectin is a structural heteropolysaccharide (carbohydrate) and does not contain nitrogen[span_15](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোষ বিভাজনের সময় কোষপ্লেট তৈরিতে সাহায্য করে কোন অঙ্গাণু?",
+    "options": {
+      "A": "লাইসোসোম",
+      "B": "গলগি বস্তু",
+      "C": "মাইক্রোটিবিউলস",
+      "D": "রাইবোসোম"
+    },
+    "answer": "B",
+    [span_16](start_span)"explanation": "The Golgi apparatus contributes to forming the cell plate during cytokinesis in plants[span_16](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "রেসট্রিকশন এনজাইমের কাজ-",
+    "options": {
+      "A": "DNA অণু বৃদ্ধিকরণ",
+      "B": "DNA খন্ডকে জোড়া লাগানো",
+      "C": "নির্দিষ্ট জীবে রিকম্বিনেন্ট DNA প্রবেশ করানো",
+      "D": "কাঙ্খিত DNA কে নির্দিষ্ট স্থানের ছেদন করা"
+    },
+    "answer": "D",
+    [span_17](start_span)"explanation": "Restriction enzymes cut DNA at specific nucleotide sequences[span_17](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন ধরনের উদ্ভিদকে ইপিমেরালস (Ephemerals) বলা হয়?",
+    "options": {
+      "A": "খরা সহনশীল",
+      "B": "লবণ সহনশীল",
+      "C": "খরা এড়ানো",
+      "D": "খড়া প্রতিরোধী"
+    },
+    "answer": "C",
+    [span_18](start_span)[span_19](start_span)"explanation": "Ephemerals are plants that complete their life cycle quickly to avoid drought conditions[span_18](end_span)[span_19](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি মালভেসি গোত্রের উদ্ভিদ?",
+    "options": {
+      "A": "কার্পাস তুলা",
+      "B": "আখ",
+      "C": "যব",
+      "D": "চোরকাটা"
+    },
+    "answer": "A",
+    [span_20](start_span)[span_21](start_span)"explanation": "Cotton (Gossypium) belongs to the Malvaceae family[span_20](end_span)[span_21](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটিকে সংক্রমণক্ষম পূর্ণাঙ্গ ভাইরাস কণা বলে?",
+    "options": {
+      "A": "প্রিয়ন",
+      "B": "ভিরিয়ন",
+      "C": "ভিরয়েড",
+      "D": "নিউক্লিওক্যাপসিড"
+    },
+    "answer": "B",
+    [span_22](start_span)"explanation": "A virion is a complete, infectious virus particle[span_22](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "ক্রেবল চক্র কোষের কোথায় সংঘটিত হয়?",
+    "options": {
+      "A": "মাইটোকন্ড্রিয়া",
+      "B": "সাইটোপ্লাজম",
+      "C": "রাইবোসোম",
+      "D": "ক্লোরোপ্লাস্ট"
+    },
+    "answer": "A",
+    [span_23](start_span)"explanation": "The Krebs cycle takes place in the matrix of the mitochondria[span_23](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "জেনেটিক ইঞ্জিনিয়ারিং এর প্রধান জীবজ সাধনী (Living Tool) হলো-",
+    "options": {
+      "A": "এফ-ফ্যাক্টর",
+      "B": "রেসট্রিকশন এনজাইম",
+      "C": "এক্সপ্লান্ট",
+      "D": "প্লাজমিড"
+    },
+    "answer": "D",
+    [span_24](start_span)"explanation": "Plasmids are essential biological tools used as vectors in genetic engineering[span_24](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "ভাইরাসের বংশবৃদ্ধিতে পোষকের কোন অঙ্গাণুতে প্রোটিন তৈরি হয়?",
+    "options": {
+      "A": "নিউক্লিয়াস",
+      "B": "কোষ আবরণী",
+      "C": "রাইবোসোম",
+      "D": "মাইটোকন্ড্রিয়া"
+    },
+    "answer": "C",
+    [span_25](start_span)"explanation": "Viruses use the host cell's ribosomes to synthesize their proteins[span_25](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "টিস্যু কালচারের প্রাথমিক লক্ষ্য-",
+    "options": {
+      "A": "উন্নত বীজ তৈরী করা",
+      "B": "নতুন ধরণের টিস্যু তৈরী করা",
+      "C": "অধিক পরিমাণ টিস্যু তৈরী করা",
+      "D": "প্রচুর পরিমাণে নতুন চারা উৎপাদন করা"
+    },
+    "answer": "D",
+    [span_26](start_span)"explanation": "The primary goal of tissue culture is the large-scale production of new plantlets[span_26](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি purine base?",
+    "options": {
+      "A": "Uracil",
+      "B": "Cytosine",
+      "C": "Thymine",
+      "D": "Adenine"
+    },
+    "answer": "D",
+    [span_27](start_span)"explanation": "Adenine and Guanine are purine bases[span_27](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "জেনেটিকভাবে নিয়ন্ত্রিত কোষের মৃত্যুকে কি বলে?",
+    "options": {
+      "A": "অ্যাপোপটসিস",
+      "B": "নেক্রোসিস",
+      "C": "মেটাস্টেসিস",
+      "D": "অ্যাপোফাইসিস"
+    },
+    "answer": "A",
+    [span_28](start_span)"explanation": "Apoptosis is the process of programmed (genetically controlled) cell death[span_28](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন এনজাইমটি জমাট রক্ত গলাতে ব্যবহৃত হয়?",
+    "options": {
+      "A": "ট্রিপসিন",
+      "B": "ইউরিয়েজ",
+      "C": "ইউরোবাইলেজ",
+      "D": "পেপসিন"
+    },
+    "answer": "C",
+    [span_29](start_span)"explanation": "Urokinase (often referred to in exams as urobilase or similar) is used as a thrombolytic agent to dissolve blood clots[span_29](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "রিকম্বিনেন্ট DNA টেকনলজির মাধ্যমে সৃষ্ট উদ্ভিদকে কি বলে?",
+    "options": {
+      "A": "হাইব্রিড (Hybrid)",
+      "B": "সাইব্রিড (Cybrid)",
+      "C": "ক্লোন (Clone)",
+      "D": "ট্রান্সজেনিক (Transgenic)"
+    },
+    "answer": "D",
+    [span_30](start_span)"explanation": "Plants created through recombinant DNA technology are called transgenic plants[span_30](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "বাংলাদেশে পানীয় জলে As (Arsenic) এর গ্রহণযোগ্য মাত্রা কত?",
+    "options": {
+      "A": "0.01 ppm",
+      "B": "0.05 ppm",
+      "C": "0.5 g/L",
+      "D": "0.1 ppm"
+    },
+    "answer": "B",
+    [span_31](start_span)"explanation": "The acceptable limit of Arsenic in drinking water in Bangladesh is 0.05 ppm[span_31](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি তাপহারী (endothermic) বিক্রিয়া?",
+    "options": {
+      "A": "C + O2 = CO2",
+      "B": "N2 + O2 = 2NO",
+      "C": "CH4 + 2O2 = CO2 + 2H2O",
+      "D": "2H2 + O2 = 2H2O"
+    },
+    "answer": "B",
+    [span_32](start_span)"explanation": "The reaction between nitrogen and oxygen to form nitric oxide absorbs heat[span_32](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি ক্যান্সার সৃষ্টি করতে পারে?",
+    "options": {
+      "A": "CH3COOH",
+      "B": "HCHO",
+      "C": "C2H4OH",
+      "D": "CH2OH"
+    },
+    "answer": "B",
+    [span_33](start_span)"explanation": "Formaldehyde (HCHO) is known to be carcinogenic[span_33](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি প্রধান গ্রিনহাউস গ্যাস?",
+    "options": {
+      "A": "CO2",
+      "B": "CH4",
+      "C": "O3",
+      "D": "N2O"
+    },
+    "answer": "A",
+    [span_34](start_span)"explanation": "Carbon dioxide is the most significant greenhouse gas contributing to global warming[span_34](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "ডাউ প্রণালীতে নিচের কোনটি উৎপন্ন করা যায়?",
+    "options": {
+      "A": "ফেনল",
+      "B": "টলুইন",
+      "C": "ক্লোরোবেনজিন",
+      "D": "বেনজিন"
+    },
+    "answer": "A",
+    [span_35](start_span)"explanation": "The Dow process is used for the commercial production of Phenol[span_35](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটির কারণে পচা মাছে গন্ধ হয়?",
+    "options": {
+      "A": "অ্যামাইড",
+      "B": "ফ্যাটি এসিড",
+      "C": "অ্যামিন",
+      "D": "কিটোন"
+    },
+    "answer": "C",
+    [span_36](start_span)"explanation": "Amines, specifically trimethylamine, cause the characteristic smell of rotting fish[span_36](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "অস্ত্রের ইমেজিং কাজে ব্যবহৃত বেরিয়াম সালফেট মিশ্রণ কোন শ্রেণিভূক্ত?",
+    "options": {
+      "A": "কলয়েড",
+      "B": "সাসপেনশন",
+      "C": "অধঃক্ষেপ",
+      "D": "কোয়াগুলেন্ট"
+    },
+    "answer": "B",
+    [span_37](start_span)"explanation": "Barium sulfate used in medical imaging is typically a suspension[span_37](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "বর্জ্য রিসাইক্লিং থেকে প্রধান কি সুফল পাওয়া যায়?",
+    "options": {
+      "A": "দূষণ হ্রাস পায়",
+      "B": "বিদ্যুৎ খরচ কমে",
+      "C": "কাঁচামালের ব্যবহার বাড়ে",
+      "D": "পণ্য উৎপাদন খরচ কমে"
+    },
+    "answer": "A",
+    [span_38](start_span)"explanation": "The primary benefit of waste recycling is the reduction of environmental pollution[span_38](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোন মূলকটি বেনজিন বলয়ে অর্থো-প্যারা নির্দেশক?",
+    "options": {
+      "A": "-CH3",
+      "B": "-NO2",
+      "C": "-CHO",
+      "D": "-CN"
+    },
+    "answer": "A",
+    [span_39](start_span)[span_40](start_span)"explanation": "Alkyl groups like methyl (-CH3) are ortho-para directing[span_39](end_span)[span_40](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি বিজারক পদার্থের বৈশিষ্ট্য?",
+    "options": {
+      "A": "সংশ্লিষ্ট পরমাণুর O.N. হ্রাস করা",
+      "B": "নিজের বিজারণ ঘটানো",
+      "C": "ইলেকট্রন হারানো",
+      "D": "জারণ ঘটানো"
+    },
+    "answer": "C",
+    [span_41](start_span)"explanation": "Reducing agents lose electrons and are oxidized in a reaction[span_41](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "মানবদেহে কোন ধাতুর আধিক্যে হিমোগ্লোবিনের উৎপাদন বাধাপ্রাপ্ত হয়?",
+    "options": {
+      "A": "As",
+      "B": "Fe",
+      "C": "Cr",
+      "D": "Pb"
+    },
+    "answer": "D",
+    [span_42](start_span)"explanation": "Lead (Pb) interferes with heme synthesis, leading to reduced hemoglobin production[span_42](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "ডেটলের মূল উপাদান কি?",
+    "options": {
+      "A": "ক্লোরো-বেনজিন",
+      "B": "আইসোপ্রোপাইল এলকোহল",
+      "C": "ক্লোরাল",
+      "D": "ক্লোরো-জাইলিনল"
+    },
+    "answer": "D",
+    [span_43](start_span)"explanation": "Chloroxylenol is the active ingredient in Dettol[span_43](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "10% Na2CO3 দ্রবণের মোলারিটি কত?",
+    "options": {
+      "A": "0.95",
+      "B": "9.15",
+      "C": "1.94",
+      "D": "0.94"
+    },
+    "answer": "D",
+    [span_44](start_span)"explanation": "Molarity = (10 * 10) / 106 ≈ 0.94 M[span_44](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোন বায়ু-দূষক এসিড বৃষ্টি ঘটায়?",
+    "options": {
+      "A": "SO3",
+      "B": "CO2",
+      "C": "N2O",
+      "D": "CO"
+    },
+    "answer": "A",
+    [span_45](start_span)"explanation": "Sulfur trioxide (SO3) and nitrogen oxides are primary causes of acid rain[span_45](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি প্রাইমারী স্ট্যান্ডার্ড পদার্থ?",
+    "options": {
+      "A": "KHCO3",
+      "B": "NaOH",
+      "C": "NaHCO3",
+      "D": "KMnO4"
+    },
+    "answer": "A",
+    [span_46](start_span)"explanation": "Potassium hydrogen carbonate (KHCO3) can be used as a primary standard[span_46](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি উভধর্মী যৌগ?",
+    "options": {
+      "A": "H2O",
+      "B": "H3O+",
+      "C": "NH3",
+      "D": "NH4+"
+    },
+    "answer": "A",
+    [span_47](start_span)"explanation": "Water (H2O) is amphoteric as it can act as both an acid and a base[span_47](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "শিখা পরীক্ষায় ব্যবহৃত কোবাল্ট ব্লু-গ্লাস কোন আলো সম্পূর্ণ শোষণ করে?",
+    "options": {
+      "A": "হালকা বেগুনি",
+      "B": "গোলাপী লাল",
+      "C": "সোনালী হলুদ",
+      "D": "নীলাভ সবুজ"
+    },
+    "answer": "C",
+    [span_48](start_span)"explanation": "Cobalt blue glass absorbs the golden-yellow light emitted by sodium[span_48](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "সোডিয়াম ক্লোরাইড দ্রবণের বৈশিষ্ট্য কোনটি?",
+    "options": {
+      "A": "এর কণাগুলো যে কোন মাধ্যমে দৃশ্যমান",
+      "B": "এটি টিভাল প্রভাব দেখায়",
+      "C": "এর ব্রাউনীয় গতি আছে",
+      "D": "মিশ্রণের স্থিতি সুস্থিত"
+    },
+    "answer": "D",
+    [span_49](start_span)"explanation": "A true solution like NaCl in water is stable and does not show Tyndall effect or Brownian motion[span_49](end_span).",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "শর্করো জাতীয় খাদ্য থেকে লিভারে সঞ্চিত উপাদান কোনটি?",
+    "options": {
+      "A": "ফ্রুক্টোজ",
+      "B": "গ্লাইকোজেন",
+      "C": "সুক্রোজ",
+      "D": "গ্লুকোজ"
+    },
+    "answer": "B",
+    [span_50](start_span)"explanation": "Excess glucose is stored in the liver as glycogen[span_50](end_span).",
+    "subject": "Biology"
+  },
+  {
+    "question": "কুলম্বের সূত্র কোন ক্ষেত্রে প্রযোজ্য?",
+    "options": {
+      "A": "বিন্দু চার্জ",
+      "B": "ক্ষুদ্র চার্জ",
+      "C": "যে কোন চার্জ",
+      "D": "বৃহৎ চার্জ"
+    },
+    "answer": "A",
+    [span_51](start_span)[span_52](start_span)"explanation": "Coulomb's Law is strictly applicable to point charges[span_51](end_span)[span_52](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "ফোকাস দূরত্ব 1000 cm হলে উত্তল লেন্সের ক্ষমতা কত?",
+    "options": {
+      "A": "+10 D",
+      "B": "+100 D",
+      "C": "+0.1 D",
+      "D": "-0.1 D"
+    },
+    "answer": "C",
+    [span_53](start_span)"explanation": "Power P = 1/f(m) = 1/10 = +0.1 D[span_53](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "তাপের যান্ত্রিক সক্ষমতার একক-",
+    "options": {
+      "A": "ক্যালরি/জুল",
+      "B": "জুল/ক্যালরি",
+      "C": "জুল-ক্যালরি",
+      "D": "ক্যালরি/গ্রাম"
+    },
+    "answer": "B",
+    [span_54](start_span)"explanation": "The mechanical equivalent of heat is measured in Joules per Calorie[span_54](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "একটি গোলকের ব্যাসার্ধ d = (10 ± 0.1) সে.মি. হলে এর আয়তনের শতকরা ত্রুটি কত?",
+    "options": {
+      "A": "3%",
+      "B": "2%",
+      "C": "1%",
+      "D": "4%"
+    },
+    "answer": "A",
+    [span_55](start_span)"explanation": "Percentage error in volume = 3 * percentage error in radius = 3 * (0.1/10) * 100 = 3%[span_55](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "মান শূন্য নয় এমন ভেক্টরকে তার মান দিয়ে ভাগ করলে কি পাওয়া যায়?",
+    "options": {
+      "A": "একক ভেক্টর",
+      "B": "নাল ভেক্টর",
+      "C": "সমতলীয় ভেক্টর",
+      "D": "অবস্থান ভেক্টর"
+    },
+    "answer": "A",
+    [span_56](start_span)[span_57](start_span)"explanation": "Dividing a non-zero vector by its magnitude results in a unit vector[span_56](end_span)[span_57](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "দুটি শব্দের কম্পাঙ্কের অনুপাত 5:6 হলে তাদের তরঙ্গ দৈর্ঘ্যের অনুপাত কত?",
+    "options": {
+      "A": "6:5",
+      "B": "5:6",
+      "C": "11:6",
+      "D": "6:11"
+    },
+    "answer": "A",
+    [span_58](start_span)"explanation": "Wavelength is inversely proportional to frequency (λ ∝ 1/f), so the ratio is 6:5[span_58](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "পৃথিবীর ঘূর্ণন না থাকলে পৃথিবীপৃষ্ঠে কোন বস্তুর ওজন হবে-",
+    "options": {
+      "A": "বৃদ্ধিপ্রাপ্ত",
+      "B": "শূন্য",
+      "C": "অসীম",
+      "D": "স্বাভাবিকের সমান"
+    },
+    "answer": "A",
+    [span_59](start_span)"explanation": "Without rotation, centripetal acceleration becomes zero, slightly increasing apparent weight at most latitudes[span_59](end_span).",
+    "subject": "Physics"
+  },
+  {
+    "question": "সরল দোলকের সাম্যবস্থায় কোনটি সর্বোচ্চ হয়?",
+    "options": {
+      "A": "বেগ",
+      "B": "প্রত্যয়নী বল",
+      "C": "সরণ",
+      "D": "ত্বরণ"
+    },
+    "answer": "A",
+    [span_60](start_span)"explanation": "At the equilibrium position, the velocity of a simple pendulum is at its maximum[span_60](end_span).",
+    "subject": "Physics"
+    }
+    ]
   
