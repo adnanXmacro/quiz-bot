@@ -160,48 +160,110 @@ async def update_score(user_id: str, username: str, correct: bool, points_to_add
 
 
 def get_role_badge(points: int) -> str:
-    if points >= 500:
+    if points >= 1000:
+        return "💎 Elite"
+    elif points >= 500:
         return "👑 Legend"
     elif points >= 200:
-        return "⚡ Champion"
+        return "🔥 Champion"
+    elif points >= 100:
+        return "⚡ Scholar"
     elif points >= 50:
-        return "📚 Scholar"
-    return "🌱 Newcomer"
+        return "📚 Apprentice"
+    return "🌱 Rookie"
+
+
+def get_subject_style(subject: str) -> tuple:
+    """Returns (emoji, color, banner_text) for each subject."""
+    styles = {
+        "Physics":   ("⚡", 0x7B2FFF, "PHYSICS"),
+        "Chemistry": ("🧪", 0xFF2F6E, "CHEMISTRY"),
+        "Math":      ("📐", 0x00F5A0, "MATHEMATICS"),
+        "Biology":   ("🧬", 0xFFB800, "BIOLOGY"),
+        "English":   ("📝", 0x00B4FF, "ENGLISH"),
+        "GK":        ("🌍", 0xFF6B35, "GENERAL KNOWLEDGE"),
+    }
+    return styles.get(subject, ("📖", 0x5865F2, subject.upper()))
 
 
 def build_scoreboard_embed(scores: dict) -> discord.Embed:
+    now_bd = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+
     embed = discord.Embed(
-        title="🏆 Scoreboard",
         color=0xFFD700,
         timestamp=datetime.datetime.utcnow()
     )
+    embed.set_author(name="🏆  DAILY LEADERBOARD", icon_url="https://cdn.discordapp.com/emojis/1234567890.png")
 
     if not scores:
-        embed.description = "No scores yet! Answer today's questions to get on the board."
+        embed.title = "আজ কেউ অংশগ্রহণ করেনি!"
+        embed.description = (
+            "```\n"
+            "  কোনো স্কোর নেই।\n"
+            "  কাল রাত ১০টায় আবার চেষ্টা করো!\n"
+            "```"
+        )
+        embed.color = 0x2B2D31
         return embed
 
     sorted_scores = sorted(scores.values(), key=lambda x: x["points"], reverse=True)
-    medals = ["🥇", "🥈", "🥉"]
+    top = sorted_scores[0]
+    top_acc = round(100 * top["correct"] / top["total"]) if top["total"] > 0 else 0
 
-    lines = []
+    # Header with champion
+    embed.title = f"📅  {now_bd.strftime('%d %B %Y')} — Quiz Results"
+    embed.description = (
+        f"```fix\n"
+        f"  🥇 TODAY'S CHAMPION\n"
+        f"  {top['username'].upper()}\n"
+        f"  {top['points']} pts  •  {top_acc}% accuracy\n"
+        f"```"
+    )
+
+    # Rank rows
+    rank_icons = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+    rank_lines = []
+
     for i, s in enumerate(sorted_scores[:10]):
-        rank = medals[i] if i < 3 else f"`{i+1}.`"
         acc = round(100 * s["correct"] / s["total"]) if s["total"] > 0 else 0
         badge = get_role_badge(s["points"])
-        lines.append(
-            f"{rank} **{s['username']}** {badge}\n"
-            f"　`{s['points']} pts` · {acc}% accuracy · {s['total']} answered"
+        icon = rank_icons[i] if i < len(rank_icons) else f"`{i+1}`"
+
+        # Progress bar
+        max_pts = sorted_scores[0]["points"] if sorted_scores[0]["points"] > 0 else 1
+        filled = round((s["points"] / max_pts) * 8)
+        bar = "█" * filled + "░" * (8 - filled)
+
+        rank_lines.append(
+            f"{icon} **{s['username']}** {badge}\n"
+            f"　`{bar}` **{s['points']}** pts · {acc}% · {s['correct']}/{s['total']} ✓"
         )
 
-    embed.description = "\n\n".join(lines)
-    embed.set_footer(text="👑 Legend=500pts | ⚡ Champion=200pts | 📚 Scholar=50pts")
+    embed.add_field(
+        name="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        value="\n\n".join(rank_lines),
+        inline=False
+    )
+
+    # Stats footer
+    total_players = len(sorted_scores)
+    total_answers = sum(s["total"] for s in sorted_scores)
+    avg_acc = round(sum(
+        100 * s["correct"] / s["total"] for s in sorted_scores if s["total"] > 0
+    ) / max(total_players, 1))
+
+    embed.add_field(
+        name="📊  Session Stats",
+        value=f"`👥 {total_players} players` · `📝 {total_answers} answers` · `🎯 {avg_acc}% avg accuracy`",
+        inline=False
+    )
+    embed.set_footer(text="💎 Elite=1000  👑 Legend=500  🔥 Champion=200  ⚡ Scholar=100  📚 Apprentice=50")
     return embed
 
 
 # ─── QUESTION HELPERS ───────────────────────────────────────────────────────────
 
 def pick_questions(count: int) -> list:
-    # Try loading from questions.json first
     if os.path.exists("questions.json"):
         try:
             with open("questions.json", "r", encoding="utf-8") as f:
@@ -213,7 +275,6 @@ def pick_questions(count: int) -> list:
                     if "subject" not in q:
                         q["subject"] = "General"
                 print(f"Loaded {len(external)} questions from questions.json")
-                # Shuffle fully then pick — ensures even distribution over time
                 pool = external.copy()
                 random.shuffle(pool)
                 return pool[:count]
@@ -231,11 +292,18 @@ class MCQView(discord.ui.View):
         super().__init__(timeout=ALIVE_MINUTES * 60)
         self.question = question
         self.answered_users = set()
-        for label in ["A", "B", "C", "D"]:
+        styles = [
+            discord.ButtonStyle.primary,
+            discord.ButtonStyle.danger,
+            discord.ButtonStyle.success,
+            discord.ButtonStyle.secondary,
+        ]
+        for idx, label in enumerate(["A", "B", "C", "D"]):
             btn = discord.ui.Button(
-                label=f"{label}: {question['options'][label]}",
+                label=f"{label}  {question['options'][label]}",
                 custom_id=label,
-                style=discord.ButtonStyle.secondary
+                style=styles[idx],
+                row=idx // 2
             )
             btn.callback = self.make_callback(label)
             self.add_item(btn)
@@ -247,35 +315,66 @@ class MCQView(discord.ui.View):
                 username = interaction.user.display_name
 
                 if user_id in self.answered_users:
-                    await interaction.response.send_message(
-                        "⚠️ তুমি এই প্রশ্নের উত্তর আগেই দিয়েছ!",
-                        ephemeral=True
+                    embed = discord.Embed(
+                        description="⚠️ তুমি এই প্রশ্নের উত্তর আগেই দিয়েছ!",
+                        color=0xFFA500
                     )
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
                     return
 
                 self.answered_users.add(user_id)
                 correct = self.question["answer"]
                 is_correct = label == correct
                 explanation = self.question.get("explanation", "")
-
-                # Update score
                 new_points = await update_score(user_id, username, is_correct)
                 badge = get_role_badge(new_points)
 
                 if is_correct:
-                    msg = (
-                        f"✅ **সঠিক!** তুমি **{label}** বেছেছ।\n"
-                        f"_{explanation}_\n\n"
-                        f"**+10 pts!** তোমার মোট: `{new_points} pts` {badge}"
+                    embed = discord.Embed(
+                        title="✅  সঠিক উত্তর!",
+                        color=0x00FF88
+                    )
+                    embed.add_field(
+                        name="তোমার উত্তর",
+                        value=f"```diff\n+ {label}: {self.question['options'][label]}\n```",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="💡 ব্যাখ্যা",
+                        value=f"_{explanation}_" if explanation else "—",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="🏅 পয়েন্ট",
+                        value=f"`+10 pts` → মোট **{new_points} pts** {badge}",
+                        inline=False
                     )
                 else:
-                    msg = (
-                        f"❌ **ভুল।** তুমি **{label}** বেছেছ।\n"
-                        f"সঠিক উত্তর: **{correct}** — {self.question['options'][correct]}\n"
-                        f"_{explanation}_\n\n"
-                        f"তোমার মোট: `{new_points} pts` {badge}"
+                    embed = discord.Embed(
+                        title="❌  ভুল উত্তর!",
+                        color=0xFF4444
                     )
-                await interaction.response.send_message(msg, ephemeral=True)
+                    embed.add_field(
+                        name="তোমার উত্তর",
+                        value=f"```diff\n- {label}: {self.question['options'][label]}\n```",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="✅ সঠিক উত্তর",
+                        value=f"```fix\n{correct}: {self.question['options'][correct]}\n```",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="💡 ব্যাখ্যা",
+                        value=f"_{explanation}_" if explanation else "—",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="📊 স্কোর",
+                        value=f"মোট **{new_points} pts** {badge}",
+                        inline=False
+                    )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
             except discord.errors.NotFound:
                 pass
             except Exception as e:
@@ -289,12 +388,11 @@ class FlashcardView(discord.ui.View):
         self.question = question
         self.answered_users = set()
 
-    @discord.ui.button(label="👁 উত্তর দেখো", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="💡  উত্তর দেখো", style=discord.ButtonStyle.success)
     async def reveal(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             user_id = str(interaction.user.id)
             username = interaction.user.display_name
-
             already = user_id in self.answered_users
             self.answered_users.add(user_id)
 
@@ -305,15 +403,28 @@ class FlashcardView(discord.ui.View):
                 new_points = scores.get(user_id, {}).get("points", 0)
             badge = get_role_badge(new_points or 0)
 
-            msg = (
-                f"💡 **উত্তর:** {self.question['answer']}\n"
-                f"_{self.question.get('explanation', '')}_"
+            embed = discord.Embed(
+                title="💡  Flashcard Answer",
+                color=0xA855F7
             )
+            embed.add_field(
+                name="✅ উত্তর",
+                value=f"```fix\n{self.question['answer']}\n```",
+                inline=False
+            )
+            if self.question.get("explanation"):
+                embed.add_field(
+                    name="📖 ব্যাখ্যা",
+                    value=f"_{self.question['explanation']}_",
+                    inline=False
+                )
             if not already:
-                badge = get_role_badge(new_points)
-                msg += f"\n\n**+5 pts!** তোমার মোট: `{new_points} pts` {badge}"
-
-            await interaction.response.send_message(msg, ephemeral=True)
+                embed.add_field(
+                    name="🏅 পয়েন্ট",
+                    value=f"`+5 pts` → মোট **{new_points} pts** {badge}",
+                    inline=False
+                )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
         except discord.errors.NotFound:
             pass
         except Exception as e:
@@ -323,49 +434,70 @@ class FlashcardView(discord.ui.View):
 # ─── QUIZ SESSION ────────────────────────────────────────────────────────────────
 
 async def run_quiz_session(channel: discord.TextChannel):
-    now = datetime.datetime.utcnow() + datetime.timedelta(hours=6)  # BD time
+    now = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
     date_str = now.strftime("%d %B %Y")
+    day_str = now.strftime("%A")
 
-    await channel.send(
-        f"📚 **Daily Quiz — {date_str}**\n"
-        f"🎯 আজকের {QUESTIONS_PER_SESSION}টি প্রশ্ন! সঠিক উত্তরে **+10 pts**, ফ্ল্যাশকার্ডে **+5 pts**\n"
-        f"🔒 শুধু তুমিই দেখবে তোমার উত্তর সঠিক কিনা।\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    # Opening announcement
+    announce = discord.Embed(
+        title=f"📢  Daily Quiz  •  {date_str}",
+        description=(
+            f"```yaml\n"
+            f"  দিন      : {day_str}\n"
+            f"  প্রশ্ন    : {QUESTIONS_PER_SESSION}টি\n"
+            f"  MCQ পয়েন্ট  : +10 pts\n"
+            f"  Flashcard    : +5 pts\n"
+            f"  সময়সীমা  : {ALIVE_MINUTES} মিনিট\n"
+            f"```\n"
+            f"🔐 **তোমার উত্তর শুধু তুমিই দেখতে পাবে।**\n"
+            f"নিচের প্রশ্নগুলোর বাটনে চাপো এবং নিজেকে যাচাই করো!"
+        ),
+        color=0x5865F2
     )
-    await asyncio.sleep(1)
+    announce.set_footer(text="💎 Elite • 👑 Legend • 🔥 Champion • ⚡ Scholar • 📚 Apprentice • 🌱 Rookie")
+    await channel.send(embed=announce)
+    await asyncio.sleep(1.5)
 
     questions = pick_questions(QUESTIONS_PER_SESSION)
 
     for i, q in enumerate(questions, 1):
-        subject_emoji = {"Physics":"⚡","Chemistry":"🧪","Math":"📐","Biology":"🧬"}.get(q["subject"], "📖")
+        emoji, color, banner = get_subject_style(q.get("subject", "General"))
 
         if q["type"] == "mcq":
             embed = discord.Embed(
-                title=f"প্রশ্ন {i}/{len(questions)} — {subject_emoji} {q['subject']}",
-                description=f"**{q['question']}**",
-                color={"Physics":0x7c6aff,"Chemistry":0xff6a9b,"Math":0x6affb8,"Biology":0xfbbf24}.get(q["subject"], 0x7c6aff)
+                color=color
             )
-            for label, text in q["options"].items():
-                embed.add_field(name=label, value=text, inline=True)
-            embed.set_footer(text="একটি বাটনে চাপো — শুধু তুমিই ফলাফল দেখবে!")
+            embed.set_author(name=f"  {banner}  •  প্রশ্ন {i} of {len(questions)}", icon_url=None)
+            embed.title=f"{emoji}  {q['question']}"
+            embed.add_field(name="🅰", value=q["options"]["A"], inline=True)
+            embed.add_field(name="🅱", value=q["options"]["B"], inline=True)
+            embed.add_field(name="\u200b", value="\u200b", inline=True)
+            embed.add_field(name="🇨", value=q["options"]["C"], inline=True)
+            embed.add_field(name="🇩", value=q["options"]["D"], inline=True)
+            embed.add_field(name="\u200b", value="\u200b", inline=True)
+            embed.set_footer(text=f"⏱ {ALIVE_MINUTES} মিনিট সময় আছে  •  শুধু তুমিই তোমার ফলাফল দেখবে")
             await channel.send(embed=embed, view=MCQView(q))
         else:
-            embed = discord.Embed(
-                title=f"প্রশ্ন {i}/{len(questions)} — {subject_emoji} {q['subject']} (Flashcard)",
-                description=f"**{q['question']}**",
-                color=0xEB459E
-            )
-            embed.set_footer(text="উত্তর ভাবো, তারপর বাটন চাপো!")
+            embed = discord.Embed(color=color)
+            embed.set_author(name=f"  {banner}  •  FLASHCARD  {i}/{len(questions)}")
+            embed.title = f"{emoji}  {q['question']}"
+            embed.set_footer(text="💭 উত্তর মাথায় ভাবো, তারপর বাটন চাপো!")
             await channel.send(embed=embed, view=FlashcardView(q))
 
         await asyncio.sleep(1.5)
 
-    await channel.send(
-        f"✅ **আজকের প্রশ্ন শেষ!** উত্তর দিতে পারবে আগামী **{ALIVE_MINUTES//60} ঘণ্টা**।\n"
-        "📊 স্কোরবোর্ড দেখতে নিচে অপেক্ষা করো..."
+    # Closing message
+    closing = discord.Embed(
+        title="⏳  সেশন চলছে...",
+        description=(
+            f"সব প্রশ্ন পোস্ট হয়ে গেছে!\n\n"
+            f"⏰ আগামী **{ALIVE_MINUTES} মিনিট** উত্তর দেওয়া যাবে।\n"
+            f"🏆 সেশন শেষে **Leaderboard** পোস্ট হবে।\n\n"
+            f"*এখনো উত্তর না দিলে এখনই দাও!*"
+        ),
+        color=0xFF8C00
     )
-
-    # Wait configured time then post scoreboard
+    await channel.send(embed=closing)
     await asyncio.sleep(ALIVE_MINUTES * 60)
     await post_scoreboard(channel)
 
@@ -373,7 +505,12 @@ async def run_quiz_session(channel: discord.TextChannel):
 async def post_scoreboard(channel: discord.TextChannel):
     scores = await load_scores()
     embed = build_scoreboard_embed(scores)
-    await channel.send("📊 **আজকের সেশনের স্কোরবোর্ড:**", embed=embed)
+    header = discord.Embed(
+        description="```ansi\n\u001b[1;33m  ═══════════════════════════════\n  🏆  SESSION COMPLETE  🏆\n  ═══════════════════════════════\u001b[0m\n```",
+        color=0xFFD700
+    )
+    await channel.send(embed=header)
+    await channel.send(embed=embed)
 
 
 # ─── BOT SETUP ───────────────────────────────────────────────────────────────────
