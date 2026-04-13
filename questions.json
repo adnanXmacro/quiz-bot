@@ -2273,6 +2273,1194 @@
 "answer": "D",
 "explanation": "The sentence requires parallel structure with a modal verb matching the beginning.",
 "subject": "English"
+},
+{
+"question": "চক্রীয় ফটোফসফরাইলেশনে নিচের কোনটি ঘটে না?",
+"options": {
+"A": "পানির প্রয়োজন হয়",
+"B": "ফটোসিস্টেম-I অংশগ্রহণ করে",
+"C": "ইলেকট্রন প্রবাহ একমুখী",
+"D": "অক্সিজেন উৎপন্ন হয় না"
+},
+"answer": "D",
+"explanation": "In cyclic photophosphorylation, oxygen is not produced because water is not split.",
+"subject": "Biology"
+},
+{
+"question": "তড়িৎচুম্বকীয় আবেশের ক্ষেত্রে আবিষ্ট তড়িচ্চালক বল নিচের কোনটির ওপর নির্ভর করে না?",
+"options": {
+"A": "চৌম্বক আবেশের উপর",
+"B": "কুন্ডলী পাক সংখ্যার উপর",
+"C": "কুন্ডলীর রোধের উপর",
+"D": "সময়ের উপর"
+},
+"answer": "C",
+"explanation": "Induced electromotive force (EMF) depends on the rate of change of magnetic flux and the number of turns, but not the resistance of the coil.",
+"subject": "Physics"
+},
+{
+"question": "The antonym of 'harbinger' is-",
+"options": {
+"A": "educator",
+"B": "messenger",
+"C": "follower",
+"D": "leader"
+},
+"answer": "C",
+"explanation": "A harbinger is a forerunner or sign of something to come; a follower comes after.",
+"subject": "English"
+},
+{
+"question": "Father loves me. Here 'loves' is an example of-",
+"options": {
+"A": "intransitive verb",
+"B": "simple verb",
+"C": "auxiliary verb",
+"D": "transitive verb"
+},
+"answer": "D",
+"explanation": "A transitive verb requires an object (me) to complete its meaning.",
+"subject": "English"
+},
+{
+"question": "কোনটি উদ্ভিদদেহের রোগসৃষ্টিকারী ভাইরাস?",
+"options": {
+"A": "ইয়েলো ফিভার ভাইরাস",
+"B": "টুংরো ভাইরাস",
+"C": "ফুট অ্যান্ড মাউথ ভাইরাস",
+"D": "ফ্ল্যাভি ভাইরাস"
+},
+"answer": "B",
+"explanation": "Tungro virus is a significant viral disease affecting rice plants.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি ডি-এন-এ ভাইরাসের উদাহরণ?",
+"options": {
+"A": "TMV",
+"B": "HIV",
+"C": "T2 ফায",
+"D": "পোলিও ভাইরাস"
+},
+"answer": "C",
+"explanation": "T2 bacteriophage is a well-known DNA virus.",
+"subject": "Biology"
+},
+{
+"question": "গলগি বডির কাজ কোনটি?",
+"options": {
+"A": "প্রোটিন সংশ্লেষণ",
+"B": "লাইসোজোম তৈরি",
+"C": "শক্তি উৎপাদন",
+"D": "বংশগতি নির্ধারণ"
+},
+"answer": "B",
+"explanation": "One of the key functions of the Golgi apparatus is the formation of lysosomes.",
+"subject": "Biology"
+},
+{
+"question": "সবচেয়ে ক্ষুদ্রতম ভাইরাস কোনটি?",
+"options": {
+"A": "TMV",
+"B": "Vaccinia",
+"C": "পোলিও ভাইরাস",
+"D": "ফুট অ্যান্ড মাউথ ভাইরাস"
+},
+"answer": "D",
+"explanation": "Foot-and-mouth disease virus is considered one of the smallest known viruses.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি সেমি-মেটাল বা উপধাতু?",
+"options": {
+"A": "Fe",
+"B": "Si",
+"C": "Al",
+"D": "Cu"
+},
+"answer": "B",
+"explanation": "Silicon (Si) is a metalloid or semi-metal.",
+"subject": "Chemistry"
+},
+{
+"question": "তাপমাত্রার পরম শূন্য মান কত?",
+"options": {
+"A": "0°C",
+"B": "273 K",
+"C": "-273°C",
+"D": "100°C"
+},
+"answer": "C",
+"explanation": "Absolute zero is defined as -273.15°C or 0 Kelvin.",
+"subject": "Physics"
+},
+{
+"question": "কোন মৌলটির ইলেকট্রন আসক্তি সবচেয়ে বেশি?",
+"options": {
+"A": "F",
+"B": "Cl",
+"C": "Br",
+"D": "I"
+},
+"answer": "B",
+"explanation": "Chlorine has the highest electron affinity among all elements.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি ভেক্টর রাশি?",
+"options": {
+"A": "কাজ",
+"B": "দ্রুতি",
+"C": "তড়িৎ তীব্রতা",
+"D": "বিভব"
+},
+"answer": "C",
+"explanation": "Electric field intensity is a vector quantity, having both magnitude and direction.",
+"subject": "Physics"
+},
+{
+"question": "What is the adjective form of 'moon'?",
+"options": {
+"A": "Moonly",
+"B": "Lunar",
+"C": "Moonish",
+"D": "Moony"
+},
+"answer": "B",
+"explanation": "'Lunar' is the adjective related to the moon.",
+"subject": "English"
+},
+{
+"question": "He has no control ___ himself.",
+"options": {
+"A": "on",
+"B": "over",
+"C": "at",
+"D": "with"
+},
+"answer": "B",
+"explanation": "The correct preposition to use with control in this context is 'over'.",
+"subject": "English"
+},
+{
+"question": "নিচের কোনটি লুইস এসিড?",
+"options": {
+"A": "NH3",
+"B": "H2O",
+"C": "BF3",
+"D": "OH-"
+},
+"answer": "C",
+"explanation": "Boron trifluoride (BF3) is a Lewis acid because it can accept an electron pair.",
+"subject": "Chemistry"
+},
+{
+"question": "কোন লেন্সের ক্ষমতা -2D হলে এর ফোকাস দূরত্ব কত?",
+"options": {
+"A": "50 cm",
+"B": "-50 cm",
+"C": "20 cm",
+"D": "-20 cm"
+},
+"answer": "B",
+"explanation": "f = 1/P = 1/-2 = -0.5 m = -50 cm.",
+"subject": "Physics"
+},
+{
+"question": "পিত্তরস জমা থাকে কোথায়?",
+"options": {
+"A": "যকৃতে",
+"B": "অগ্ন্যাশয়ে",
+"C": "পিত্তথলিতে",
+"D": "প্লীহায়"
+},
+"answer": "C",
+"explanation": "Bile is produced in the liver but stored in the gallbladder.",
+"subject": "Biology"
+},
+{
+"question": "মানুষের লোহিত রক্তকণিকার আয়ুষ্কাল কত দিন?",
+"options": {
+"A": "৬০ দিন",
+"B": "৯০ দিন",
+"C": "১২০ দিন",
+"D": "১৫০ দিন"
+},
+"answer": "C",
+"explanation": "Human red blood cells (RBCs) have an average lifespan of 120 days.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি শক্তিশালী এসিড?",
+"options": {
+"A": "CH3COOH",
+"B": "H2CO3",
+"C": "HClO4",
+"D": "HF"
+},
+"answer": "C",
+"explanation": "Perchloric acid (HClO4) is one of the strongest known mineral acids.",
+"subject": "Chemistry"
+},
+{
+"question": "একটি পেন্ডুলাম ঘড়ি পাহাড়ের চূড়ায় নিলে এটি-",
+"options": {
+"A": "দ্রুত চলবে",
+"B": "ধীরে চলবে",
+"C": "একই রকম থাকবে",
+"D": "বন্ধ হয়ে যাবে"
+},
+"answer": "B",
+"explanation": "Gravity decreases at higher altitudes, increasing the time period (T) and making the clock run slow.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি জারণ-বিজারণ বিক্রিয়া নয়?",
+"options": {
+"A": "প্রতিস্থাপন",
+"B": "সংযোজন",
+"C": "প্রশমন",
+"D": "দহন"
+},
+"answer": "C",
+"explanation": "Neutralization (acid-base) reactions are generally not redox reactions.",
+"subject": "Chemistry"
+},
+{
+"question": "রক্তের pH কত?",
+"options": {
+"A": "৬.৪",
+"B": "৭.০",
+"C": "৭.৪",
+"D": "৮.০"
+},
+"answer": "C",
+"explanation": "The pH of human arterial blood is slightly basic, typically around 7.4.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি প্যারাম্যাগনেটিক পদার্থ?",
+"options": {
+"A": "পানি",
+"B": "অক্সিজেন",
+"C": "নাইট্রোজেন",
+"D": "সোডিয়াম ক্লোরাইড"
+},
+"answer": "B",
+"explanation": "Molecular oxygen is paramagnetic due to having unpaired electrons.",
+"subject": "Physics"
+},
+{
+"question": "কোষের শক্তিঘর বলা হয় কোনটিকে?",
+"options": {
+"A": "নিউক্লিয়াস",
+"B": "রাইবোসোম",
+"C": "মাইটোকন্ড্রিয়া",
+"D": "লাইসোজোম"
+},
+"answer": "C",
+"explanation": "Mitochondria are known as the powerhouse of the cell because they produce ATP.",
+"subject": "Biology"
+},
+{
+"question": "Who is the author of 'Hamlet'?",
+"options": {
+"A": "John Milton",
+"B": "William Shakespeare",
+"C": "Charles Dickens",
+"D": "Leo Tolstoy"
+},
+"answer": "B",
+"explanation": "Shakespeare wrote the tragedy Hamlet.",
+"subject": "English"
+},
+{
+"question": "বাতাসে শব্দের বেগ সবচেয়ে বেশি কোথায়?",
+"options": {
+"A": "শুষ্ক বাতাসে",
+"B": "আর্দ্র বাতাসে",
+"C": "ঠান্ডা বাতাসে",
+"D": "সবখানেই সমান"
+},
+"answer": "B",
+"explanation": "Sound travels faster in moist (humid) air because humid air is less dense than dry air.",
+"subject": "Physics"
+},
+{
+"question": "আধুনিক রসায়নের জনক কে?",
+"options": {
+"A": "ডাল্টন",
+"B": "অ্যাভোগাড্রো",
+"C": "ল্যাভয়সিয়ে",
+"D": "প্রিস্টলি"
+},
+"answer": "C",
+"explanation": "Antoine Lavoisier is considered the father of modern chemistry.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি একবীজপত্রী উদ্ভিদ নয়?",
+"options": {
+"A": "ধান",
+"B": "গম",
+"C": "আখ",
+"D": "মটর"
+},
+"answer": "D",
+"explanation": "Pea (Pisum sativum) is a dicotyledonous plant.",
+"subject": "Biology"
+},
+{
+"question": "প্রোটিন পরিপাককারী এনজাইম কোনটি?",
+"options": {
+"A": "অ্যামাইলেজ",
+"B": "লাইপেজ",
+"C": "পেপসিন",
+"D": "মালটেজ"
+},
+"answer": "C",
+"explanation": "Pepsin is an enzyme that breaks down proteins into smaller peptides.",
+"subject": "Biology"
+},
+{
+"question": "The synonym of 'Polite' is-",
+"options": {
+"A": "Rude",
+"B": "Courteous",
+"C": "Aggressive",
+"D": "Proud"
+},
+"answer": "B",
+"explanation": "Courteous means being polite and respectful.",
+"subject": "English"
+},
+{
+"question": "নিচের কোনটি তেজস্ক্রিয় মৌল নয়?",
+"options": {
+"A": "ইউরেনিয়াম",
+"B": "থোরিয়াম",
+"C": "রেডিয়াম",
+"D": "আয়রন"
+},
+"answer": "D",
+"explanation": "Iron is a stable metal, not a radioactive element.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি জৈব এসিড?",
+"options": {
+"A": "HCl",
+"B": "H2SO4",
+"C": "Citric Acid",
+"D": "HNO3"
+},
+"answer": "C",
+"explanation": "Citric acid is an organic acid found in citrus fruits.",
+"subject": "Chemistry"
+},
+{
+"question": "পেশি ক্লান্তির জন্য দায়ী কোনটি?",
+"options": {
+"A": "ইউরিক এসিড",
+"B": "ল্যাকটিক এসিড",
+"C": "অ্যামিনো এসিড",
+"D": "ফ্যাটি এসিড"
+},
+"answer": "B",
+"explanation": "Accumulation of lactic acid in muscles during anaerobic respiration causes fatigue.",
+"subject": "Biology"
+},
+{
+"question": "What is the past participle of 'fly'?",
+"options": {
+"A": "Flied",
+"B": "Flew",
+"C": "Flown",
+"D": "Flying"
+},
+"answer": "C",
+"explanation": "The forms are: fly (present), flew (past), flown (past participle).",
+"subject": "English"
+},
+{
+"question": "বিদ্যুৎ প্রবাহের একক কি?",
+"options": {
+"A": "ভোল্ট",
+"B": "ওয়াট",
+"C": "অ্যাম্পিয়ার",
+"D": "ওহম"
+},
+"answer": "C",
+"explanation": "Ampere is the SI unit of electric current.",
+"subject": "Physics"
+},
+{
+"question": "সবুজ উদ্ভিদ খাদ্য তৈরি করে কোন প্রক্রিয়ায়?",
+"options": {
+"A": "শ্বসন",
+"B": "সালোকসংশ্লেষণ",
+"C": "প্রস্বেদন",
+"D": "অভিস্রবণ"
+},
+"answer": "B",
+"explanation": "Photosynthesis is the process by which green plants make food using sunlight.",
+"subject": "Biology"
+},
+{
+"question": "নিচের কোনটি নোবেল গ্যাস নয়?",
+"options": {
+"A": "হিলিয়াম",
+"B": "নিয়ন",
+"C": "আর্গন",
+"D": "নাইট্রোজেন"
+},
+"answer": "D",
+"explanation": "Nitrogen is a group 15 element, not a noble gas (group 18).",
+"subject": "Chemistry"
+},
+{
+"question": "পৃথিবীর কেন্দ্রে অভিকর্ষজ ত্বরণ 'g' এর মান কত?",
+"options": {
+"A": "9.8 m/s²",
+"B": "Infinity",
+"C": "0",
+"D": "1 m/s²"
+},
+"answer": "C",
+"explanation": "Acceleration due to gravity is zero at the center of the Earth.",
+"subject": "Physics"
+},
+{
+"question": "মানুষের ক্রোমোজোম সংখ্যা কত?",
+"options": {
+"A": "২৩টি",
+"B": "৪৬টি",
+"C": "২২টি",
+"D": "৪৪টি"
+},
+"answer": "B",
+"explanation": "Humans have 23 pairs, or 46 chromosomes in total.",
+"subject": "Biology"
+},
+{
+"question": "Change the voice: 'Shut the door.'",
+"options": {
+"A": "The door be shut.",
+"B": "Let the door shut.",
+"C": "Let the door be shut.",
+"D": "Door is shut."
+},
+"answer": "C",
+"explanation": "Imperative sentences usually follow the 'Let + object + be + V3' structure in passive voice.",
+"subject": "English"
+},
+{
+"question": "শুষ্ক বরফ (Dry Ice) আসলে কি?",
+"options": {
+"A": "তরল নাইট্রোজেন",
+"B": "কঠিন কার্বন ডাই অক্সাইড",
+"C": "কঠিন হাইড্রোজেন",
+"D": "বরফ ও লবণের মিশ্রণ"
+},
+"answer": "B",
+"explanation": "Dry ice is the solid form of carbon dioxide.",
+"subject": "Chemistry"
+},
+{
+"question": "কোন রঙের আলোর বিচ্যুতি সবচেয়ে বেশি?",
+"options": {
+"A": "লাল",
+"B": "নীল",
+"C": "বেগুনি",
+"D": "হলুদ"
+},
+"answer": "C",
+"explanation": "In a prism, violet light has the shortest wavelength and undergoes the most deviation.",
+"subject": "Physics"
+},
+{
+"question": "এন্টিবায়োটিক পেনিসিলিন কে আবিষ্কার করেন?",
+"options": {
+"A": "এডওয়ার্ড জেনার",
+"B": "লুই পাস্তর",
+"C": "আলেকজান্ডার ফ্লেমিং",
+"D": "রবার্ট হুক"
+},
+"answer": "C",
+"explanation": "Alexander Fleming discovered penicillin in 1928.",
+"subject": "Biology"
+},
+{
+"question": "The plural form of 'Ox' is-",
+"options": {
+"A": "Oxes",
+"B": "Oxen",
+"C": "Oxis",
+"D": "Oxenly"
+},
+"answer": "B",
+"explanation": "The plural of ox is oxen.",
+"subject": "English"
+},
+{
+"question": "নিচের কোনটি মৌলিক পদার্থ?",
+"options": {
+"A": "পানি",
+"B": "লবণ",
+"C": "লোহা",
+"D": "চিনি"
+},
+"answer": "C",
+"explanation": "Iron (Fe) is an element, while others are compounds.",
+"subject": "Chemistry"
+},
+{
+"question": "ডায়মন্ড বা হীরা কিসের রূপভেদ?",
+"options": {
+"A": "সিলিকন",
+"B": "কার্বন",
+"C": "সালফার",
+"D": "ফসফরাস"
+},
+"answer": "B",
+"explanation": "Diamond and graphite are allotropes of carbon.",
+"subject": "Chemistry"
+},
+{
+"question": "কানের কোন অংশ শ্রবণ ও ভারসাম্যের সাথে যুক্ত?",
+"options": {
+"A": "অস্থি",
+"B": "ককলিয়া",
+"C": "অন্তঃকর্ণ",
+"D": "বহিঃকর্ণ"
+},
+"answer": "C",
+"explanation": "The inner ear contains organs for both hearing and balance.",
+"subject": "Biology"
+},
+{
+"question": "Which one is a correct sentence?",
+"options": {
+"A": "He is as tall as I.",
+"B": "He is as tall as me.",
+"C": "He is tall as I.",
+"D": "He tall as me."
+},
+"answer": "A",
+"explanation": "In formal grammar, the subjective case (I) follows 'as' when it's short for 'as I am'.",
+"subject": "English"
+},
+{
+"question": "শক্তির সবচেয়ে বড় উৎস কি?",
+"options": {
+"A": "কয়লা",
+"B": "তেল",
+"C": "সূর্য",
+"D": "বিদ্যুৎ"
+},
+"answer": "C",
+"explanation": "The sun is the ultimate source of almost all energy on Earth.",
+"subject": "Physics"
+},
+{
+"question": "ভাইরাস জনিত রোগ কোনটি?",
+"options": {
+"A": "যক্ষ্মা",
+"B": "কলেরা",
+"C": "বসন্ত",
+"D": "টাইফয়েড"
+},
+"answer": "C",
+"explanation": "Smallpox/Chickenpox is caused by a virus; the others are bacterial diseases.",
+"subject": "Biology"
+},
+{
+"question": "ভারী পানির সংকেত কি?",
+"options": {
+"A": "H2O",
+"B": "D2O",
+"C": "T2O",
+"D": "H2O2"
+},
+"answer": "B",
+"explanation": "Heavy water is deuterium oxide (D2O).",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোনটি অর্ধপরিবাহী (Semiconductor)?",
+"options": {
+"A": "তামা",
+"B": "লোহা",
+"C": "জার্মেনিয়াম",
+"D": "রূপা"
+},
+"answer": "C",
+"explanation": "Germanium and Silicon are the most common semiconductors.",
+"subject": "Physics"
+},
+{
+"question": "রক্তশূন্যতা বলতে কি বুঝায়?",
+"options": {
+"A": "শ্বেতকণিকা কমে যাওয়া",
+"B": "অনুচক্রিকা বেড়ে যাওয়া",
+"C": "হিমোগ্লোবিন কমে যাওয়া",
+"D": "রক্তের আয়তন বেড়ে যাওয়া"
+},
+"answer": "C",
+"explanation": "Anemia is characterized by a decrease in the amount of red blood cells or hemoglobin.",
+"subject": "Biology"
+},
+{
+"question": "Identify the noun in 'The truth shall prevail.'",
+"options": {
+"A": "truth",
+"B": "shall",
+"C": "prevail",
+"D": "the"
+},
+"answer": "A",
+"explanation": "'Truth' is an abstract noun in this sentence.",
+"subject": "English"
+},
+{
+"question": "জলের বিশুদ্ধতা পরীক্ষা করা হয় কোনটির উপস্থিতিতে?",
+"options": {
+"A": "CO2",
+"B": "O2",
+"C": "BOD/DO",
+"D": "N2"
+},
+"answer": "C",
+"explanation": "Biological Oxygen Demand (BOD) and Dissolved Oxygen (DO) are key measures of water quality.",
+"subject": "Chemistry"
+},
+{
+"question": "নিচের কোন বলটি সবচেয়ে দুর্বল?",
+"options": {
+"A": "নিউক্লিয় বল",
+"B": "তড়িৎচুম্বকীয় বল",
+"C": "মহাকর্ষ বল",
+"D": "সবল নিউক্লিয় বল"
+},
+"answer": "C",
+"explanation": "Gravity is the weakest of the four fundamental forces of nature.",
+"subject": "Physics"
+},
+{
+"question": "মানুষের হৃৎপিন্ডের প্রকোষ্ঠ কয়টি?",
+"options": {
+"A": "২টি",
+"B": "৩টি",
+"C": "৪টি",
+"D": "৫টি"
+},
+"answer": "C",
+"explanation": "The human heart has four chambers: two atria and two ventricles.",
+"subject": "Biology"
+},
+{
+"question": "A person who writes poems is a-",
+"options": {
+"A": "Novelist",
+"B": "Dramatist",
+"C": "Poet",
+"D": "Editor"
+},
+"answer": "C",
+"explanation": "A person who writes poetry is called a poet.",
+"subject": "English"
+},
+{
+"question": "কোন গ্যাসটি দহনে সাহায্য করে?",
+"options": {
+"A": "কার্বন ডাই অক্সাইড",
+"B": "নাইট্রোজেন",
+"C": "অক্সিজেন",
+"D": "হাইড্রোজেন"
+},
+"answer": "C",
+"explanation": "Oxygen is necessary for combustion but it is not flammable itself.",
+"subject": "Chemistry"
+},
+{
+"question": "এক হর্সপাওয়ার (HP) সমান কত ওয়াট?",
+"options": {
+"A": "৫০০ ওয়াট",
+"B": "৭৪৬ ওয়াট",
+"C": "১০০০ ওয়াট",
+"D": "৬৪০ ওয়াট"
+},
+"answer": "B",
+"explanation": "1 HP = 746 Watts.",
+"subject": "Physics"
+},
+{
+"question": "সৌরজগতের সবচেয়ে বড় গ্রহ কোনটি?",
+"options": {
+"A": "পৃথিবী",
+"B": "বৃহস্পতি",
+"C": "মঙ্গল",
+"D": "শনি"
+},
+"answer": "B",
+"explanation": "Jupiter is the largest planet in our solar system.",
+"subject": "Physics"
+},
+{
+"question": "ইনসুলিন কোন অঙ্গ থেকে নিঃসৃত হয়?",
+"options": {
+"A": "যকৃৎ",
+"B": "অগ্ন্যাশয়",
+"C": "বৃক্ক",
+"D": "প্লীহা"
+},
+"answer": "B",
+"explanation": "Insulin is secreted by the islets of Langerhans in the pancreas.",
+"subject": "Biology"
+},
+{
+"question": "The baby is crying ___ hunger.",
+"options": {
+"A": "with",
+"B": "of",
+"C": "for",
+"D": "from"
+},
+"answer": "C",
+"explanation": "'For' is used here to indicate the reason.",
+"subject": "English"
+},
+{
+"question": "প্লাস্টার অফ প্যারিস-এর সংকেত কি?",
+"options": {
+"A": "CaSO4.2H2O",
+"B": "CaSO4.1/2H2O",
+"C": "CaCO3",
+"D": "CaO"
+},
+"answer": "B",
+"explanation": "Plaster of Paris is calcium sulfate hemihydrate.",
+"subject": "Chemistry"
+},
+{
+"question": "শব্দের তীব্রতা মাপার একক কি?",
+"options": {
+"A": "হার্টজ",
+"B": "ডেসিবেল",
+"C": "মিটার",
+"D": "সেকেন্ড"
+},
+"answer": "B",
+"explanation": "Decibel (dB) is the unit used to measure the intensity of sound.",
+"subject": "Physics"
+},
+{
+"question": "উদ্ভিদের বংশবৃদ্ধির জন্য প্রধান অঙ্গ কোনটি?",
+"options": {
+"A": "মূল",
+"B": "পাতা",
+"C": "ফুল",
+"D": "কান্ড"
+},
+"answer": "C",
+"explanation": "The flower is the reproductive organ of a plant.",
+"subject": "Biology"
+},
+{
+"question": "He has been ill ___ Monday last.",
+"options": {
+"A": "for",
+"B": "from",
+"C": "since",
+"D": "at"
+},
+"answer": "C",
+"explanation": "'Since' is used to denote a specific point in time in the past.",
+"subject": "English"
+},
+{
+"question": "ইলেকট্রন কে আবিষ্কার করেন?",
+"options": {
+"A": "জে.জে. থমসন",
+"B": "রাদারফোর্ড",
+"C": "চ্যাডউইক",
+"D": "নীলস বোর"
+},
+"answer": "A",
+"explanation": "J.J. Thomson discovered the electron in 1897.",
+"subject": "Chemistry"
+},
+{
+"question": "পানির ঘনত্ব সবচেয়ে বেশি কত তাপমাত্রায়?",
+"options": {
+"A": "0°C",
+"B": "4°C",
+"C": "100°C",
+"D": "10°C"
+},
+"answer": "B",
+"explanation": "Water reaches its maximum density at 4 degrees Celsius.",
+"subject": "Physics"
+},
+{
+"question": "মানুষের লালারসে কোন এনজাইম থাকে?",
+"options": {
+"A": "পেপসিন",
+"B": "ট্রিপসিন",
+"C": "টায়ালিন",
+"D": "লাইপেজ"
+},
+"answer": "C",
+"explanation": "Saliva contains ptyalin (salivary amylase), which starts the breakdown of starch.",
+"subject": "Biology"
+},
+{
+"question": "What is the feminine gender of 'Duke'?",
+"options": {
+"A": "Dukess",
+"B": "Duchess",
+"C": "Queen",
+"D": "Princess"
+},
+"answer": "B",
+"explanation": "The feminine of Duke is Duchess.",
+"subject": "English"
+},
+{
+"question": "ব্রাস বা পিতল কোন ধাতুর সংকর?",
+"options": {
+"A": "তামা ও টিন",
+"B": "তামা ও দস্তা",
+"C": "লোহা ও নিকেল",
+"D": "সোনা ও রুপা"
+},
+"answer": "B",
+"explanation": "Brass is an alloy of copper and zinc.",
+"subject": "Chemistry"
+},
+{
+"question": "চাঁদে বস্তুর ওজন পৃথিবীর ওজনের কত ভাগ?",
+"options": {
+"A": "২ গুণ",
+"B": "৬ ভাগ",
+"C": "১০ ভাগ",
+"D": "সমান"
+},
+"answer": "B",
+"explanation": "The gravity on the moon is about 1/6th of the Earth's gravity.",
+"subject": "Physics"
+},
+{
+"question": "রক্তের জমাট বাঁধতে সাহায্য করে কোনটি?",
+"options": {
+"A": "লোহিত কণিকা",
+"B": "শ্বেত কণিকা",
+"C": "অনুচক্রিকা",
+"D": "প্লাজমা"
+},
+"answer": "C",
+"explanation": "Platelets (thrombocytes) are crucial for blood clotting.",
+"subject": "Biology"
+},
+{
+"question": "Choose the correctly spelled word.",
+"options": {
+"A": "Lieutanant",
+"B": "Lieutenant",
+"C": "Leiutenant",
+"D": "Luitenant"
+},
+"answer": "B",
+"explanation": "Lieutenant is the correct spelling.",
+"subject": "English"
+},
+{
+"question": "ক্ষারীয় দ্রবণে লিটমাস কাগজের রঙ কি হয়?",
+"options": {
+"A": "লাল",
+"B": "নীল",
+"C": "হলুদ",
+"D": "বর্ণহীন"
+},
+"answer": "B",
+"explanation": "Bases turn red litmus paper blue.",
+"subject": "Chemistry"
+},
+{
+"question": "সরল দোলকের সুতার দৈর্ঘ্য ৪ গুণ বাড়ালে দোলনকাল কত হবে?",
+"options": {
+"A": "২ গুণ",
+"B": "৪ গুণ",
+"C": "৮ গুণ",
+"D": "অর্ধেক"
+},
+"answer": "A",
+"explanation": "T is proportional to √L. If L is 4 times, T is √4 = 2 times.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি পতঙ্গভুক উদ্ভিদ?",
+"options": {
+"A": "সূর্যমুখী",
+"B": "কলস উদ্ভিদ",
+"C": "ক্যাকটাস",
+"D": "পদ্ম"
+},
+"answer": "B",
+"explanation": "Pitcher plants are insectivorous plants that trap insects.",
+"subject": "Biology"
+},
+{
+"question": "A person who knows many languages is-",
+"options": {
+"A": "Linguist",
+"B": "Polyglot",
+"C": "Scholar",
+"D": "Bilingual"
+},
+"answer": "B",
+"explanation": "A polyglot is a person who can speak or write in several languages.",
+"subject": "English"
+},
+{
+"question": "এলুমিনিয়ামের আকরিকের নাম কি?",
+"options": {
+"A": "ম্যাগনেটাইট",
+"B": "বক্সাইট",
+"C": "কাসাটেরাইট",
+"D": "গ্যালেনা"
+},
+"answer": "B",
+"explanation": "Bauxite is the primary ore of aluminum.",
+"subject": "Chemistry"
+},
+{
+"question": "প্রোটন কে আবিষ্কার করেন?",
+"options": {
+"A": "জে.জে. থমসন",
+"B": "রাদারফোর্ড",
+"C": "চ্যাডউইক",
+"D": "নীলস বোর"
+},
+"answer": "B",
+"explanation": "Ernest Rutherford is credited with the discovery of the proton.",
+"subject": "Chemistry"
+},
+{
+"question": "মানবদেহের বৃহত্তম গ্রন্থি কোনটি?",
+"options": {
+"A": "পিটুইটারি",
+"B": "যকৃৎ",
+"C": "থাইরয়েড",
+"D": "অগ্ন্যাশয়"
+},
+"answer": "B",
+"explanation": "The liver is the largest internal organ and the largest gland in the body.",
+"subject": "Biology"
+},
+{
+"question": "Give the antonym of 'Victory'.",
+"options": {
+"A": "Success",
+"B": "Defeat",
+"C": "Win",
+"D": "Glory"
+},
+"answer": "B",
+"explanation": "The opposite of victory is defeat.",
+"subject": "English"
+},
+{
+"question": "ভিনেগারের রাসায়নিক নাম কি?",
+"options": {
+"A": "ফর্মিক এসিড",
+"B": "এসিটিক এসিড",
+"C": "সালফিউরিক এসিড",
+"D": "অক্সালিক এসিড"
+},
+"answer": "B",
+"explanation": "Vinegar is a diluted solution of acetic acid.",
+"subject": "Chemistry"
+},
+{
+"question": "পারমাণবিক বোমার মূল নীতি কোনটি?",
+"options": {
+"A": "ফিশন",
+"B": "ফিউশন",
+"C": "দহন",
+"D": "প্রতিসরণ"
+},
+"answer": "A",
+"explanation": "Nuclear fission is the principle behind atomic bombs.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি অমেরুদন্ডী প্রাণী?",
+"options": {
+"A": "ব্যাঙ",
+"B": "সাপ",
+"C": "কেঁচো",
+"D": "পাখি"
+},
+"answer": "C",
+"explanation": "Earthworms are invertebrates, lacking a backbone.",
+"subject": "Biology"
+},
+{
+"question": "The study of plants is called-",
+"options": {
+"A": "Zoology",
+"B": "Botany",
+"C": "Biology",
+"D": "Physics"
+},
+"answer": "B",
+"explanation": "Botany is the scientific study of plants.",
+"subject": "Biology"
+},
+{
+"question": "পেনসিলের শীষ তৈরিতে কি ব্যবহৃত হয়?",
+"options": {
+"A": "সিলিকন",
+"B": "কয়লা",
+"C": "গ্রাফাইট",
+"D": "ফসফরাস"
+},
+"answer": "C",
+"explanation": "Graphite is mixed with clay to make pencil leads.",
+"subject": "Chemistry"
+},
+{
+"question": "শব্দ কোন মাধ্যমের ভিতর দিয়ে চলতে পারে না?",
+"options": {
+"A": "কঠিন",
+"B": "তরল",
+"C": "গ্যাস",
+"D": "শূন্যস্থান"
+},
+"answer": "D",
+"explanation": "Sound requires a medium to travel and cannot pass through a vacuum.",
+"subject": "Physics"
+},
+{
+"question": "DNA এর পূর্ণরূপ কি?",
+"options": {
+"A": "Deoxyribonucleic Acid",
+"B": "Diribonucleic Acid",
+"C": "Deoxyribo Acid",
+"D": "Data Nucleus Acid"
+},
+"answer": "A",
+"explanation": "DNA stands for Deoxyribonucleic Acid.",
+"subject": "Biology"
+},
+{
+"question": "What is the synonym of 'Huge'?",
+"options": {
+"A": "Tiny",
+"B": "Small",
+"C": "Gigantic",
+"D": "Narrow"
+},
+"answer": "C",
+"explanation": "Gigantic means very large, similar to huge.",
+"subject": "English"
+},
+{
+"question": "কোন মৌলটিকে 'Quick Silver' বলা হয়?",
+"options": {
+"A": "রূপা",
+"B": "পারদ",
+"C": "প্লাটিনাম",
+"D": "সোনা"
+},
+"answer": "B",
+"explanation": "Mercury is commonly known as quicksilver.",
+"subject": "Chemistry"
+},
+{
+"question": "তড়িৎ শক্তির বাণিজ্যিক একক কি?",
+"options": {
+"A": "ওয়াট",
+"B": "কিলোওয়াট-ঘন্টা",
+"C": "জুল",
+"D": "ভোল্ট"
+},
+"answer": "B",
+"explanation": "Kilowatt-hour (kWh) is the unit used for electricity bills.",
+"subject": "Physics"
+},
+{
+"question": "সালোকসংশ্লেষণ সবচেয়ে বেশি হয় কোন আলোতে?",
+"options": {
+"A": "সবুজ",
+"B": "নীল",
+"C": "লাল",
+"D": "হলুদ"
+},
+"answer": "C",
+"explanation": "Photosynthesis is most efficient in red and blue light.",
+"subject": "Biology"
+},
+{
+"question": "A group of lions is called a-",
+"options": {
+"A": "Flock",
+"B": "Herd",
+"C": "Pride",
+"D": "Swarm"
+},
+"answer": "C",
+"explanation": "A collective noun for lions is a pride.",
+"subject": "English"
+},
+{
+"question": "কাঁচ তৈরির প্রধান কাঁচামাল কোনটি?",
+"options": {
+"A": "জিপসাম",
+"B": "বালি",
+"C": "চুন",
+"D": "সোডা"
+},
+"answer": "B",
+"explanation": "Silica or sand is the primary ingredient in glass making.",
+"subject": "Chemistry"
+},
+{
+"question": "টেলিস্কোপ কে আবিষ্কার করেন?",
+"options": {
+"A": "নিউটন",
+"B": "গ্যালিলিও",
+"C": "আইনস্টাইন",
+"D": "কোপার্নিকাস"
+},
+"answer": "B",
+"explanation": "Galileo Galilei is famous for his improvements to the telescope and its use for astronomy.",
+"subject": "Physics"
+},
+{
+"question": "নিচের কোনটি একটি ভাইরাস জনিত রোগ নয়?",
+"options": {
+"A": "ডেঙ্গু",
+"B": "ইনফ্লুয়েঞ্জা",
+"C": "যক্ষ্মা",
+"D": "হাম"
+},
+"answer": "C",
+"explanation": "Tuberculosis (TB) is caused by a bacterium, not a virus.",
+"subject": "Biology"
+},
+{
+"question": "What is the past tense of 'Drink'?",
+"options": {
+"A": "Drinked",
+"B": "Drank",
+"C": "Drunk",
+"D": "Drinking"
+},
+"answer": "B",
+"explanation": "Drink (present), Drank (past), Drunk (past participle).",
+"subject": "English"
 }
 ]
   
