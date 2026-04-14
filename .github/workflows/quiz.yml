@@ -2,7 +2,7 @@ name: Daily Quiz Bot
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # 4:00 PM UTC = 10:00 PM Bangladesh (UTC+6)
+    - cron: '35 15 * * *'  # 3:35 PM UTC = 9:35 PM Bangladesh (UTC+6)
   workflow_dispatch:        # Also allows manual trigger from GitHub
 
 jobs:
