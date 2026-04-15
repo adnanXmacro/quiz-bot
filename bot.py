@@ -41,9 +41,11 @@ QUESTION_BANK = [
 # ────────────────────────────────────────────────────────────────────────────────
 
 
-# ─── GIST SCORE STORAGE ─────────────────────────────────────────────────────────
+# ─── GIST DATA STORAGE ──────────────────────────────────────────────────────────
+# Gist stores a single JSON with 3 keys:
+# { "scores": {...}, "asked": [...], "streaks": {...} }
 
-def _load_scores_sync() -> dict:
+def _load_data_sync() -> dict:
     try:
         req = urllib.request.Request(
             f"https://api.github.com/gists/{GIST_ID}",
@@ -51,15 +53,19 @@ def _load_scores_sync() -> dict:
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode())
-            return json.loads(data["files"]["scores.json"]["content"])
+            raw = json.loads(data["files"]["scores.json"]["content"])
+            # Migrate old format (plain scores dict) to new format
+            if "scores" not in raw:
+                return {"scores": raw, "asked": [], "streaks": {}}
+            return raw
     except Exception as e:
         print(f"Gist load error: {e}")
-        return {}
+        return {"scores": {}, "asked": [], "streaks": {}}
 
-def _save_scores_sync(scores: dict) -> bool:
+def _save_data_sync(data: dict) -> bool:
     try:
         payload = json.dumps({
-            "files": {"scores.json": {"content": json.dumps(scores, ensure_ascii=False, indent=2)}}
+            "files": {"scores.json": {"content": json.dumps(data, ensure_ascii=False, indent=2)}}
         }).encode("utf-8")
         req = urllib.request.Request(
             f"https://api.github.com/gists/{GIST_ID}",
@@ -68,33 +74,62 @@ def _save_scores_sync(scores: dict) -> bool:
             method="PATCH"
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
-            print(f"Scores saved. Players: {len(scores)}")
+            print(f"Data saved. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
             return True
     except Exception as e:
         print(f"Gist save error: {e}")
         return False
 
-async def load_scores() -> dict:
+async def load_data() -> dict:
     if not GIST_TOKEN or not GIST_ID:
-        return {}
-    return await asyncio.get_event_loop().run_in_executor(executor, _load_scores_sync)
+        return {"scores": {}, "asked": [], "streaks": {}}
+    return await asyncio.get_event_loop().run_in_executor(executor, _load_data_sync)
 
-async def save_scores(scores: dict) -> bool:
+async def save_data(data: dict) -> bool:
     if not GIST_TOKEN or not GIST_ID:
         return False
-    return await asyncio.get_event_loop().run_in_executor(executor, _save_scores_sync, scores)
+    return await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, data)
+
+# Keep load_scores for backwards compat in views
+async def load_scores() -> dict:
+    data = await load_data()
+    return data.get("scores", {})
 
 async def update_score(user_id: str, username: str, correct: bool, points_to_add: int = 10) -> int:
-    scores = await load_scores()
+    data = await load_data()
+    scores = data.setdefault("scores", {})
+    streaks = data.setdefault("streaks", {})
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)).strftime("%Y-%m-%d")
+
     if user_id not in scores:
         scores[user_id] = {"username": username, "points": 0, "correct": 0, "total": 0}
+
     scores[user_id]["username"] = username
     scores[user_id]["total"] += 1
     if correct:
         scores[user_id]["points"] += points_to_add
         scores[user_id]["correct"] += 1
-    await save_scores(scores)
+
+    # Update streak
+    if user_id not in streaks:
+        streaks[user_id] = {"streak": 0, "last_date": ""}
+    s = streaks[user_id]
+    if s["last_date"] != today:
+        yesterday = (datetime.datetime.utcnow() + datetime.timedelta(hours=6) - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        if s["last_date"] == yesterday:
+            s["streak"] += 1
+        else:
+            s["streak"] = 1
+        s["last_date"] = today
+
+    await save_data(data)
     return scores[user_id]["points"]
+
+def get_streak_badge(streak: int) -> str:
+    if streak >= 14: return "🔥🔥🔥"
+    elif streak >= 7: return "🔥🔥"
+    elif streak >= 3: return "🔥"
+    return ""
 
 
 # ─── UI HELPERS ─────────────────────────────────────────────────────────────────
@@ -120,8 +155,9 @@ def get_rank(points: int) -> tuple:
     elif points >= 50:  return ("📚", "APPRENTICE", 0x57F287)
     return                     ("🌱", "ROOKIE",     0x99AAB5)
 
-def build_scoreboard_embed(scores: dict) -> discord.Embed:
+def build_scoreboard_embed(scores: dict, streaks: dict = None) -> discord.Embed:
     now_bd = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+    streaks = streaks or {}
 
     if not scores:
         embed = discord.Embed(
@@ -141,29 +177,48 @@ def build_scoreboard_embed(scores: dict) -> discord.Embed:
         timestamp=datetime.datetime.utcnow()
     )
 
-    # Top 3 as special fields
+    # Build ranks with tie handling
+    # Find discord_id for each score entry
+    id_map = {v["username"]: k for k, v in scores.items()}
+
     podium_icons = ["🥇", "🥈", "🥉"]
     podium_lines = []
-    for i, s in enumerate(sorted_scores[:3]):
+    rest_lines = []
+    rank = 0
+    prev_pts = None
+
+    for i, s in enumerate(sorted_scores[:10]):
+        if s["points"] != prev_pts:
+            rank = i + 1
+        prev_pts = s["points"]
+
         acc = round(100*s["correct"]/s["total"]) if s["total"] > 0 else 0
         badge, title, _ = get_rank(s["points"])
-        podium_lines.append(
-            f"{podium_icons[i]} **{s['username']}** {badge}\n"
-            f"　`{s['points']} pts`  ·  {acc}% accuracy  ·  {title}"
-        )
-    embed.description = "\n\n".join(podium_lines)
 
-    # Ranks 4-10
-    if len(sorted_scores) > 3:
-        rest_lines = []
-        for i, s in enumerate(sorted_scores[3:10], 4):
-            acc = round(100*s["correct"]/s["total"]) if s["total"] > 0 else 0
+        # Get streak
+        uid = id_map.get(s["username"], "")
+        streak = streaks.get(uid, {}).get("streak", 0)
+        streak_badge = get_streak_badge(streak)
+        streak_text = f"  {streak_badge} `{streak}d`" if streak >= 3 else ""
+
+        if rank <= 3:
+            icon = podium_icons[rank-1]
+            podium_lines.append(
+                f"{icon} **{s['username']}** {badge}{streak_text}\n"
+                f"　`{s['points']} pts`  ·  {acc}% accuracy  ·  {title}"
+            )
+        else:
             filled = round((s["points"]/max_pts)*10)
             bar = "▰"*filled + "▱"*(10-filled)
-            rest_lines.append(f"`{i:02d}`  {s['username'][:16]}  {bar}  `{s['points']}`")
+            rest_lines.append(
+                f"`{rank:02d}`  {s['username'][:16]}  {bar}  `{s['points']}`{streak_text}"
+            )
+
+    embed.description = "\n\n".join(podium_lines)
+
+    if rest_lines:
         embed.add_field(name="Others", value="\n".join(rest_lines), inline=False)
 
-    # Stats
     total_p = len(sorted_scores)
     total_a = sum(s["total"] for s in sorted_scores)
     avg_acc = round(sum(100*s["correct"]/s["total"] for s in sorted_scores if s["total"]>0)/max(total_p,1))
@@ -172,31 +227,51 @@ def build_scoreboard_embed(scores: dict) -> discord.Embed:
         value=f"`{total_p}` players  ·  `{total_a}` answers  ·  `{avg_acc}%` avg",
         inline=False
     )
-    embed.set_footer(text="💎 Elite 1000+  ·  👑 Legend 500+  ·  🔥 Champion 200+  ·  ⚡ Scholar 100+  ·  📚 Apprentice 50+")
+    embed.set_footer(text="🔥3d  🔥🔥7d  🔥🔥🔥14d streak  ·  💎1000  👑500  🔥200  ⚡100  📚50")
     return embed
 
 
 # ─── QUESTION PICKER ────────────────────────────────────────────────────────────
 
-def pick_questions(count: int) -> list:
+async def pick_questions_smart(count: int) -> list:
+    """Pick questions avoiding recently asked ones, stored in Gist."""
+    data = await load_data()
+    asked = set(data.get("asked", []))
+
+    # Load pool
     if os.path.exists("questions.json"):
         try:
             with open("questions.json", "r", encoding="utf-8") as f:
-                external = json.load(f)
-            if external:
-                for q in external:
-                    q.setdefault("type", "mcq")
-                    q.setdefault("subject", "General")
-                print(f"Loaded {len(external)} questions from questions.json")
-                pool = external.copy()
-                random.shuffle(pool)
-                return pool[:count]
+                pool = json.load(f)
+            for q in pool:
+                q.setdefault("type", "mcq")
+                q.setdefault("subject", "General")
+            print(f"Loaded {len(pool)} questions from questions.json")
         except Exception as e:
             print(f"Failed to load questions.json: {e}, using built-in bank")
-    pool = QUESTION_BANK.copy()
-    random.shuffle(pool)
-    # Fix: ensure we never return more than available
-    return pool[:min(count, len(pool))]
+            pool = QUESTION_BANK.copy()
+    else:
+        pool = QUESTION_BANK.copy()
+
+    # Filter out already asked questions
+    fresh = [q for q in pool if q["question"] not in asked]
+    print(f"Fresh questions available: {len(fresh)} / {len(pool)}")
+
+    # If not enough fresh questions, reset asked history
+    if len(fresh) < count:
+        print("Resetting asked question history — full cycle complete!")
+        asked = set()
+        fresh = pool.copy()
+        data["asked"] = []
+
+    random.shuffle(fresh)
+    selected = fresh[:min(count, len(fresh))]
+
+    # Save newly asked questions back to Gist
+    data["asked"] = list(asked | {q["question"] for q in selected})
+    await save_data(data)
+
+    return selected
 
 
 # ─── DISCORD VIEWS ──────────────────────────────────────────────────────────────
@@ -258,6 +333,12 @@ class MCQView(discord.ui.View):
                 badge, rank_title, rank_color = get_rank(new_points)
                 expiry_str = (now + datetime.timedelta(minutes=PERSONAL_TIMER_MIN)).strftime("%H:%M UTC")
 
+                # Get streak
+                data = await load_data()
+                streak = data.get("streaks", {}).get(user_id, {}).get("streak", 0)
+                streak_badge = get_streak_badge(streak)
+                streak_text = f"  {streak_badge} {streak}-day streak" if streak >= 3 else ""
+
                 if is_correct:
                     e = discord.Embed(color=0x57F287)
                     e.add_field(
@@ -269,7 +350,7 @@ class MCQView(discord.ui.View):
                         e.add_field(name="💡 Explanation", value=explanation, inline=False)
                     e.add_field(
                         name="Score",
-                        value=f"`+10 pts` → **{new_points} pts total**  ·  {badge} {rank_title}",
+                        value=f"`+10 pts` → **{new_points} pts total**  ·  {badge} {rank_title}{streak_text}",
                         inline=False
                     )
                 else:
@@ -288,7 +369,7 @@ class MCQView(discord.ui.View):
                         e.add_field(name="💡 Explanation", value=explanation, inline=False)
                     e.add_field(
                         name="Score",
-                        value=f"**{new_points} pts total**  ·  {badge} {rank_title}",
+                        value=f"**{new_points} pts total**  ·  {badge} {rank_title}{streak_text}",
                         inline=False
                     )
                 e.set_footer(text=f"Your window closes at {expiry_str}  ·  {PERSONAL_TIMER_MIN} min per session")
@@ -375,7 +456,7 @@ async def run_quiz_session(channel: discord.TextChannel):
     await channel.send(embed=announce)
     await asyncio.sleep(1.5)
 
-    questions = pick_questions(QUESTIONS_PER_SESSION)
+    questions = await pick_questions_smart(QUESTIONS_PER_SESSION)
     print(f"Posting {len(questions)} questions")
 
     for i, q in enumerate(questions, 1):
@@ -413,8 +494,10 @@ async def run_quiz_session(channel: discord.TextChannel):
 
 
 async def post_scoreboard(channel: discord.TextChannel):
-    scores = await load_scores()
-    embed = build_scoreboard_embed(scores)
+    data = await load_data()
+    scores = data.get("scores", {})
+    streaks = data.get("streaks", {})
+    embed = build_scoreboard_embed(scores, streaks)
     await channel.send(embed=embed)
 
 
