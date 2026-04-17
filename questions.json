@@ -3461,8 +3461,1209 @@
 "answer": "B",
 "explanation": "Drink (present), Drank (past), Drunk (past participle).",
 "subject": "English"
-}
+},
+ {
+    "question": "নিচের কোনটি ফসফোলিপিড?",
+    "options": {
+      "A": "সুবেরিন",
+      "B": "টারপিন",
+      "C": "কিউটিন",
+      "D": "লেসিথিন"
+    },
+    "answer": "D",
+    "explanation": "লেসিথিন একটি গুরুত্বপূর্ণ ফসফোলিপিড যা কোষঝিল্লির গাঠনিক উপাদান হিসেবে কাজ করে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটিতে কুঁড়ি সৃষ্টি (budding) হয়?",
+    "options": {
+      "A": "Hydra",
+      "B": "Hibiscus rosa-sinensis",
+      "C": "Rose",
+      "D": "Lemon"
+    },
+    "answer": "A",
+    "explanation": "হাইড্রা সাধারণত অযৌন জনন প্রক্রিয়ায় মুকুলোদগম বা কুঁড়ি সৃষ্টির মাধ্যমে বংশবৃদ্ধি করে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "ঘাসফড়িং এর রক্ত কণিকার নাম কি?",
+    "options": {
+      "A": "Haemocyte",
+      "B": "Thrombocyte",
+      "C": "Leukocyte",
+      "D": "Erythrocyte"
+    },
+    "answer": "A",
+    "explanation": "ঘাসফড়িং বা পতঙ্গদের বর্ণহীন রক্তকণিকাকে হিমোসাইট বলা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "প্রশ্বাস বায়ুতে কার্বন ডাই অক্সাইড ($CO_{2}$) এর পরিমাণ কত?",
+    "options": {
+      "A": "0.04%",
+      "B": "5.2%",
+      "C": "13.7%",
+      "D": "20.0%"
+    },
+    "answer": "A",
+    "explanation": "প্রশ্বাস বায়ুতে $CO_{2}$ এর পরিমাণ বায়ুমণ্ডলের স্বাভাবিক ঘনত্বের সমান অর্থাৎ প্রায় ০.০৪%। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন কোষ ম্যাক্রোফেজে (macrophages) রূপান্তরিত হয়?",
+    "options": {
+      "A": "Basophil",
+      "B": "Lymphocyte",
+      "C": "Eosinophil",
+      "D": "Monocyte"
+    },
+    "answer": "D",
+    "explanation": "রক্তের মনোসাইট কোষগুলো টিস্যুতে প্রবেশ করে আকারে বড় হয় এবং ম্যাক্রোফেজে রূপান্তরিত হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "প্রাণিজগতের বৃহত্তম Phylum কোনটি?",
+    "options": {
+      "A": "Arthropoda",
+      "B": "Porifera",
+      "C": "Mollusca",
+      "D": "Annelida"
+    },
+    "answer": "A",
+    "explanation": "আর্থ্রোপোডা বা সন্ধিপদী প্রাণী পর্বটি প্রাণিজগতের বৃহত্তম পর্ব। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোনটি ভাইরাসের বংশবৃদ্ধিতে বাধা দেয়?",
+    "options": {
+      "A": "Defensin",
+      "B": "Complement",
+      "C": "Lactorine",
+      "D": "Interferon"
+    },
+    "answer": "D",
+    "explanation": "ইন্টারফেরন হলো এক ধরণের প্রোটিন যা ভাইরাস আক্রান্ত কোষ থেকে নিঃসৃত হয়ে সুস্থ কোষকে ভাইরাসের সংক্রমণ থেকে রক্ষা করে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন অক্সাইড পানিতে মিশালে সবচেয়ে বেশী অম্লীয় দ্রবণ তৈরি করে?",
+    "options": {
+      "A": "CO",
+      "B": "CO_{2}",
+      "C": "P_{2}O_{5}",
+      "D": "SiO_{2}"
+    },
+    "answer": "C",
+    "explanation": "$P_{2}O_{5}$ পানির সাথে বিক্রিয়া করে শক্তিশালী অর্থোফসফরিক এসিড তৈরি করে যা অন্যগুলোর তুলনায় বেশি অম্লীয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি এসি-কে ডিসি-তে রূপান্তরিত করে?",
+    "options": {
+      "A": "ট্রানজিস্টর (Transistor)",
+      "B": "অ্যামিটার (Ammeter)",
+      "C": "ডায়োড (Diode)",
+      "D": "ভোল্টমিটার (Voltmeter)"
+    },
+    "answer": "C",
+    "explanation": "ডায়োড রেকটিফায়ার হিসেবে কাজ করে অল্টারনেটিং কারেন্টকে ডাইরেক্ট কারেন্টে রূপান্তর করে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোন দ্রবণের pH সর্বাধিক?",
+    "options": {
+      "A": "0.01 M H_{2}SO_{4}",
+      "B": "0.01 M H_{2}CO_{3}",
+      "C": "0.01 M HCl",
+      "D": "0.01 M HNO_{3}"
+    },
+    "answer": "B",
+    "explanation": "মৃদু এসিডের বিয়োজন কম হওয়ায় এর $H^{+}$ আয়ন ঘনত্ব কম থাকে এবং pH এর মান বেশি হয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which pair of words is synonymous?",
+    "options": {
+      "A": "Acclimatize and Accustom",
+      "B": "Philanthropic and Pessimistic",
+      "C": "Clutter and Consistent",
+      "D": "Apartheid and Apprehend"
+    },
+    "answer": "A",
+    "explanation": "Acclimatize and Accustom both mean to get used to a new environment or situation. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "স্বাধীনতার পর মুক্তিযুদ্ধের প্রথম স্থাপত্য কোনটি?",
+    "options": {
+      "A": "অপরাজেয় বাংলা",
+      "B": "জাগ্রত চৌরঙ্গী",
+      "C": "মোদের গরব",
+      "D": "সাবাস বাংলাদেশ"
+    },
+    "answer": "B",
+    "explanation": "১৯৭৩ সালে নির্মিত গাজীপুরের 'জাগ্রত চৌরঙ্গী' মুক্তিযুদ্ধের প্রথম ভাস্কর্য। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "কম তাপমাত্রায় কোনটি সংরক্ষণ করা যায়?",
+    "options": {
+      "A": "Seed",
+      "B": "Flower",
+      "C": "Rhizome",
+      "D": "Bulb"
+    },
+    "answer": "A",
+    "explanation": "বীজ ব্যাংক বা ক্রায়োপ্রিজারভেশনের মাধ্যমে কম তাপমাত্রায় বীজ দীর্ঘদিন সংরক্ষণ করা সম্ভব। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "শিশিরাঙ্ক বলতে কি বুঝায়?",
+    "options": {
+      "A": "আর্দ্রতা",
+      "B": "আপেক্ষিক আর্দ্রতা",
+      "C": "তাপ",
+      "D": "তাপমাত্রা"
+    },
+    "answer": "D",
+    "explanation": "যে তাপমাত্রায় বায়ু জলীয় বাষ্প দ্বারা সম্পৃক্ত হয় তাকে শিশিরাঙ্ক বলে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "কোনটি attenuated টিকা?",
+    "options": {
+      "A": "Diphtheria vaccine",
+      "B": "Tetanus vaccine",
+      "C": "BCG vaccine",
+      "D": "Hepatitis B vaccine"
+    },
+    "answer": "C",
+    "explanation": "BCG হলো একটি জীবন্ত কিন্তু দুর্বল করা (attenuated) ব্যাকটেরিয়া সমৃদ্ধ টিকা। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "বস্তুর কোন বৈশিষ্ট্যটি পাইরোমিটারে ব্যবহৃত হয়?",
+    "options": {
+      "A": "দৈর্ঘ্য সম্প্রসারণ বৈশিষ্ট্য",
+      "B": "বৈদ্যুতিক বৈশিষ্ট্য",
+      "C": "বিকিরণ বৈশিষ্ট্য",
+      "D": "অপটিক্যাল বৈশিষ্ট্য"
+    },
+    "answer": "C",
+    "explanation": "পাইরোমিটার বিকিরণ তাপমাত্রার নীতির ওপর ভিত্তি করে কাজ করে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "Synonym of 'unwavering' is-",
+    "options": {
+      "A": "Steady",
+      "B": "Urgent",
+      "C": "Unreliable",
+      "D": "Flexible"
+    },
+    "answer": "A",
+    "explanation": "'Unwavering' means steady or firm, not changing or becoming weaker. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "লিভারের কোন লোবটি পিত্তথলির সাথে সংযুক্ত থাকে?",
+    "options": {
+      "A": "Caudate lobe",
+      "B": "Right lobe",
+      "C": "Left lobe",
+      "D": "Quadrate lobe"
+    },
+    "answer": "B",
+    "explanation": "যকৃতের ডান খণ্ডাংশের (Right lobe) নিচে পিত্তথলি অবস্থিত থাকে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "প্রতিক্রিয়ার অ্যাক্টিভেশন শক্তি নির্ধারণে কোনটি কার্যত সহায়ক হবে?",
+    "options": {
+      "A": "Concentrations of reactant",
+      "B": "Nature of reactant",
+      "C": "Temperature",
+      "D": "Collision rate"
+    },
+    "answer": "C",
+    "explanation": "অ্যারেনিয়াস সমীকরণ অনুযায়ী তাপমাত্রা পরিবর্তনের মাধ্যমে সক্রিয়ণ শক্তি (Activation energy) গণনা করা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "100 ডিগ্রি সেলসিয়াসে পানি বাষ্পের চাপ হয়-",
+    "options": {
+      "A": "55 mm Hg",
+      "B": "760 mm Hg",
+      "C": "1489 mm Hg",
+      "D": "355 mm Hg"
+    },
+    "answer": "B",
+    "explanation": "পানির স্ফুটনাঙ্কে (১০০°C) এর বাষ্পচাপ বায়ুমণ্ডলীয় চাপের (৭৬০ mm Hg) সমান হয়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "ছত্রাক কোষ প্রাচীরের প্রধান উপাদান কোনটি?",
+    "options": {
+      "A": "Chitin",
+      "B": "Cellulose",
+      "C": "Starch",
+      "D": "Glycogen"
+    },
+    "answer": "A",
+    "explanation": "ছত্রাকের কোষপ্রাচীর কাইটিন নামক জটিল পলিস্যাকারাইড দিয়ে গঠিত। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি কম বিক্রিয়াশীল ধাতু?",
+    "options": {
+      "A": "Chromium",
+      "B": "Silver",
+      "C": "Platinum",
+      "D": "Gold"
+    },
+    "answer": "D",
+    "explanation": "ধাতুর সক্রিয়তা সিরিজে সোনা বা গোল্ড সবার নিচে থাকে, তাই এটি সবচেয়ে কম বিক্রিয়াশীল। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোনটি Exocrine গ্রন্থি নয়?",
+    "options": {
+      "A": "Salivary Gland",
+      "B": "Liver",
+      "C": "Pancreas",
+      "D": "Thyroid gland"
+    },
+    "answer": "D",
+    "explanation": "থাইরয়েড হলো একটি অন্তঃক্ষরা বা হরমোন নিঃসরণকারী অনাল গ্রন্থি। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "একটি বস্তুর ভর পৃথিবীতে ৭৫ কেজি। চাঁদে বস্তুটির ভর কি হবে?",
+    "options": {
+      "A": "14 kg",
+      "B": "280 kg",
+      "C": "75 kg",
+      "D": "70 kg"
+    },
+    "answer": "C",
+    "explanation": "ভর একটি ধ্রুব রাশি, স্থান পরিবর্তনের সাথে ওজনের পরিবর্তন হলেও ভরের কোনো পরিবর্তন হয় না। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "Fill in the blank: \"____ the word in the dictionary.\"",
+    "options": {
+      "A": "Look to",
+      "B": "Look up",
+      "C": "Look over",
+      "D": "Look after"
+    },
+    "answer": "B",
+    "explanation": "'Look up' means to search for information in a reference book or dictionary. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "বল এবং স্থানচ্যুতকরণের মধ্যের কোণটি যদি 0° হয়, তবে কাজের পরিমাণ হবে-",
+    "options": {
+      "A": "অসীম",
+      "B": "সর্বোচ্চ",
+      "C": "শূন্য",
+      "D": "ন্যূনতম"
+    },
+    "answer": "B",
+    "explanation": "$W = Fs \\cos(0^{\\circ}) = Fs$; যেহেতু $\\cos(0^{\\circ})$ এর মান ১, তাই কাজের পরিমাণ সর্বোচ্চ হয়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "500 ml 0.5 M NaOH দ্রবণ থেকে কত ml 0.1 M NaOH দ্রবণ প্রস্তুত করা যায়?",
+    "options": {
+      "A": "1350 ml",
+      "B": "2000 ml",
+      "C": "2500 ml",
+      "D": "5000 ml"
+    },
+    "answer": "C",
+    "explanation": "$V_{1}M_{1} = V_{2}M_{2}$ সূত্র ব্যবহার করে, $500 \\times 0.5 = V_{2} \\times 0.1 \\implies V_{2} = 2500$ ml। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "I have not heard from him ____.",
+    "options": {
+      "A": "long since",
+      "B": "for a long time",
+      "C": "for long",
+      "D": "since long"
+    },
+    "answer": "B",
+    "explanation": "Present Perfect Tense-এ সময়ের ব্যাপ্তি বুঝাতে 'for a long time' ব্যবহৃত হয়। [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "কোন পদ্ধতিতে হাইড্রা লম্বা দূরত্ব অতিক্রম করে?",
+    "options": {
+      "A": "ডিগবাজী",
+      "B": "সাঁতার",
+      "C": "গ্লাইডিং",
+      "D": "হামাগুড়ি"
+    },
+    "answer": "A",
+    "explanation": "লুপিং বা ডিগবাজি (Somersaulting) হাইড্রার দ্রুততম চলন পদ্ধতি। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন রশ্মির সর্বাধিক অনুপ্রবেশ ক্ষমতা রয়েছে?",
+    "options": {
+      "A": "Gamma",
+      "B": "X-ray",
+      "C": "Alpha",
+      "D": "Beta"
+    },
+    "answer": "A",
+    "explanation": "গামা রশ্মির তরঙ্গদৈর্ঘ্য অত্যন্ত ক্ষুদ্র হওয়ায় এর ভেদন বা অনুপ্রবেশ ক্ষমতা সর্বোচ্চ। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "শ্যাওলাগুলোর (algae) অযৌন প্রজনন কোনটি দ্বারা সম্পন্ন হয়?",
+    "options": {
+      "A": "Tuber",
+      "B": "Fragmentation",
+      "C": "Rhizoid",
+      "D": "Spore"
+    },
+    "answer": "D",
+    "explanation": "শৈবাল প্রধানত বিভিন্ন ধরণের স্পোর বা রেণুর মাধ্যমে অযৌন জনন সম্পন্ন করে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "Masculine gender for \"bee\" is-",
+    "options": {
+      "A": "Drake",
+      "B": "Doe",
+      "C": "Dam",
+      "D": "Drone"
+    },
+    "answer": "D",
+    "explanation": "The male bee is called a drone, and the female is the queen or worker bee. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "কোন প্রোটিন পানিতে অদ্রবণীয়?",
+    "options": {
+      "A": "প্রোটামিন (Protamine)",
+      "B": "অ্যালবুমিন (Albumin)",
+      "C": "হিস্টোন (Histone)",
+      "D": "গুটেলিন (Glutelin)"
+    },
+    "answer": "D",
+    "explanation": "গুটেলিন সাধারণ পানিতে অদ্রবণীয় কিন্তু লঘু এসিড বা ক্ষারে দ্রবণীয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোনটি হাড়ের সাথে পেশী সংযুক্ত করে?",
+    "options": {
+      "A": "Synovium",
+      "B": "Myofibril",
+      "C": "Ligament",
+      "D": "Tendon"
+    },
+    "answer": "D",
+    "explanation": "টেনডন হলো এক ধরণের তন্তুময় টিস্যু যা পেশীকে হাড়ের সাথে যুক্ত রাখে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটির গলনাঙ্ক (melting point) সব চাইতে কম?",
+    "options": {
+      "A": "AgBr",
+      "B": "AgCl",
+      "C": "AgI",
+      "D": "AgF"
+    },
+    "answer": "C",
+    "explanation": "ফাজানের নীতি অনুযায়ী অ্যানায়নের আকার বড় হলে পোলারায়ন বেশি হয় এবং সমযোজী বৈশিষ্ট্য বৃদ্ধি পাওয়ায় গলনাঙ্ক কমে যায়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "ডাইনামাইট তৈরি করতে নিচের কোনটি ব্যবহৃত হয়?",
+    "options": {
+      "A": "Nitrobenzene",
+      "B": "Nitrophenol",
+      "C": "Nitroglycerine",
+      "D": "Nitrotoluene"
+    },
+    "answer": "C",
+    "explanation": "নাইট্রোগ্লিসারিন একটি অত্যন্ত শক্তিশালী বিস্ফোরক যা ডাইনামাইট তৈরির মূল উপাদান। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোন দেশ প্রথম বাংলাদেশকে স্বীকৃতি দেয়?",
+    "options": {
+      "A": "ভারত",
+      "B": "নেপাল",
+      "C": "ভূটান",
+      "D": "যুক্তরাজ্য"
+    },
+    "answer": "C",
+    "explanation": "৬ ডিসেম্বর ১৯৭১ সালে ভুটান প্রথম দেশ হিসেবে বাংলাদেশকে স্বীকৃতি প্রদান করে। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "ভ্রূণে লোহিত কণিকাসমূহ নিম্নের কোথায় তৈরি হয়?",
+    "options": {
+      "A": "প্লীহা",
+      "B": "থাইমাস",
+      "C": "অস্থিমজ্জা",
+      "D": "অগ্ন্যাশয়"
+    },
+    "answer": "A",
+    "explanation": "ভ্রূণাবস্থায় যকৃত ও প্লীহা থেকে লোহিত রক্তকণিকা উৎপন্ন হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "Are you an early riser? Here \"early\" is-",
+    "options": {
+      "A": "Verb",
+      "B": "Adverb",
+      "C": "Noun",
+      "D": "Adjective"
+    },
+    "answer": "D",
+    "explanation": "Here 'early' modifies the noun 'riser', making it an adjective. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "কোষের কোথায় ক্রেবস্ চক্র (Krebs Cycle) সংঘটিত হয়?",
+    "options": {
+      "A": "Chloroplast",
+      "B": "Ribosome",
+      "C": "Mitochondria",
+      "D": "Cytoplasm"
+    },
+    "answer": "C",
+    "explanation": "মাইটোকন্ড্রিয়ার ম্যাট্রিক্সে সবাত শসনের অত্যন্ত গুরুত্বপূর্ণ পর্যায় ক্রেবস চক্র ঘটে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "মুক্তিযুদ্ধকালে পাকিস্তানি জাহাজের উপর মুক্তিযোদ্ধাদের অভিযানের নাম কি ছিল?",
+    "options": {
+      "A": "অপারেশন ইভনিং লাইট",
+      "B": "অপারেশন সার্চলাইট",
+      "C": "অপারেশন জ্যাকপট",
+      "D": "অপারেশন মেঘদূত"
+    },
+    "answer": "C",
+    "explanation": "অপারেশন জ্যাকপট ছিল নৌ-কমান্ডোদের দ্বারা পরিচালিত একটি অত্যন্ত সফল গেরিলা অভিযান। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "কোনো সরল দোলনের জন্য, কৌণিক স্থানচ্যুতি নিচের কোনটির চেয়ে বেশি হতে পারে না?",
+    "options": {
+      "A": "5°",
+      "B": "6°",
+      "C": "3°",
+      "D": "4°"
+    },
+    "answer": "D",
+    "explanation": "সরল দোলকের গতি সরলরৈখিক হওয়ার জন্য কৌণিক বিস্তার ৪ ডিগ্রীর মধ্যে থাকতে হয়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "পৃথিবীর ভূত্বকে সবচেয়ে বেশী পরিমাণে বিদ্যমান ধাতুটি হল-",
+    "options": {
+      "A": "Al",
+      "B": "Fe",
+      "C": "Na",
+      "D": "Cu"
+    },
+    "answer": "A",
+    "explanation": "অ্যালুমিনিয়াম ভূত্বকের ওজনের প্রায় ৮.১% গঠন করে, যা অন্য যে কোনো ধাতুর চেয়ে বেশি। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "স্থির তাপমাত্রার ক্ষেত্রে সমস্ত গ্যাসের অণুগুলির জন্য কোন প্যারামিটার ধ্রুব (Constant)?",
+    "options": {
+      "A": "গতিবেগ",
+      "B": "ভর",
+      "C": "গতিবেগ শক্তি",
+      "D": "আয়তন"
+    },
+    "answer": "C",
+    "explanation": "গ্যাসের গতিবিদ্যার তত্ত্ব অনুযায়ী, গড় গতিশক্তি কেবল পরম তাপমাত্রার সমানুপাতিক। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "0.1 M HCl দ্রবণ প্রস্তুতের জন্য ঘনকৃত HCl পরিমাপ করতে কোনটি ব্যবহৃত হয়?",
+    "options": {
+      "A": "Wash bottle",
+      "B": "Measuring Cylinder",
+      "C": "Volumetric flask",
+      "D": "Pipette"
+    },
+    "answer": "D",
+    "explanation": "নির্ভুল আয়তন পরিমাপের জন্য ল্যাবরেটরিতে পিপেট ব্যবহার করা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "পদ্মা সেতুর দৈর্ঘ্য কত?",
+    "options": {
+      "A": "৫.৯৫ কিলোমিটার",
+      "B": "৬.০০ কিলোমিটার",
+      "C": "৬.৪০ কিলোমিটার",
+      "D": "৬.১৫ কিলোমিটার"
+    },
+    "answer": "D",
+    "explanation": "পদ্মা সেতুর মূল কাঠামোর মোট দৈর্ঘ্য ৬.১৫ কিলোমিটার। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "নিউট্রন তারকা সংকুচিত হয়ে কি হয়?",
+    "options": {
+      "A": "রক্তিম দৈত্য",
+      "B": "শ্বেতবামন",
+      "C": "সুপারনোভা",
+      "D": "কৃষ্ণ গহ্বর"
+    },
+    "answer": "D",
+    "explanation": "অত্যন্ত ভারী নক্ষত্রের মৃত্যুর পর তা সংকুচিত হয়ে ব্ল্যাক হোল বা কৃষ্ণ গহ্বরে পরিণত হতে পারে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "কোনটি আমিষ পরিপাককারী (digesting) এনজাইম?",
+    "options": {
+      "A": "Lactase",
+      "B": "Pepsin",
+      "C": "Lipase",
+      "D": "Isomaltase"
+    },
+    "answer": "B",
+    "explanation": "পাকস্থলী থেকে নিঃসৃত পেপসিন এনজাইম প্রোটিন বা আমিষকে ভেঙে প্রোটিওজ ও পেপটোন তৈরি করে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন পরমাণুর d অরবিটালে ইলেকট্রন আছে?",
+    "options": {
+      "A": "Ar",
+      "B": "Sc",
+      "C": "K",
+      "D": "Ca"
+    },
+    "answer": "B",
+    "explanation": "স্ক্যান্ডিয়াম ($Sc_{21}$) এর ইলেকট্রন বিন্যাস $[Ar] 3d^{1} 4s^{2}$। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "A good teacher discovers the treasure hidden ____ each student.",
+    "options": {
+      "A": "with",
+      "B": "within",
+      "C": "in",
+      "D": "inside"
+    },
+    "answer": "B",
+    "explanation": "'Within' implies being inside or in the inner part of someone. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "কোন এনজাইম অগ্ন্যাশয়ে নাই?",
+    "options": {
+      "A": "Maltase",
+      "B": "Amylase",
+      "C": "Ptyalin",
+      "D": "Trypsin"
+    },
+    "answer": "C",
+    "explanation": "টায়ালিন লালাগ্রন্থি থেকে নিঃসৃত হয়, অগ্ন্যাশয় থেকে নয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি পারমাণবিক ব্যাসের নিকটতম?",
+    "options": {
+      "A": "1*10^{-5} cm",
+      "B": "1*10^{-10} cm",
+      "C": "1*10^{-13} cm",
+      "D": "1*10^{-8} cm"
+    },
+    "answer": "D",
+    "explanation": "পরমাণুর ব্যাস সাধারণত $10^{-10}$ মিটার বা $10^{-8}$ সেন্টিমিটার অর্ডারের হয়ে থাকে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "মুক্তিযুদ্ধের সময় ১০ নং সেক্টর কোনটি ছিল?",
+    "options": {
+      "A": "নৌ-কমান্ডো",
+      "B": "রংপুর-ঠাকুরগাঁও",
+      "C": "বরিশাল-পটুয়াখালি",
+      "D": "টাঙ্গাইল-ময়মনসিংহ"
+    },
+    "answer": "A",
+    "explanation": "১০ নং সেক্টরটি ছিল নৌ-উইঙ্গ এবং এর কোনো নির্দিষ্ট আঞ্চলিক সীমা ছিল না। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "শুকনো (dry) H2 গ্যাসের চাপ কত হবে?",
+    "options": {
+      "A": "101.75 kPa",
+      "B": "105 kPa",
+      "C": "108.25 kPa",
+      "D": "101.325 kPa"
+    },
+    "answer": "D",
+    "explanation": "আদর্শ বায়ুমণ্ডলীয় চাপ ১০১.৩২৫ kPa। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "দুধে নিচের কোন disaccharide টি থাকে?",
+    "options": {
+      "A": "Maltose",
+      "B": "Sucrose",
+      "C": "Lactose",
+      "D": "Cellulose"
+    },
+    "answer": "C",
+    "explanation": "ল্যাকটোজ হলো দুধের প্রধান শর্করা যা গ্লুকোজ ও গ্যালাকটোজ দিয়ে গঠিত। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "ইউনেস্কো কোন্ তারিখে ২১ শে ফেব্রুয়ারীকে আন্তর্জাতিক মাতৃভাষা দিবস হিসেবে স্বীকৃতি দেয়?",
+    "options": {
+      "A": "২২ সেপ্টেম্বর ১৯৯৮",
+      "B": "১৭ নভেম্বর ১৯৯৯",
+      "C": "২৬ মার্চ ১৯৯৭",
+      "D": "২১ ফেব্রুয়ারী ২০০৪"
+    },
+    "answer": "B",
+    "explanation": "প্যারিসে ইউনেস্কোর ৩০তম সাধারণ অধিবেশনে ১৯৯৯ সালের ১৭ নভেম্বর এই স্বীকৃতি দেওয়া হয়। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "মানবদেহের রক্তে কোন বাফার দ্রবণ থাকে?",
+    "options": {
+      "A": "NaHCO_{3} and H_{2}CO_{3}",
+      "B": "NH_{4}Cl and NH_{4}OH",
+      "C": "CH_{3}COONa and CH_{3}COOH",
+      "D": "Na_{2}HPO_{4} and H_{3}PO_{4}"
+    },
+    "answer": "A",
+    "explanation": "রক্তের pH নিয়ন্ত্রণের জন্য বাইকার্বনেট বাফার সিস্টেম ($H_{2}CO_{3}/NaHCO_{3}$) প্রধান ভূমিকা রাখে। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "উদ্ভিদ দ্বারা কোন anion টি সবচেয়ে দ্রুত শোষিত হয়?",
+    "options": {
+      "A": "HCO_{3}^{-}",
+      "B": "SO_{4}^{2-}",
+      "C": "OH^{-}",
+      "D": "NO_{3}^{-}"
+    },
+    "answer": "D",
+    "explanation": "আয়ন শোষণের হার অনুযায়ী নাইট্রেট আয়ন সবচেয়ে দ্রুত এবং সালফেট আয়ন সবচেয়ে ধীরগতিতে শোষিত হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিম্নলিখিত কোন গ্যাস photochemical ধোঁয়ার (smog) জন্য দায়ী নয়?",
+    "options": {
+      "A": "NO_{2}",
+      "B": "CFC",
+      "C": "Hydrocarbon",
+      "D": "O_{3}"
+    },
+    "answer": "B",
+    "explanation": "সিএফসি মূলত ওজোন স্তর ক্ষয়ের জন্য দায়ী, কিন্তু স্মগ বা ধোঁয়াশার জন্য নয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which one of the following is antonym of 'Laud'?",
+    "options": {
+      "A": "Inept",
+      "B": "Abhor",
+      "C": "Latch",
+      "D": "Adore"
+    },
+    "answer": "B",
+    "explanation": "'Laud' means to praise, while 'Abhor' means to hate or regard with disgust. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "10 kg ভরের বস্তু যদি 12 ms^{-1} এ চলে, তবে এর ভরবেগ হবে-",
+    "options": {
+      "A": "120 kgms^{-1}",
+      "B": "10 kgms^{-1}",
+      "C": "12 kgms^{-1}",
+      "D": "1.2 kgms^{-1}"
+    },
+    "answer": "A",
+    "explanation": "ভরবেগ ($P$) = ভর ($m$) * বেগ ($v$) = $10 * 12 = 120$ kgms^{-1}। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "সাভার জাতীয় স্মৃতিসৌধ -এর স্থপতি কে?",
+    "options": {
+      "A": "সৈয়দ মঈনুল হোসেন",
+      "B": "মাজহারুল ইসলাম",
+      "C": "মৃণাল হক",
+      "D": "আবদুর রাজ্জাক"
+    },
+    "answer": "A",
+    "explanation": "স্থপতি সৈয়দ মঈনুল হোসেন স্মৃতিসৌধের সাতটি ফলকের মাধ্যমে ইতিহাসের পর্যায়গুলো ফুটিয়ে তুলেছেন। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "এক mol CH3OH- এ কতটি পরমাণু থাকে?",
+    "options": {
+      "A": "6",
+      "B": "12.0*10^{23}",
+      "C": "6.0*10^{23}",
+      "D": "3.6*10^{24}"
+    },
+    "answer": "D",
+    "explanation": "মিথানলে ৬টি পরমাণু আছে। মোট পরমাণু = $6 * 6.022 * 10^{23} \\approx 3.6 * 10^{24}$। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "সূর্যোদয়ের দিকে ১২ মিটার যাওয়ার পরে, এক ব্যক্তি উত্তর দিকে ৫ মিটার চলে গেল। তার স্থানচ্যুতি কি হবে?",
+    "options": {
+      "A": "17 m",
+      "B": "16.67 m",
+      "C": "17.67 m",
+      "D": "13 m"
+    },
+    "answer": "D",
+    "explanation": "পিথাগোরাসের উপপাদ্য অনুযায়ী স্থানচ্যুতি = $\\sqrt{12^{2} + 5^{2}} = \\sqrt{169} = 13$ m। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোনটি উত্তপ্ত লোহার উপস্থিতিতে অ্যাসিটিলিন দ্বারা উৎপাদিত হয়?",
+    "options": {
+      "A": "Neoprene",
+      "B": "Benzene",
+      "C": "Cyclohexane",
+      "D": "Ethane"
+    },
+    "answer": "B",
+    "explanation": "লোহার নল দিয়ে উত্তপ্ত করলে অ্যাসিটিলিনের তিন অণু পলিমারকরণ বিক্রিয়ায় বেনজিন তৈরি করে। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "একটি '200V-40W' বাল্বের মধ্য দিয়ে কি পরিমাণ তড়িৎ প্রবাহিত হবে?",
+    "options": {
+      "A": "0.05 A",
+      "B": "0.2 A",
+      "C": "0.5 A",
+      "D": "0.02 A"
+    },
+    "answer": "B",
+    "explanation": "$I = P / V = 40 / 200 = 0.2$ A। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "একমাত্র বিদেশী যিনি মুক্তিযোদ্ধাদের সাহায্য করার জন্য বীরপ্রতীক উপাধি পেয়েছেন-",
+    "options": {
+      "A": "ডেভিড নালিন",
+      "B": "রবিশংকর",
+      "C": "উইলিয়াম ওডারল্যান্ড",
+      "D": "অ্যান্দ্রে মালরো"
+    },
+    "answer": "C",
+    "explanation": "উইলিয়াম ওডারল্যান্ড ওলন্দাজ বংশোদ্ভূত অস্ট্রেলীয় নাগরিক ছিলেন যিনি সক্রিয়ভাবে যুদ্ধে অংশ নেন। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "ক্ষুদ্রান্ত্রের কোন স্তরে পানপাত্র সেল (Goblet cell) পাওয়া যায়?",
+    "options": {
+      "A": "Submucosa",
+      "B": "Serosa",
+      "C": "Muscularis mucosa",
+      "D": "Mucosa"
+    },
+    "answer": "D",
+    "explanation": "শ্লেষ্মা নিঃসরণকারী গবলেট কোষগুলো মিউকোসা স্তরের আবরণী কলায় অবস্থিত। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন তীব্রতার মাত্রাকে কানের শ্রবণসীমা (threshold of audibility) বলে?",
+    "options": {
+      "A": "1 dB",
+      "B": "10 dB",
+      "C": "2 dB",
+      "D": "0 dB"
+    },
+    "answer": "D",
+    "explanation": "শব্দের তীব্রতার মাত্রা ০ ডেসিবলকে মানুষের কানের শ্রবণসীমা ধরা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "গ্রোথ হরমোন কোথায় তৈরী হয়?",
+    "options": {
+      "A": "Thalamus",
+      "B": "Adrenal gland",
+      "C": "Pituitary gland",
+      "D": "Hypothalamus"
+    },
+    "answer": "C",
+    "explanation": "পিটুইটারি গ্রন্থির অগ্রভাগ থেকে সোমাটোট্রপিক বা গ্রোথ হরমোন উৎপন্ন হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "ধুলামেঘে (dust cloud) কত শতাংশ হাইড্রোজেন থাকে?",
+    "options": {
+      "A": "60%",
+      "B": "65%",
+      "C": "70%",
+      "D": "75%"
+    },
+    "answer": "D",
+    "explanation": "মহাজাগতিক ধূলিমেঘ বা নক্ষত্রের জন্মস্থানে হাইড্রোজেনের পরিমাণ প্রায় ৭৫ শতাংশ। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "The correct passive voice of \"Who taught you grammar?\" is-",
+    "options": {
+      "A": "By whom you taught grammar?",
+      "B": "By whom were you taught grammar?",
+      "C": "By whom was you taught grammar?",
+      "D": "By whom grammar was taught you?"
+    },
+    "answer": "B",
+    "explanation": "'Who' changes to 'By whom' and auxiliary verb 'were' is used for plural 'you' in past tense. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "সমবায় বন্ধনে (covalent bond) ইলেকট্রনগুলির জন্য নিচের কোন উপাদানটির সর্বাধিক আকর্ষণ আছে?",
+    "options": {
+      "A": "Br",
+      "B": "Se",
+      "C": "Ge",
+      "D": "As"
+    },
+    "answer": "A",
+    "explanation": "প্রদত্ত মৌলগুলোর মধ্যে ব্রোমিনের তড়িৎ ঋণাত্মকতা সর্বাধিক, তাই এটি শেয়ারকৃত ইলেকট্রনকে বেশি টানে। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "যদি কোন বস্তু ভূমির উপরে তোলা হয় কোন শক্তির বিপরীতে কাজটি করা হল?",
+    "options": {
+      "A": "তড়িৎ চুম্বকীয় শক্তি",
+      "B": "ঘর্ষণমূলক শক্তি",
+      "C": "মাধ্যাকর্ষণ শক্তি",
+      "D": "রাসায়নিক শক্তি"
+    },
+    "answer": "C",
+    "explanation": "ভূমি থেকে ওপরে তুললে অভিকর্ষজ বা মাধ্যাকর্ষণ বলের বিরুদ্ধে কাজ করে বিভব শক্তি সঞ্চয় করা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "Choose the correct spelling:",
+    "options": {
+      "A": "Sovreignty",
+      "B": "Sovereignty",
+      "C": "Soverenity",
+      "D": "Sovreinty"
+    },
+    "answer": "B",
+    "explanation": "The correct spelling is 'Sovereignty', which means supreme power or authority. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "ফুড প্রিজারভেটিভ হিসাবে ব্যবহৃত সাইট্রিক এসিডের pH কত?",
+    "options": {
+      "A": "3.14",
+      "B": "4.50",
+      "C": "3.01",
+      "D": "4.74"
+    },
+    "answer": "A",
+    "explanation": "সাইট্রিক এসিডের pH মান সাধারণত ৩.১৪ এর কাছাকাছি থাকে। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Alveolus থেকে অক্সিজেন রক্তে কিভাবে প্রবেশ করে?",
+    "options": {
+      "A": "Transpiration",
+      "B": "Osmosis",
+      "C": "Diffusion",
+      "D": "Respiration"
+    },
+    "answer": "C",
+    "explanation": "ফুসফুসের অ্যালভিওলাস থেকে ব্যাপন বা ডিফিউশন প্রক্রিয়ায় গ্যাসীয় বিনিময় ঘটে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন প্রযুক্তিতে ইনসুলিন তৈরি করা হয়?",
+    "options": {
+      "A": "এক্সপ্লান্ট কালচার",
+      "B": "ন্যানো টেকনোলজি",
+      "C": "টিস্যু কালচার",
+      "D": "রিকম্বিনেন্ট ডিএনএ টেকনোলজি"
+    },
+    "answer": "D",
+    "explanation": "জেনেটিক ইঞ্জিনিয়ারিং বা রিকম্বিনেন্ট ডিএনএ প্রযুক্তির মাধ্যমে বাণিজ্যিকভাবে ইনসুলিন তৈরি করা হয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "বাংলাদেশে কবে প্রথম জাতীয় সংসদ নির্বাচন অনুষ্ঠিত হয়?",
+    "options": {
+      "A": "১৯ এপ্রিল ১৯৭৩",
+      "B": "২৮ ফেব্রুয়ারী ১৯৭৩",
+      "C": "৬ এপ্রিল ১৯৭৩",
+      "D": "৭ মার্চ ১৯৭৩"
+    },
+    "answer": "D",
+    "explanation": "স্বাধীন বাংলাদেশে প্রথম সাধারণ নির্বাচন ১৯৭৩ সালের ৭ মার্চ অনুষ্ঠিত হয়। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "15 ওয়াট (watt) শক্তি অর্থ-",
+    "options": {
+      "A": "15 J work in 1 sec",
+      "B": "5 J work in 3 sec",
+      "C": "1 J work in 15 sec",
+      "D": "3 J work in 5 sec"
+    },
+    "answer": "A",
+    "explanation": "ক্ষমতা বা পাওয়ার হলো প্রতি সেকেন্ডে সম্পাদিত কাজ (J/s), তাই ১৫ ওয়াট মানে প্রতি সেকেন্ডে ১৫ জুল কাজ। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "মাথার খুলিতে কয়টি হাড় রয়েছে?",
+    "options": {
+      "A": "33",
+      "B": "23",
+      "C": "17",
+      "D": "29"
+    },
+    "answer": "D",
+    "explanation": "মানুষের মাথার খুলি বা করোটিকা ও করোটিকাতে মোট ২৯টি অস্থি থাকে। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন আয়নটির আকার সবচেয়ে ছোট?",
+    "options": {
+      "A": "Be^{2+}",
+      "B": "Na^{+}",
+      "C": "Mg^{2+}",
+      "D": "Ca^{2+}"
+    },
+    "answer": "A",
+    "explanation": "ক্যাটায়নের পজিটিভ চার্জ বাড়লে এবং ইলেকট্রন খোলস কম থাকলে তার ব্যাসার্ধ সবচেয়ে ছোট হয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which of the following sentence is the present perfect tense of \"I have just seen Mahia\"?",
+    "options": {
+      "A": "I saw Mahia just now",
+      "B": "I have just saw Mahia",
+      "C": "I just saw Mahia",
+      "D": "I see Mahia now"
+    },
+    "answer": "B",
+    "explanation": "Present perfect requires 'have' + past participle of the verb (seen). (Note: Option B is technically incorrect in grammar, but reflects the exam's structure). [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "Golgi complex কোনটি সংশ্লেষ (synthesis) করে না?",
+    "options": {
+      "A": "Ribosome",
+      "B": "Enzyme",
+      "C": "Sperm",
+      "D": "Lysosome"
+    },
+    "answer": "A",
+    "explanation": "রাইবোসোম নিউক্লিওলাসে তৈরি হয় এবং এটি প্রোটিন তৈরি করে, গলজি বস্তু নয়। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "আলোর দ্রুতিতে চলমান কোন বস্তু কণার ভর কত?",
+    "options": {
+      "A": "শূন্য",
+      "B": "অসীম",
+      "C": "দ্বিগুণ",
+      "D": "অর্ধেক"
+    },
+    "answer": "B",
+    "explanation": "আইনস্টাইনের আপেক্ষিকতা তত্ত্ব অনুযায়ী কোনো বস্তু আলোর বেগে চললে এর ভর অসীম হয়ে যায়। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "I am glad ____ your glorious result in the examination.",
+    "options": {
+      "A": "at",
+      "B": "of",
+      "C": "for",
+      "D": "to"
+    },
+    "answer": "A",
+    "explanation": "'Glad at' something is a standard prepositional phrase used for news or results. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "নিচের কোনটি ঋণাত্মক প্রভাবক (negative catalyst)?",
+    "options": {
+      "A": "SO_{2}",
+      "B": "Na",
+      "C": "Glycerine",
+      "D": "SO_{3}"
+    },
+    "answer": "C",
+    "explanation": "গ্লিসারিন হাইড্রোজেন পারক্সাইডের বিয়োজন হার কমিয়ে দেয়, তাই এটি একটি ঋণাত্মক প্রভাবক। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "দুটি পরমাণুর মধ্যে সমান সংখ্যক ইলেকট্রন দিয়ে কি বন্ধন গঠিত হয়?",
+    "options": {
+      "A": "Metallic bond",
+      "B": "Covalent bond",
+      "C": "Ionic Bond",
+      "D": "Hydrogen bond"
+    },
+    "answer": "B",
+    "explanation": "ইলেকট্রন শেয়ার বা ভাগাভাগির মাধ্যমে যে রাসায়নিক বন্ধন গঠিত হয় তাকে সমযোজী বন্ধন বলে। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Antonym of 'bizarre' is -",
+    "options": {
+      "A": "Flexible",
+      "B": "Normal",
+      "C": "Messy",
+      "D": "Horrible"
+    },
+    "answer": "B",
+    "explanation": "'Bizarre' means very strange or unusual, so 'Normal' is its opposite. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "Scalar quantity এবং magnitude of gradient এর মধ্যে সম্পর্কটি হল-",
+    "options": {
+      "A": "Disproportional",
+      "B": "Proportional",
+      "C": "Equal",
+      "D": "Opposite"
+    },
+    "answer": "C",
+    "explanation": "স্কেলার রাশির গ্রেডিয়েন্টের মান ওই রাশির পরিবর্তনের হারকে নির্দেশ করে। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "মানুষের সোমাটিক কোষে কয়টি অটোসোম থাকে?",
+    "options": {
+      "A": "22",
+      "B": "46",
+      "C": "23",
+      "D": "44"
+    },
+    "answer": "D",
+    "explanation": "দেহে মোট ৪৬টি ক্রোমোজোম থাকে যার মধ্যে ৪৪টি অটোসোম এবং ২টি সেক্স ক্রোমোজোম। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন উপাদান কয়লার জন্য সবচেয়ে ক্ষতিকারক?",
+    "options": {
+      "A": "Nitrogen",
+      "B": "Carbon",
+      "C": "Sulphur",
+      "D": "Silicon"
+    },
+    "answer": "C",
+    "explanation": "সালফার দহনের পর সালফার ডাই অক্সাইড তৈরি করে যা এসিড বৃষ্টির প্রধান কারণ এবং পরিবেশের জন্য ক্ষতিকর। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "তড়িৎ চুম্বকীয় বর্ণালিতে নিচের কোনটির তরঙ্গ দৈর্ঘ্য সবচেয়ে বেশি?",
+    "options": {
+      "A": "Infra-red ray",
+      "B": "TV-waves",
+      "C": "X-ray",
+      "D": "UV-ray"
+    },
+    "answer": "B",
+    "explanation": "রেডিও বা টিভি তরঙ্গের তরঙ্গদৈর্ঘ্য বর্ণালির অন্য সকল তরঙ্গের চেয়ে বেশি। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "রাজশাহী বিশ্ববিদ্যালয়ের ভাস্কর্য \"সাবাস বাংলাদেশ\" এর ভাস্কর কে?",
+    "options": {
+      "A": "রাজশাহী আহমেদ",
+      "B": "রূপম রায়",
+      "C": "নিতুন কুন্ডু",
+      "D": "মৃণাল হক"
+    },
+    "answer": "C",
+    "explanation": "১৯৯১ সালে নির্মিত 'সাবাস বাংলাদেশ' ভাস্কর্যটি শিল্পী নিতুন কুন্ডুর অমর সৃষ্টি। [মেডিকেল ২০-২১]",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "Choose the correct spelling?",
+    "options": {
+      "A": "Entreprenor",
+      "B": "Entrepreneor",
+      "C": "Entrepreneur",
+      "D": "Enterpreneur"
+    },
+    "answer": "C",
+    "explanation": "The correct spelling is 'Entrepreneur', referring to a person who starts a business. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "হাইড্রোক্সাইড্রকার্বন জ্বালানি এবং কয়লার অসম্পূর্ণ জ্বলন থেকে কোন গ্যাস উৎপাদিত হয়?",
+    "options": {
+      "A": "SO_{3}",
+      "B": "CO_{2}",
+      "C": "CO",
+      "D": "SO_{2}"
+    },
+    "answer": "C",
+    "explanation": "অসম্পূর্ণ দহনের ফলে কার্বন ডাই অক্সাইডের পরিবর্তে বিষাক্ত কার্বন মনোক্সাইড তৈরি হয়। [মেডিকেল ২০-২১]",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "রক্ত হল-",
+    "options": {
+      "A": "কিছুটা অম্লীয়",
+      "B": "শক্তিশালী অম্লীয়",
+      "C": "সামান্য ক্ষারীয়",
+      "D": "নিরপেক্ষ"
+    },
+    "answer": "C",
+    "explanation": "মানুষের রক্তের pH এর গড় মান ৭.৪ যা সামান্য ক্ষারীয় প্রকৃতির। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  },
+  {
+    "question": "Choose the correct sentence-",
+    "options": {
+      "A": "You must cut out your expenditure",
+      "B": "You must cut down your expenditure",
+      "C": "You must cut up your expenditure",
+      "D": "You must cut off your expenditure"
+    },
+    "answer": "B",
+    "explanation": "'Cut down' is a phrasal verb meaning to reduce the size, amount, or number of something. [Medical 20-21]",
+    "subject": "English"
+  },
+  {
+    "question": "একটি 2 কেজি ভরের বস্তু 10 মিটার উচ্চতা থেকে পড়লে, ভূমি স্পর্শ করার পূর্ব মুহুর্তে এর গতিশক্তি কত হবে?",
+    "options": {
+      "A": "95.0J",
+      "B": "74.4J",
+      "C": "19.6J",
+      "D": "196.0J"
+    },
+    "answer": "D",
+    "explanation": "গতিশক্তি = বিভব শক্তি = $mgh = 2 * 9.8 * 10 = 196$ জুল। (দ্রষ্টব্য: অপশনে ১৯.৬ থাকলে তা ভুল মুদ্রণ হতে পারে)। [মেডিকেল ২০-২১]",
+    "subject": "Physics"
+  },
+  {
+    "question": "নেমাটোসিস্টের (Nematocyst) ভিতরে বিষাক্ত তরল পদার্থের নাম কি?",
+    "options": {
+      "A": "Haemozoin",
+      "B": "Haemocyanin",
+      "C": "Toxin",
+      "D": "Hypnotoxin"
+    },
+    "answer": "D",
+    "explanation": "হিপনোটক্সিন হলো প্রোটিন ও ফেনলের সমন্বয়ে গঠিত এক ধরণের বিষাক্ত তরল। [মেডিকেল ২০-২১]",
+    "subject": "Biology"
+  }
 ]
+
   
 
     
