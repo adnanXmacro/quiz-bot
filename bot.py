@@ -45,7 +45,7 @@ QUESTION_BANK = [
 # { "scores": {...}, "asked": [...], "streaks": {...} }
 # Data is loaded ONCE at session start, kept in memory, saved ONCE at session end.
 
-SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}}  # in-memory cache
+SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}  # in-memory cache
 
 def _load_data_sync() -> dict:
     try:
@@ -57,7 +57,8 @@ def _load_data_sync() -> dict:
             data = json.loads(resp.read().decode())
             raw = json.loads(data["files"]["scores.json"]["content"])
             if "scores" not in raw:
-                return {"scores": raw, "asked": [], "streaks": {}}
+                return {"scores": raw, "asked": [], "streaks": {}, "session_count": 0}
+            raw.setdefault("session_count", 0)
             return raw
     except Exception as e:
         print(f"Gist load error: {e}")
@@ -170,14 +171,22 @@ def get_rank(points: int) -> tuple:
     elif points >= 50:  return ("📚", "APPRENTICE", 0x57F287)
     return                     ("🌱", "ROOKIE",     0x99AAB5)
 
-def build_scoreboard_embed(scores: dict, streaks: dict = None) -> discord.Embed:
-    now_bd = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
-    streaks = streaks or {}
+SESSIONS_PER_CYCLE = 10  # Scoreboard resets every 10 sessions
+
+def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: int = 0) -> discord.Embed:
+    now_bd   = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+    streaks  = streaks or {}
+    sessions_left = SESSIONS_PER_CYCLE - (session_count % SESSIONS_PER_CYCLE)
+    cycle_num     = (session_count // SESSIONS_PER_CYCLE) + 1
 
     if not scores:
         embed = discord.Embed(
             title="🏆  Leaderboard",
-            description="No participants today. Come back tomorrow!",
+            description=(
+                f"No participants yet.\n\n"
+                f"**Cycle #{cycle_num}**  ·  Session `{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}`\n"
+                f"Resets in `{sessions_left}` sessions."
+            ),
             color=0x2B2D31,
             timestamp=datetime.datetime.utcnow()
         )
@@ -185,6 +194,7 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None) -> discord.Embed:
 
     sorted_scores = sorted(scores.values(), key=lambda x: x["points"], reverse=True)
     max_pts = max(s["points"] for s in sorted_scores) or 1
+    id_map  = {v["username"]: k for k, v in scores.items()}
 
     embed = discord.Embed(
         title=f"🏆  Leaderboard  ·  {now_bd.strftime('%d %B %Y')}",
@@ -192,57 +202,65 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None) -> discord.Embed:
         timestamp=datetime.datetime.utcnow()
     )
 
-    # Build ranks with tie handling
-    # Find discord_id for each score entry
-    id_map = {v["username"]: k for k, v in scores.items()}
+    # Cycle progress bar
+    filled_cycle = round(((session_count % SESSIONS_PER_CYCLE) / SESSIONS_PER_CYCLE) * 10)
+    cycle_bar    = "█" * filled_cycle + "░" * (10 - filled_cycle)
+    embed.description = (
+        f"**Cycle #{cycle_num}**  `{cycle_bar}`  "
+        f"Session **{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}**"
+        f"  ·  Resets in `{sessions_left}` sessions"
+    )
 
-    podium_icons = ["🥇", "🥈", "🥉"]
-    podium_lines = []
-    rest_lines = []
+    # Podium top 3 with ties
     rank = 0
     prev_pts = None
+    podium_lines = []
+    rest_lines   = []
+    podium_icons = ["🥇", "🥈", "🥉"]
 
     for i, s in enumerate(sorted_scores[:10]):
         if s["points"] != prev_pts:
             rank = i + 1
         prev_pts = s["points"]
 
-        acc = round(100*s["correct"]/s["total"]) if s["total"] > 0 else 0
+        acc    = round(100 * s["correct"] / s["total"]) if s["total"] > 0 else 0
         badge, title, _ = get_rank(s["points"])
-
-        # Get streak
-        uid = id_map.get(s["username"], "")
+        uid    = id_map.get(s["username"], "")
         streak = streaks.get(uid, {}).get("streak", 0)
-        streak_badge = get_streak_badge(streak)
-        streak_text = f"  {streak_badge} `{streak}d`" if streak >= 3 else ""
+        sb     = get_streak_badge(streak)
+        st     = f" {sb}`{streak}d`" if streak >= 3 else ""
 
         if rank <= 3:
-            icon = podium_icons[rank-1]
+            icon = podium_icons[rank - 1]
             podium_lines.append(
-                f"{icon} **{s['username']}** {badge}{streak_text}\n"
-                f"　`{s['points']} pts`  ·  {acc}% accuracy  ·  {title}"
+                f"{icon} **{s['username']}**  {badge} {title}{st}\n"
+                f"　`{s['points']} pts`  ·  **{acc}%** accuracy  ·  {s['correct']}/{s['total']} ✓"
             )
         else:
-            filled = round((s["points"]/max_pts)*10)
-            bar = "▰"*filled + "▱"*(10-filled)
+            filled = round((s["points"] / max_pts) * 10)
+            bar    = "▰" * filled + "▱" * (10 - filled)
             rest_lines.append(
-                f"`{rank:02d}`  {s['username'][:16]}  {bar}  `{s['points']}`{streak_text}"
+                f"`#{rank:02d}` **{s['username'][:14]}**  {bar}  `{s['points']} pts`  ·  {acc}%{st}"
             )
 
-    embed.description = "\n\n".join(podium_lines)
-
+    if podium_lines:
+        embed.add_field(name="🏅 Podium", value="\n\n".join(podium_lines), inline=False)
     if rest_lines:
-        embed.add_field(name="Others", value="\n".join(rest_lines), inline=False)
+        embed.add_field(name="📋 Rankings", value="\n".join(rest_lines), inline=False)
 
+    # Session stats
     total_p = len(sorted_scores)
     total_a = sum(s["total"] for s in sorted_scores)
-    avg_acc = round(sum(100*s["correct"]/s["total"] for s in sorted_scores if s["total"]>0)/max(total_p,1))
+    avg_acc = round(sum(
+        100 * s["correct"] / s["total"] for s in sorted_scores if s["total"] > 0
+    ) / max(total_p, 1))
+
     embed.add_field(
-        name="📊 Session",
-        value=f"`{total_p}` players  ·  `{total_a}` answers  ·  `{avg_acc}%` avg",
+        name="📊 This Session",
+        value=f"`{total_p}` players  ·  `{total_a}` answers  ·  `{avg_acc}%` avg accuracy",
         inline=False
     )
-    embed.set_footer(text="🔥3d  🔥🔥7d  🔥🔥🔥14d streak  ·  💎1000  👑500  🔥200  ⚡100  📚50")
+    embed.set_footer(text="🔥3d · 🔥🔥7d · 🔥🔥🔥14d  |  💎1000 · 👑500 · 🔥200 · ⚡100 · 📚50 · 🌱0")
     return embed
 
 
@@ -467,21 +485,32 @@ async def run_quiz_session(channel: discord.TextChannel):
     print(f"Posting {len(questions)} questions")
 
     for i, q in enumerate(questions, 1):
-        meta = get_subject(q.get("subject", "General"))
+        meta    = get_subject(q.get("subject", "General"))
+        subject = q.get("subject", "General")
 
         if q["type"] == "mcq":
-            embed = discord.Embed(title=q["question"], color=meta["color"])
-            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Q{i} / {len(questions)}")
-            embed.add_field(name="A", value=q["options"]["A"], inline=True)
-            embed.add_field(name="B", value=q["options"]["B"], inline=True)
-            embed.add_field(name="C", value=q["options"]["C"], inline=True)
-            embed.add_field(name="D", value=q["options"]["D"], inline=True)
-            embed.set_footer(text=f"Timer starts on your first tap  ·  {PERSONAL_TIMER_MIN} min window  ·  Only you see your result")
+            embed = discord.Embed(
+                title=q["question"],
+                color=meta["color"]
+            )
+            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Question {i} of {len(questions)}")
+            # Options in a clean 2-column layout with labels
+            embed.add_field(
+                name="",
+                value=(
+                    f"**A.**  {q['options']['A']}\n"
+                    f"**B.**  {q['options']['B']}\n"
+                    f"**C.**  {q['options']['C']}\n"
+                    f"**D.**  {q['options']['D']}"
+                ),
+                inline=False
+            )
+            embed.set_footer(text=f"⏱ {PERSONAL_TIMER_MIN} min from first tap  ·  Only you see your result")
             await channel.send(embed=embed, view=MCQView(q))
         else:
             embed = discord.Embed(title=q["question"], color=meta["color"])
-            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Flashcard  {i} / {len(questions)}")
-            embed.set_footer(text="Think, then tap Reveal  ·  Only you see the answer")
+            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Flashcard {i} of {len(questions)}")
+            embed.set_footer(text="💭 Think of your answer, then tap Reveal  ·  Only you see the result")
             await channel.send(embed=embed, view=FlashcardView(q))
 
         await asyncio.sleep(1.5)
@@ -501,11 +530,32 @@ async def run_quiz_session(channel: discord.TextChannel):
 
 
 async def post_scoreboard(channel: discord.TextChannel):
-    scores  = SESSION_DATA.get("scores", {})
-    streaks = SESSION_DATA.get("streaks", {})
-    embed   = build_scoreboard_embed(scores, streaks)
+    scores        = SESSION_DATA.get("scores", {})
+    streaks       = SESSION_DATA.get("streaks", {})
+    session_count = SESSION_DATA.get("session_count", 0) + 1
+    SESSION_DATA["session_count"] = session_count
+
+    embed = build_scoreboard_embed(scores, streaks, session_count)
     await channel.send(embed=embed)
-    # Save to Gist ONCE after scoreboard
+
+    # Check if cycle complete — reset scores every 10 sessions
+    if session_count % SESSIONS_PER_CYCLE == 0:
+        cycle_num = session_count // SESSIONS_PER_CYCLE
+        SESSION_DATA["scores"] = {}
+        reset_embed = discord.Embed(
+            title=f"🔄  Cycle #{cycle_num} Complete!",
+            description=(
+                f"The **{SESSIONS_PER_CYCLE}-session scoreboard** has been reset.\n\n"
+                f"All scores back to zero — a fresh start for everyone!\n"
+                f"Streaks are preserved. Good luck in Cycle #{cycle_num + 1}! 🚀"
+            ),
+            color=0x5865F2,
+            timestamp=datetime.datetime.utcnow()
+        )
+        await channel.send(embed=reset_embed)
+        print(f"Cycle {cycle_num} complete — scores reset!")
+
+    # Save to Gist ONCE
     await save_session_data()
     print("Session data saved to Gist.")
     # Send individual report cards
