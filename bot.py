@@ -42,10 +42,10 @@ QUESTION_BANK = [
 
 
 # ─── GIST DATA STORAGE ──────────────────────────────────────────────────────────
-# { "scores": {...}, "asked": [...], "streaks": {...} }
-# Data is loaded ONCE at session start, kept in memory, saved ONCE at session end.
+# Saves to Gist on every answer using a lock to prevent 409 conflicts.
 
-SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}  # in-memory cache
+SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
+_save_lock   = None  # asyncio.Lock — initialized in on_ready
 
 def _load_data_sync() -> dict:
     try:
@@ -55,14 +55,14 @@ def _load_data_sync() -> dict:
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode())
-            raw = json.loads(data["files"]["scores.json"]["content"])
+            raw  = json.loads(data["files"]["scores.json"]["content"])
             if "scores" not in raw:
                 return {"scores": raw, "asked": [], "streaks": {}, "session_count": 0}
             raw.setdefault("session_count", 0)
             return raw
     except Exception as e:
         print(f"Gist load error: {e}")
-        return {"scores": {}, "asked": [], "streaks": {}}
+        return {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
 
 def _save_data_sync(data: dict) -> bool:
     try:
@@ -76,30 +76,32 @@ def _save_data_sync(data: dict) -> bool:
             method="PATCH"
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
-            print(f"Gist saved. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
+            print(f"Gist saved. Players: {len(data.get('scores', {}))}")
             return True
     except Exception as e:
         print(f"Gist save error: {e}")
         return False
 
 async def load_session_data():
-    """Load from Gist once at session start into memory."""
     global SESSION_DATA
     if not GIST_TOKEN or not GIST_ID:
         return
     data = await asyncio.get_event_loop().run_in_executor(executor, _load_data_sync)
     SESSION_DATA = data
-    print(f"Session data loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
+    print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
+
+async def save_to_gist():
+    """Save to Gist — queued via lock so only one write at a time, no 409."""
+    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
+        return
+    async with _save_lock:
+        await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, SESSION_DATA)
 
 async def save_session_data():
-    """Save from memory to Gist once at session end."""
-    if not GIST_TOKEN or not GIST_ID:
-        return
-    await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, SESSION_DATA)
+    await save_to_gist()
 
 def update_score_sync(user_id: str, username: str, correct: bool,
                       subject: str = "General", points_to_add: int = 10) -> int:
-    """Update in-memory data only — no Gist call."""
     scores  = SESSION_DATA.setdefault("scores", {})
     streaks = SESSION_DATA.setdefault("streaks", {})
     today   = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)).strftime("%Y-%m-%d")
@@ -110,18 +112,15 @@ def update_score_sync(user_id: str, username: str, correct: bool,
     s = scores[user_id]
     s["username"] = username
     s["total"]    += 1
-
-    # Subject tracking
-    sub = s.setdefault("subjects", {})
-    sub.setdefault(subject, {"correct": 0, "total": 0})
-    sub[subject]["total"] += 1
+    s.setdefault("subjects", {})
+    s["subjects"].setdefault(subject, {"correct": 0, "total": 0})
+    s["subjects"][subject]["total"] += 1
 
     if correct:
         s["points"]  += points_to_add
         s["correct"] += 1
-        sub[subject]["correct"] += 1
+        s["subjects"][subject]["correct"] += 1
 
-    # Streak update
     if user_id not in streaks:
         streaks[user_id] = {"streak": 0, "last_date": ""}
     st = streaks[user_id]
@@ -139,10 +138,12 @@ def get_streak_badge(streak: int) -> str:
     elif streak >= 3: return "🔥"
     return ""
 
-# Keep async wrapper for compatibility in views
 async def update_score(user_id: str, username: str, correct: bool,
                        subject: str = "General", points_to_add: int = 10) -> int:
-    return update_score_sync(user_id, username, correct, subject, points_to_add)
+    """Update memory AND save to Gist immediately (queued)."""
+    pts = update_score_sync(user_id, username, correct, subject, points_to_add)
+    await save_to_gist()
+    return pts
 
 async def load_scores() -> dict:
     return SESSION_DATA.get("scores", {})
@@ -273,11 +274,22 @@ async def pick_questions_smart(count: int) -> list:
     if os.path.exists("questions.json"):
         try:
             with open("questions.json", "r", encoding="utf-8") as f:
-                pool = json.load(f)
-            for q in pool:
+                raw_pool = json.load(f)
+            for q in raw_pool:
                 q.setdefault("type", "mcq")
                 q.setdefault("subject", "General")
-            print(f"Loaded {len(pool)} questions from questions.json")
+            # Deduplicate by question text
+            seen = set()
+            pool = []
+            for q in raw_pool:
+                if q["question"] not in seen:
+                    seen.add(q["question"])
+                    pool.append(q)
+            dupes = len(raw_pool) - len(pool)
+            if dupes > 0:
+                print(f"Removed {dupes} duplicate questions. Unique: {len(pool)}")
+            else:
+                print(f"Loaded {len(pool)} questions from questions.json")
         except Exception as e:
             print(f"Failed to load questions.json: {e}, using built-in bank")
             pool = QUESTION_BANK.copy()
@@ -659,6 +671,8 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
+    global _save_lock
+    _save_lock = asyncio.Lock()
     print(f"Logged in as {bot.user}")
     await bot.tree.sync()
     print(f"CHANNEL_ID: {CHANNEL_ID} | GIST_ID: {GIST_ID} | TOKEN_LEN: {len(GIST_TOKEN) if GIST_TOKEN else 0}")
@@ -673,6 +687,35 @@ async def on_ready():
     await run_quiz_session(channel)
     print("Done. Shutting down.")
     await bot.close()
+
+
+@bot.tree.command(name="savescores", description="[Admin] Force save current scores to Gist mid-session")
+async def savescores_cmd(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    ok = await save_session_data()
+    if ok:
+        await interaction.followup.send("✅ Scores saved to Gist! You can now edit the Gist safely.", ephemeral=True)
+    else:
+        await interaction.followup.send("❌ Save failed. Check logs.", ephemeral=True)
+
+
+@bot.tree.command(name="editscore", description="[Admin] Manually set a player's points")
+async def editscore_cmd(interaction: discord.Interaction, username: str, points: int):
+    scores = SESSION_DATA.setdefault("scores", {})
+    # Find by username
+    for uid, s in scores.items():
+        if s["username"].lower() == username.lower():
+            old = s["points"]
+            s["points"] = points
+            await interaction.response.send_message(
+                f"✅ **{s['username']}**: `{old} pts` → `{points} pts`",
+                ephemeral=True
+            )
+            return
+    await interaction.response.send_message(
+        f"❌ Player `{username}` not found in current session.",
+        ephemeral=True
+    )
 
 
 if __name__ == "__main__":
