@@ -4661,8 +4661,1617 @@
     "answer": "D",
     "explanation": "হিপনোটক্সিন হলো প্রোটিন ও ফেনলের সমন্বয়ে গঠিত এক ধরণের বিষাক্ত তরল। [মেডিকেল ২০-২১]",
     "subject": "Biology"
-  }
+  },
+  {
+    "question": "সিলোমহীন পর্ব কোনটি?",
+    "options": {
+      "A": "Annelida",
+      "B": "Fasciola hepatica",
+      "C": "Nematoda",
+      "D": "Chordata"
+    },
+    "answer": "B",
+    "explanation": "ফ্যাসিওলা হেপাটিকা (যকৃত কৃমি) প্লাটিহেলমিনথিস পর্বের প্রাণী, যা সিলোমহীন বা অ্যাসিলোমেট।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি প্রধান 'Green house gas'?",
+    "options": {
+      "A": "CH4",
+      "B": "CFC",
+      "C": "CO2",
+      "D": "O3"
+    },
+    "answer": "C",
+    "explanation": "কার্বন ডাই-অক্সাইড (CO2) হলো প্রধান গ্রিনহাউস গ্যাস।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "সিরাজ সাহেবের ভর 20 কেজি। তিনি 25 সেন্টিমিটার উঁচু মোট 20 টি সিঁড়ি 10 সেকেন্ডে উঠলে তার সম্পাদিত কাজের পরিমাণ কত?",
+    "options": {
+      "A": "1000 জুল",
+      "B": "980 জুল",
+      "C": "1080 জুল",
+      "D": "900 জুল"
+    },
+    "answer": "B",
+    "explanation": "কাজ = mgh = 20 * 9.8 * (20 * 0.25) = 20 * 9.8 * 5 = 980 জুল।",
+    "subject": "Physics"
+  },
+  {
+    "question": "Which one of the following sentence is correct?",
+    "options": {
+      "A": "If I won the lottery, I bought a big house.",
+      "B": "If I won the lottery, I will buy a big house.",
+      "C": "If I win the lottery, I shall buy a big house.",
+      "D": "If I won the lottery, I shall buy a big house."
+    },
+    "answer": "C",
+    "explanation": "এটি First Conditional; If + Present Simple + Future Simple গঠন অনুসরণ করে।",
+    "subject": "English"
+  },
+  {
+    "question": "নিচের কোনটি DNA ভাইরাস?",
+    "options": {
+      "A": "ডেঙ্গু",
+      "B": "ভ্যারিওলা",
+      "C": "টোবাকো মোজাইক",
+      "D": "পোলিও"
+    },
+    "answer": "B",
+    "explanation": "ভ্যারিওলা বা গুটি বসন্তের ভাইরাস একটি DNA ভাইরাস।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি সহজে পানিতে দ্রবীভূত হয়?",
+    "options": {
+      "A": "Iodine",
+      "B": "Nitrogen",
+      "C": "Ammonia",
+      "D": "Carbon"
+    },
+    "answer": "C",
+    "explanation": "অ্যামোনিয়া (NH3) অত্যন্ত পোলার গ্যাস এবং পানির সাথে হাইড্রোজেন বন্ধন গঠন করে বিধায় এটি পানিতে দ্রুত দ্রবীভূত হয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "পদার্থবিদ্যাতে নিচের কোনটি Power এর একক নয়?",
+    "options": {
+      "A": "ওয়াট",
+      "B": "জুল",
+      "C": "অশ্বশক্তি",
+      "D": "জুল/সেকেন্ড"
+    },
+    "answer": "B",
+    "explanation": "জুল হলো কাজ বা শক্তির একক, ক্ষমতার নয়।",
+    "subject": "Physics"
+  },
+  {
+    "question": "Synonym for 'Ability' are all of the followings except-",
+    "options": {
+      "A": "Avail",
+      "B": "Competency",
+      "C": "Skill",
+      "D": "Talent"
+    },
+    "answer": "A",
+    "explanation": "'Avail' মানে সুযোগ নেওয়া বা কাজে লাগানো, এটি 'Ability' (দক্ষতা) এর সমার্থক নয়।",
+    "subject": "English"
+  },
+  {
+    "question": "পাকস্থলির কোন কোষ থেকে হাইড্রোক্লোরিক এসিড নিঃসৃত হয়?",
+    "options": {
+      "A": "জি-কোষ",
+      "B": "প্যারাইটাল কোষ",
+      "C": "পেপটিক কোষ",
+      "D": "মিউকাস কোষ"
+    },
+    "answer": "B",
+    "explanation": "পাকস্থলীর প্যারাইটাল বা অক্সিনটিক কোষ থেকে HCl নিঃসৃত হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "সুন্দরবনকে 'World Heritage' ঘোষণা করেছে কোন সংস্থা?",
+    "options": {
+      "A": "ILO",
+      "B": "UNESCO",
+      "C": "UNDP",
+      "D": "WHO"
+    },
+    "answer": "B",
+    "explanation": "UNESCO ১৯৯৭ সালে সুন্দরবনকে বিশ্ব ঐতিহ্য ঘোষণা করে।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "কোন গ্যাসটি বাতাসে সবচেয়ে বেশী পরিমাণে থাকে?",
+    "options": {
+      "A": "Carbon dioxide",
+      "B": "Oxygen",
+      "C": "Nitrogen",
+      "D": "Hydrogen"
+    },
+    "answer": "C",
+    "explanation": "বায়ুমণ্ডলে নাইট্রোজেনের পরিমাণ প্রায় ৭৮.০৯%।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "চাপের S.I একক কোনটি?",
+    "options": {
+      "A": "cm Hg",
+      "B": "cm H2O",
+      "C": "Pascal",
+      "D": "mm Hg"
+    },
+    "answer": "C",
+    "explanation": "চাপের আন্তর্জাতিক বা S.I একক হলো প্যাসকেল (Pa)।",
+    "subject": "Physics"
+  },
+  {
+    "question": "Alam.... in Rangpur for ten years. Now he lives in Dhaka.",
+    "options": {
+      "A": "is living",
+      "B": "lived",
+      "C": "has",
+      "D": "has lived"
+    },
+    "answer": "B",
+    "explanation": "যেহেতু সে এখন ঢাকায় থাকে, তাই রংপুরে থাকার বিষয়টি অতীত। তাই Past Simple (lived) হবে।",
+    "subject": "English"
+  },
+  {
+    "question": "পর্যায় সারণীতে \"Inner-transition\" মৌলের সংখ্যা কত?",
+    "options": {
+      "A": "২৮",
+      "B": "২৬",
+      "C": "২৪",
+      "D": "৩০"
+    },
+    "answer": "A",
+    "explanation": "ল্যান্থানাইড ও অ্যাক্টিনাইড সারির মোট ২৮টি মৌলকে অভ্যন্তরীণ অবস্থান্তর মৌল বলে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "ব্রায়োফাইটস (Bryophytes) এর স্ত্রী জননাঙ্গের নাম কি?",
+    "options": {
+      "A": "Antheridium",
+      "B": "Archegonium",
+      "C": "Sporangium",
+      "D": "Gametangium"
+    },
+    "answer": "B",
+    "explanation": "ব্রায়োফাইটের স্ত্রী জননাঙ্গকে আর্কিগোনিয়াম বলা হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "মুক্তিযুদ্ধ চলাকালীন সময়ে বাংলাদেশকে কয়টি সেক্টরে ভাগ করা হয়েছিল?",
+    "options": {
+      "A": "১০",
+      "B": "১১",
+      "C": "১২",
+      "D": "১৩"
+    },
+    "answer": "B",
+    "explanation": "মুক্তিযুদ্ধের সময় রণকৌশল হিসেবে বাংলাদেশকে ১১টি সেক্টরে ভাগ করা হয়েছিল।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "\"এবারের সংগ্রাম আমাদের মুক্তির সংগ্রাম, এবারের সংগ্রাম স্বাধীনতার সংগ্রাম\"- বঙ্গবন্ধু এই ভাষণটি ১৯৭১ সালের কোন তারিখে প্রদান করেন?",
+    "options": {
+      "A": "৬ মার্চ",
+      "B": "৫ মার্চ",
+      "C": "৭ মার্চ",
+      "D": "৮ মার্চ"
+    },
+    "answer": "C",
+    "explanation": "১৯৭১ সালের ৭ই মার্চ ঢাকার রেসকোর্স ময়দানে বঙ্গবন্ধু এই ঐতিহাসিক ভাষণ দেন।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "I am accustomed - such a life.",
+    "options": {
+      "A": "with",
+      "B": "in",
+      "C": "by",
+      "D": "to"
+    },
+    "answer": "D",
+    "explanation": "'Accustomed' এর সাথে Appropriate Preposition 'to' বসে।",
+    "subject": "English"
+  },
+  {
+    "question": "রংধনুর সাথে নিচের কোনটি সামঞ্জস্যপূর্ণ নয়?",
+    "options": {
+      "A": "প্রতিসরণ",
+      "B": "বিচ্ছুরণ",
+      "C": "প্রতিফলন",
+      "D": "বিরলিকরণ"
+    },
+    "answer": "D",
+    "explanation": "রংধনু সৃষ্টির প্রক্রিয়ায় প্রতিসরণ, প্রতিফলন এবং বিচ্ছুরণ ঘটে, কিন্তু বিরলিকরণ ঘটে না।",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোন পদ্ধতি পানির স্থায়ী খরতা দূর করার জন্য ব্যবহার করা যায় না?",
+    "options": {
+      "A": "ফুটন্তকরণ",
+      "B": "Sodium carbonate সংযোজন",
+      "C": "পাতন",
+      "D": "কস্টিক সোডা সংযোজন"
+    },
+    "answer": "A",
+    "explanation": "ফুটন্তকরণ পদ্ধতিতে শুধুমাত্র অস্থায়ী খরতা দূর হয়, স্থায়ী খরতা নয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোন গ্রন্থিটি ভিন্ন প্রকৃতির?",
+    "options": {
+      "A": "অগ্ন্যাশয়",
+      "B": "শুক্রাশয়",
+      "C": "ডিম্বাশয়",
+      "D": "এড্রেনাল"
+    },
+    "answer": "D",
+    "explanation": "অগ্ন্যাশয়, শুক্রাশয় ও ডিম্বাশয় মিশ্র গ্রন্থি, কিন্তু এড্রেনাল একটি অন্তক্ষরা গ্রন্থি।",
+    "subject": "Biology"
+  },
+  {
+    "question": "For present continuous tense, which of the following is correct?",
+    "options": {
+      "A": "Don't make so much noise, I am trying to work.",
+      "B": "Don't make so much noise, I had tried to work.",
+      "C": "Don't make so much noise, I was trying to work.",
+      "D": "Don't make so much noise, I tried to work."
+    },
+    "answer": "A",
+    "explanation": "Present continuous গঠন: Subject + am/is/are + verb-ing।",
+    "subject": "English"
+  },
+  {
+    "question": "বাংলাদেশের জাতীয় সংসদ ভবনের স্থপতি কে?",
+    "options": {
+      "A": "মরিস জনসন",
+      "B": "এফ আর খান",
+      "C": "রবিউল হোসেন",
+      "D": "লুই আই কান"
+    },
+    "answer": "D",
+    "explanation": "সংসদ ভবনের স্থপতি মার্কিন নাগরিক লুই আই কান।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "নিচের কোনটি অর্ধপরিবাহী নয়?",
+    "options": {
+      "A": "আর্জেন্টাম",
+      "B": "সিলিকন",
+      "C": "জার্মেনিয়াম",
+      "D": "গ্যালিয়াম আরসেনাইট"
+    },
+    "answer": "A",
+    "explanation": "আর্জেন্টাম (সিলভার/রুপা) একটি পরিবাহী ধাতু, অর্ধপরিবাহী নয়।",
+    "subject": "Physics"
+  },
+{
+    "question": "'Cycas' উদ্ভিদের শস্য নিচের কোন ধরনের?",
+    "options": {
+      "A": "ট্রিপ্লয়েড",
+      "B": "পলিপ্লয়েড",
+      "C": "ডিপ্লয়েড",
+      "D": "হ্যাপ্লয়েড"
+    },
+    "answer": "D",
+    "explanation": "সাইকাস বা নগ্নবীজী উদ্ভিদের শস্য নিষেকের পূর্বে গঠিত হয় বলে এটি হ্যাপ্লয়েড (n)।",
+    "subject": "Biology"
+  },
+  {
+    "question": "ফরমালডিহাইড এবং পটাসিয়াম হাইড্রোক্সাইডকে উত্তপ্ত করা হলে কি পাওয়া যায়?",
+    "options": {
+      "A": "Ethyl formate",
+      "B": "Acetylene",
+      "C": "Methyl alcohol",
+      "D": "Methane"
+    },
+    "answer": "C",
+    "explanation": "এটি ক্যানিজারো বিক্রিয়া, যেখানে মিথানল ও পটাশিয়াম ফরমেট উৎপন্ন হয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Sabrina has lost her cellphone again. This is the second time this....",
+    "options": {
+      "A": "has happened",
+      "B": "happens",
+      "C": "happened",
+      "D": "is happening"
+    },
+    "answer": "A",
+    "explanation": "'This is the first/second time' এর পরে সাধারণত Present Perfect tense বসে।",
+    "subject": "English"
+  },
+  {
+    "question": "শব্দের প্রাবল্য মাপার একক হচ্ছে-",
+    "options": {
+      "A": "Wm^-1",
+      "B": "DB",
+      "C": "Wm^-2",
+      "D": "dB"
+    },
+    "answer": "C",
+    "explanation": "শব্দের তীব্রতা বা প্রাবল্যের একক হলো ওয়াট/বর্গমিটার (Wm^-2)। বেল (dB) হলো তীব্রতা লেভেলের একক।",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোন জীবে আদিকোষ থাকে?",
+    "options": {
+      "A": "ব্রায়োফাইটস",
+      "B": "ছত্রাক",
+      "C": "শৈবাল",
+      "D": "ব্যাকটেরিয়া"
+    },
+    "answer": "D",
+    "explanation": "ব্যাকটেরিয়া একটি প্রোকারিওটিক বা আদিকোষী জীব।",
+    "subject": "Biology"
+  },
+  {
+    "question": "কার অর্থায়নে 'পদ্মা সেতু' নির্মিত হচ্ছে?",
+    "options": {
+      "A": "বাংলাদেশ সরকার",
+      "B": "বিশ্ব ব্যাংক",
+      "C": "আই এম এফ",
+      "D": "এশিয়ান ডেভেলপমেন্ট ব্যাংক"
+    },
+    "answer": "A",
+    "explanation": "পদ্মা সেতু সম্পূর্ণ বাংলাদেশ সরকারের নিজস্ব অর্থায়নে নির্মিত।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "Stainless steel এ আয়রন এর সাথে কোন ধাতু মেশানো হয়?",
+    "options": {
+      "A": "Nickel",
+      "B": "Vanadium",
+      "C": "Manganese",
+      "D": "Chromium"
+    },
+    "answer": "D",
+    "explanation": "স্টেইনলেস স্টিলে লোহার সাথে ক্রোমিয়াম মেশানো হয় যা মরিচারোধে কাজ করে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which one of the following is an example of present perfect continuous tense?",
+    "options": {
+      "A": "It rained",
+      "B": "It was raining",
+      "C": "It has been raining",
+      "D": "It had been raining"
+    },
+    "answer": "C",
+    "explanation": "গঠন: Subject + has/have been + verb-ing।",
+    "subject": "English"
+  },
+  {
+    "question": "'কবুতর' কোন শ্রেণির প্রাণী?",
+    "options": {
+      "A": "Actinopterygii",
+      "B": "Reptilia",
+      "C": "Aves",
+      "D": "Amphibia"
+    },
+    "answer": "C",
+    "explanation": "পাখি বা পক্ষীকুলকে 'Aves' শ্রেণিতে রাখা হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটির প্রোটন আসক্তি সবচেয়ে বেশী?",
+    "options": {
+      "A": "H2S",
+      "B": "NH3",
+      "C": "H2O",
+      "D": "PH3"
+    },
+    "answer": "B",
+    "explanation": "অ্যামোনিয়ার নাইট্রোজেনের ইলেকট্রন ঘনত্ব বেশি হওয়ায় এর প্রোটন আসক্তি সর্বোচ্চ।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "প্যারাসিমপ্যাথেটিক স্নায়ু নিচের কোন করোটিক স্নায়ুতে পাওয়া যায়?",
+    "options": {
+      "A": "ট্রকলিয়ার",
+      "B": "অলফ্যাক্টরি",
+      "C": "অকুলোমোটর",
+      "D": "অপটিক"
+    },
+    "answer": "C",
+    "explanation": "৩য় (অকুলোমোটর), ৭ম, ৯ম ও ১০ম করোটিক স্নায়ুতে প্যারাসিমপ্যাথেটিক ফাইবার থাকে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "পদার্থবিদ্যার আওতায় আসে না কোনটি?",
+    "options": {
+      "A": "Anthropometry",
+      "B": "Astronomy",
+      "C": "Electromagnetism",
+      "D": "Thermodynamics"
+    },
+    "answer": "A",
+    "explanation": "Anthropometry (মানবদেহের পরিমাপ বিজ্ঞান) পদার্থবিদ্যার মূল শাখার বাইরে।",
+    "subject": "Physics"
+  },
+  {
+    "question": "পানি বরফে রূপান্তর করা হলে তার ঘনত্বের কি পরিবর্তন হয়?",
+    "options": {
+      "A": "শূণ্য হয়",
+      "B": "কমে",
+      "C": "একই থাকে",
+      "D": "বাড়ে"
+    },
+    "answer": "B",
+    "explanation": "বরফ পানিতে ভাসলে বোঝা যায় এর ঘনত্ব পানির চেয়ে কম। ৪ ডিগ্রি সেলসিয়াসের নিচে পানির আয়তন বাড়ে ও ঘনত্ব কমে।",
+    "subject": "Physics"
+  },
+  {
+    "question": "'স্বাধীনতা স্তম্ভ' কোথায় অবস্থিত?",
+    "options": {
+      "A": "মেহেরপুর",
+      "B": "রাজশাহী বিশ্ববিদ্যালয়",
+      "C": "ঢাকা সেনানিবাস",
+      "D": "সোহরাওয়ার্দী উদ্যান"
+    },
+    "answer": "D",
+    "explanation": "সোহরাওয়ার্দী উদ্যানে শিখা চিরন্তন ও স্বাধীনতা স্তম্ভ অবস্থিত।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "সবচেয়ে বেশী খাদ্যসার শোষণ হয় কোথায়?",
+    "options": {
+      "A": "পাকস্থলিতে",
+      "B": "ডিওডেনামে",
+      "C": "জেজুনামে",
+      "D": "সিকামে"
+    },
+    "answer": "C",
+    "explanation": "ক্ষুদ্রান্ত্রের জেজুনাম অংশে খাদ্যের সর্বোচ্চ শোষণ ঘটে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "Which one of the following sentences is in the passive form?",
+    "options": {
+      "A": "The room has been cleaned.",
+      "B": "Somebody has cleaned the room.",
+      "C": "Somebody is using the computer now.",
+      "D": "They are building a new road in the city."
+    },
+    "answer": "A",
+    "explanation": "Has/have + been + V3 গঠনটি প্যাসিভ নির্দেশ করে।",
+    "subject": "English"
+  },
+  {
+    "question": "কোন রক্ত কণিকা অ্যান্টিবডি তৈরি করে?",
+    "options": {
+      "A": "মনোসাইট",
+      "B": "বেসোফিল",
+      "C": "বি-লিম্ফোসাইট",
+      "D": "টি-লিম্ফোসাইট"
+    },
+    "answer": "C",
+    "explanation": "বি-লিম্ফোসাইট থেকে প্লাজমা কোষ তৈরি হয় যা অ্যান্টিবডি তৈরি করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "48.0 মিটার/সেকেন্ড বেগে একটি বল খাড়া উপরের দিকে নিক্ষেপ করলে কত সময় শূন্যে থাকবে?",
+    "options": {
+      "A": "8.4 সেকেন্ড",
+      "B": "9.8 সেকেন্ড",
+      "C": "9.0 সেকেন্ড",
+      "D": "4.8 সেকেন্ড"
+    },
+    "answer": "B",
+    "explanation": "বিচরণকাল T = 2u/g = (2 * 48)/9.8 ≈ 9.8 সেকেন্ড।",
+    "subject": "Physics"
+  },
+  {
+    "question": "5% Sodium Carbonate solution এর মোলারিটি কত?",
+    "options": {
+      "A": "0.74M",
+      "B": "0.98M",
+      "C": "0.88M",
+      "D": "0.47M"
+    },
+    "answer": "D",
+    "explanation": "M = (10x)/Mw = (10 * 5)/106 ≈ 0.47M।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি অপ্রকৃত ফল?",
+    "options": {
+      "A": "আনারস",
+      "B": "আম",
+      "C": "পেয়ারা",
+      "D": "লিচু"
+    },
+    "answer": "A",
+    "explanation": "আনারস একটি যৌগিক ও অপ্রকৃত ফল কারণ এটি সম্পূর্ণ পুষ্পমঞ্জরী থেকে উৎপন্ন হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "For present perfect tense, which one of the following is correct?",
+    "options": {
+      "A": "Ashraf went to Faridpur.",
+      "B": "Ashraf had gone to Faridpur.",
+      "C": "Ashraf has been to Faridpur.",
+      "D": "Ashraf has gone to Faridpur."
+    },
+    "answer": "D",
+    "explanation": "Present Perfect গঠন: Subject + has/have + V3।",
+    "subject": "English"
+  },
+  {
+    "question": "নিচের কোন অঙ্গ ইরাইথ্রোপোয়েটিন (Erythropoietin) উৎপাদন করে?",
+    "options": {
+      "A": "হৃৎপিণ্ড",
+      "B": "বৃক্ক",
+      "C": "ফুসফুস",
+      "D": "মগজ"
+    },
+    "answer": "B",
+    "explanation": "বৃক্ক বা কিডনি থেকে এই হরমোন উৎপন্ন হয়ে লোহিত রক্তকণিকা উৎপাদনে সাহায্য করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "আগুন প্রশমিত করার জন্য কোন গ্যাস ব্যবহার করা হয়?",
+    "options": {
+      "A": "Sulphur dioxide",
+      "B": "Nitrogen oxide",
+      "C": "Carbon dioxide",
+      "D": "Carbon monoxide"
+    },
+    "answer": "C",
+    "explanation": "কার্বন ডাই-অক্সাইড আগুন নেভানোর কাজে ব্যাপকভাবে ব্যবহৃত হয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "শ্বাসতন্ত্রের কোন অংশে গ্যাসীয় বিনিময় হয়?",
+    "options": {
+      "A": "ট্রাকিয়া",
+      "B": "ব্রঙ্কিওল",
+      "C": "অ্যালভিওলাস",
+      "D": "ব্রঙ্কাস"
+    },
+    "answer": "C",
+    "explanation": "অ্যালভিওলাস হলো ফুসফুসের কার্যকরী একক যেখানে বায়ুর আদান-প্রদান ঘটে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "এক (1) অশ্বশক্তি (Horse Power) সমান কত ওয়াট (Watt)?",
+    "options": {
+      "A": "766",
+      "B": "746",
+      "C": "776",
+      "D": "756"
+    },
+    "answer": "B",
+    "explanation": "১ এইচপি (HP) = ৭৪৬ ওয়াট।",
+    "subject": "Physics"
+  },
+  {
+    "question": "সোডিয়াম আয়নে (Na+) কতগুলো ইলেকট্রন থাকে?",
+    "options": {
+      "A": "11",
+      "B": "5",
+      "C": "13",
+      "D": "10"
+    },
+    "answer": "D",
+    "explanation": "সোডিয়ামের পারমাণবিক সংখ্যা ১১। Na+ একটি ইলেকট্রন বর্জন করে, ফলে এর ইলেকট্রন সংখ্যা ১০।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "আন্তঃকশেরুকা চাকতিতে কি ধরনের তরুণাস্থি পাওয়া যায়?",
+    "options": {
+      "A": "চুনময় তরুণাস্থি",
+      "B": "স্বচ্ছ তরুণাস্থি",
+      "C": "শ্বেততন্ত্রময় তরুণাস্থি",
+      "D": "স্থিতিস্থাপক তরুণাস্থি"
+    },
+    "answer": "C",
+    "explanation": "কশেরুকার মধ্যবর্তী চাকতি শ্বেততন্ত্রময় তরুণাস্থি দিয়ে গঠিত।",
+    "subject": "Biology"
+  },
+  {
+    "question": "ছত্রাকের কোষ প্রাচীরের মুখ্য উপাদান কোনটি?",
+    "options": {
+      "A": "কাইটিন",
+      "B": "আরগোস্টেরল",
+      "C": "সেলুলোজ",
+      "D": "গ্লাইকোজেন"
+    },
+    "answer": "A",
+    "explanation": "ছত্রাকের কোষ প্রাচীর কাইটিন নামক পলিস্যাকারাইড দিয়ে গঠিত।",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন বন্ধন (bond) দ্বারা দুইটি হাইড্রোজেন এ্যাটম যুক্ত থাকে?",
+    "options": {
+      "A": "Hydrophilic",
+      "B": "Hydrophobic",
+      "C": "Ionic",
+      "D": "Covalent"
+    },
+    "answer": "D",
+    "explanation": "দুটি অধাতব হাইড্রোজেন পরমাণু ইলেকট্রন শেয়ারের মাধ্যমে সমযোজী বা Covalent বন্ধন তৈরি করে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি সবচেয়ে শক্তিশালী এসিড?",
+    "options": {
+      "A": "ClCH2COOH",
+      "B": "H2FSbF6",
+      "C": "BrCH2COOH",
+      "D": "ICH2COOH"
+    },
+    "answer": "B",
+    "explanation": "এটি একটি সুপার এসিড।",
+    "subject": "Chemistry"
+  },
+{
+    "question": "নিচের কোনটিতে ঐচ্ছিক পেশি পাওয়া যায়?",
+    "options": {
+      "A": "জিহ্বা",
+      "B": "হৃৎপিণ্ড",
+      "C": "জরায়ু",
+      "D": "পাকস্থলি"
+    },
+    "answer": "A",
+    "explanation": "জিহ্বার পেশি আমরা নিজের ইচ্ছামতো নিয়ন্ত্রণ করতে পারি।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি রক্তনালীর সংকোচন ঘটিয়ে রক্তপাত হ্রাস করে?",
+    "options": {
+      "A": "হেপারিন",
+      "B": "হিস্টামিন",
+      "C": "থ্রম্বোপ্লাস্টিন",
+      "D": "সেরোটোনিন"
+    },
+    "answer": "D",
+    "explanation": "অনুচক্রিকা থেকে নিঃসৃত সেরোটোনিন রক্তবাহী নালিকা সংকোচন করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "In which of the following sentences 'but' is used as a preposition?",
+    "options": {
+      "A": "We tried hard but did not succeed.",
+      "B": "There is no one but likes him.",
+      "C": "None but the brave deserves the fair.",
+      "D": "It is but right to admit our faults."
+    },
+    "answer": "C",
+    "explanation": "এখানে 'but' মানে 'ব্যতীত' (except), যা Preposition হিসেবে কাজ করছে।",
+    "subject": "English"
+  },
+  {
+    "question": "জাতির পিতা বঙ্গবন্ধু শেখ মুজিবুর রহমান কোন তারিখে পাকিস্তানের কারাগার থেকে মুক্ত হয়ে স্বাধীন বাংলাদেশে প্রত্যাবর্তন করেন?",
+    "options": {
+      "A": "৯ জানুয়ারি",
+      "B": "১১ জানুয়ারি",
+      "C": "১০ জানুয়ারি",
+      "D": "১২ জানুয়ারি"
+    },
+    "answer": "C",
+    "explanation": "বঙ্গবন্ধু ১০ই জানুয়ারি ১৯৭২ সালে স্বদেশ প্রত্যাবর্তন করেন।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "অক্সিজেনে কতটি আইসোটোপ পাওয়া যায়?",
+    "options": {
+      "A": "দুইটি",
+      "B": "চারটি",
+      "C": "তিনটি",
+      "D": "একটি"
+    },
+    "answer": "C",
+    "explanation": "অক্সিজেনের তিনটি স্থিতিশীল আইসোটোপ হলো O-16, O-17, O-18।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোনটি উদ্ভিদ কোষে থাকে না?",
+    "options": {
+      "A": "প্লাস্টিড",
+      "B": "সঞ্চিত খাদ্য শ্বেতসার",
+      "C": "কোষ প্রাচীর",
+      "D": "সেন্ট্রোসোম"
+    },
+    "answer": "D",
+    "explanation": "সেন্ট্রোসোম সাধারণত উন্নত উদ্ভিদ কোষে থাকে না, প্রাণী কোষে থাকে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "ঘাসফড়িং এর হেপাটিক সিকা কয়টি?",
+    "options": {
+      "A": "১২",
+      "B": "৮",
+      "C": "১৪",
+      "D": "১০"
+    },
+    "answer": "A",
+    "explanation": "ঘাসফড়িংয়ের ৬ জোড়া বা ১২টি হেপাটিক সিকা থাকে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি 'flame test' এ 'Golden yellow' প্রতীয়মান হয়?",
+    "options": {
+      "A": "Ca",
+      "B": "K",
+      "C": "Cu",
+      "D": "Na"
+    },
+    "answer": "D",
+    "explanation": "শিখা পরীক্ষায় সোডিয়াম (Na) সোনালী হলুদ শিখা দেয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "\"ফ্লাজেলাযুক্ত স্পোর\" কি নামে অবহিত?",
+    "options": {
+      "A": "Resting spore",
+      "B": "Aplanospore",
+      "C": "Hypnospore",
+      "D": "Zoospore"
+    },
+    "answer": "D",
+    "explanation": "চলনক্ষম বা ফ্লাজেলাযুক্ত স্পোরকে জুস্পোর বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন সালে বাংলাদেশ ক্রিকেটে \"ওয়ান ডে স্ট্যাটাস\" লাভ করে?",
+    "options": {
+      "A": "১৯৯৬",
+      "B": "১৯৯৭",
+      "C": "১৯৯৯",
+      "D": "১৯৯৮"
+    },
+    "answer": "B",
+    "explanation": "বাংলাদেশ ১৯৯৭ সালে আইসিসি ট্রফি জেতার পর ওয়ানডে স্ট্যাটাস পায়।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "She said, \"I taught in many schools\"- what is the indirect speech of this sentence?",
+    "options": {
+      "A": "She said: she had taught in many schools.",
+      "B": "She said that she had taught in many schools.",
+      "C": "She said she had educated in many schools.",
+      "D": "She said that she taught in many schools."
+    },
+    "answer": "B",
+    "explanation": "Reporting verb past-এ থাকলে speech-এর tense change হয়ে past perfect হয়।",
+    "subject": "English"
+  },
+  {
+    "question": "কোন Lipoprotein কে Bad Cholesterol বলে?",
+    "options": {
+      "A": "Low density lipoprotein",
+      "B": "Very low density lipoprotein",
+      "C": "High density lipoprotein",
+      "D": "Chylomicron"
+    },
+    "answer": "A",
+    "explanation": "LDL বা Low density lipoprotein রক্তনালীতে চর্বি জমায় বলে একে ব্যাড কোলেস্টেরল বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "মানবদেহের কোন অঙ্গে সর্বোচ্চ সংখ্যক গবলেট কোষ পাওয়া যায়?",
+    "options": {
+      "A": "বৃহদন্ত্র",
+      "B": "যকৃত",
+      "C": "ফুসফুস",
+      "D": "ক্ষুদ্রান্ত্র"
+    },
+    "answer": "A",
+    "explanation": "গবলেট কোষ থেকে মিউকাস নিঃসৃত হয় যা বৃহদন্ত্রে মল পিচ্ছিল করতে সাহায্য করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি 'Gaseous oxidizing agent'?",
+    "options": {
+      "A": "H2O2",
+      "B": "H2SO4",
+      "C": "KMnO4",
+      "D": "O3"
+    },
+    "answer": "D",
+    "explanation": "ওজোন (O3) একটি গ্যাসীয় জারক।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which one of the following is not a noun?",
+    "options": {
+      "A": "Fairly",
+      "B": "Childhood",
+      "C": "Loneliness",
+      "D": "Purity"
+    },
+    "answer": "A",
+    "explanation": "'Fairly' হলো Adverb, বাকিগুলো Noun।",
+    "subject": "English"
+  },
+  {
+    "question": "শূন্যে আলোর গতি হচ্ছে.... meter/second.",
+    "options": {
+      "A": "499 992 658",
+      "B": "599 692 758",
+      "C": "399 892 558",
+      "D": "299 792 458"
+    },
+    "answer": "D",
+    "explanation": "আলোর গতি প্রায় ৩ লক্ষ কিমি/সেকেন্ড বা সঠিকভাবে ২৯৯,৭৯২,৪৫৮ মি/সে।",
+    "subject": "Physics"
+  },
+  {
+    "question": "পরম শূন্য তাপমাত্রা হচ্ছে, ঋণাত্মক-",
+    "options": {
+      "A": "273.15°C",
+      "B": "273.25°C",
+      "C": "273.45°C",
+      "D": "273.35°C"
+    },
+    "answer": "A",
+    "explanation": "পরম শূন্য তাপমাত্রা বা ০ কেলভিন = -২৭৩.১৫ ডিগ্রি সেলসিয়াস।",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোন 'হাইড্রক্সাইড' টি অম্লধর্মীয়?",
+    "options": {
+      "A": "Zn(OH)2",
+      "B": "B(OH)3",
+      "C": "Mg(OH)2",
+      "D": "Ga(OH)3"
+    },
+    "answer": "B",
+    "explanation": "B(OH)3 বা বোরিক এসিড একটি অম্লধর্মী যৌগ।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোনটি যৌগিক পাতাযুক্ত উদ্ভিদ নয়?",
+    "options": {
+      "A": "লজ্জাবতী",
+      "B": "জবা",
+      "C": "নারিকেল",
+      "D": "গোলাপ"
+    },
+    "answer": "B",
+    "explanation": "জবা হলো একটি সরল পত্রযুক্ত উদ্ভিদ।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি এসিড বৃষ্টির জন্য দায়ী?",
+    "options": {
+      "A": "O2",
+      "B": "SO2",
+      "C": "CO",
+      "D": "CO2"
+    },
+    "answer": "B",
+    "explanation": "SO2 ও NOx গ্যাস বৃষ্টির পানির সাথে মিশে এসিড বৃষ্টি তৈরি করে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "তরলিত প্রাকৃতিক গ্যাস (LNG) কিসে সমৃদ্ধ?",
+    "options": {
+      "A": "Hexane",
+      "B": "Butane",
+      "C": "Methane",
+      "D": "Propane"
+    },
+    "answer": "C",
+    "explanation": "প্রাকৃতিক গ্যাসের প্রধান উপাদান হলো মিথেন।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "মাইটোসিসে কোষের ভিতরে নিউক্লিয়াসের বিভাজনকে কি বলে?",
+    "options": {
+      "A": "অ্যামাইটোসিস",
+      "B": "ডায়াকাইনেসিস",
+      "C": "সাইটোকাইনেসিস",
+      "D": "ক্যারিওকাইনেসিস"
+    },
+    "answer": "D",
+    "explanation": "নিউক্লিয়াসের বিভাজনকে ক্যারিওকাইনেসিস এবং সাইটোপ্লাজমের বিভাজনকে সাইটোকাইনেসিস বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "'LASER' এর পূর্ণ রূপ কি?",
+    "options": {
+      "A": "Light Amplification by Stimulated Emission of Electromagnetic Radiation",
+      "B": "Light Amplification by Stimulated Emission of Radiation",
+      "C": "Light Augmentation by Stimulated Emission of Radiation",
+      "D": "Light Amplification by Stimulated Emission of Rays"
+    },
+    "answer": "B",
+    "explanation": "LASER stands for Light Amplification by Stimulated Emission of Radiation.",
+    "subject": "Physics"
+  },
+  {
+    "question": "The word 'right' has been used as a verb in which of the following sentences?",
+    "options": {
+      "A": "It is a matter of right.",
+      "B": "Serve him right.",
+      "C": "He is the right man for the job.",
+      "D": "It is such a fault that it will right itself."
+    },
+    "answer": "D",
+    "explanation": "এখানে 'right' কথাটি 'ঠিক হওয়া' অর্থে verb হিসেবে ব্যবহৃত হয়েছে।",
+    "subject": "English"
+  },
+  {
+    "question": "নিচের কোনটি 'Oxidation Reduction Reaction'?",
+    "options": {
+      "A": "NaCl+AgNO3 → NaNO3+AgCl",
+      "B": "HF+KOH → KF+H2O",
+      "C": "CaCO3 → CaO+CO2",
+      "D": "2H2S+SO2 → 2H2O+3S"
+    },
+    "answer": "D",
+    "explanation": "এখানে জারণ ও বিজারণ উভয়ই ঘটেছে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "সার্বজনীন গ্রহীতা blood group কোনটি?",
+    "options": {
+      "A": "AB",
+      "B": "B",
+      "C": "O",
+      "D": "A"
+    },
+    "answer": "A",
+    "explanation": "AB রক্ত গ্রুপে কোনো অ্যান্টিবডি না থাকায় এটি সবার থেকে রক্ত নিতে পারে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন এনজাইম glucose কে ethyl alcohol এ পরিবর্তিত করে?",
+    "options": {
+      "A": "Zymase",
+      "B": "Diastase",
+      "C": "Maltase",
+      "D": "Invertase"
+    },
+    "answer": "A",
+    "explanation": "জাইমেজ এনজাইম গ্লুকোজকে ফারমেন্টেশনের মাধ্যমে ইথাইল অ্যালকোহল ও CO2-তে পরিণত করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "অর্থ জীবন (half-life) এর প্রতীক কোনটি?",
+    "options": {
+      "A": "t1/2",
+      "B": "1/2T",
+      "C": "T1/2",
+      "D": "1/2t"
+    },
+    "answer": "C",
+    "explanation": "অর্ধায়ু বা হাফ-লাইফকে সাধারণত T1/2 দ্বারা প্রকাশ করা হয়।",
+    "subject": "Physics"
+  },
+  {
+    "question": "বিশ্ব স্বাস্থ্য সংস্থার নির্দেশিকা অনুযায়ী পানীয় জলে আর্সেনিকের নিরাপদ মাত্রা কত?",
+    "options": {
+      "A": "1 mg/L",
+      "B": "0.001 mg/L",
+      "C": "0.1 mg/L",
+      "D": "0.01 mg/L"
+    },
+    "answer": "D",
+    "explanation": "WHO এর মতে পানীয় জলে আর্সেনিকের মাত্রা ০.০১ মিগ্রা/লি হওয়া উচিত।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোন বিখ্যাত গায়ক মুক্তিযুদ্ধ চলাকালীন সময়ে বাংলাদেশের জন্য নিউইয়র্কে কনসার্ট করে অর্থ সংগ্রহ করেন?",
+    "options": {
+      "A": "লতা মুঙ্গেশকর",
+      "B": "মোহাম্মদ রাফি",
+      "C": "জর্জ হ্যারিসন",
+      "D": "এলিভস প্রিসলি"
+    },
+    "answer": "C",
+    "explanation": "১৯৭১ সালে জর্জ হ্যারিসন 'Concert for Bangladesh' এর আয়োজন করেন।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "মানবদেহের কোন অঙ্গ ফিব্রিনোজেন তৈরি করে?",
+    "options": {
+      "A": "হৃৎপিণ্ড",
+      "B": "ফুসফুস",
+      "C": "যকৃত",
+      "D": "ক্ষুদ্রাস্ত্র"
+    },
+    "answer": "C",
+    "explanation": "যকৃত বা লিভার অধিকাংশ প্লাজমা প্রোটিন ও ফিব্রিনোজেন তৈরি করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটিতে পদার্থবিদ্যা লব্ধ জ্ঞান চিকিৎসা বিদ্যায় প্রয়োগ করা হয় না?",
+    "options": {
+      "A": "MRI",
+      "B": "X-ray",
+      "C": "Biometric attendance",
+      "D": "Ultrasound"
+    },
+    "answer": "C",
+    "explanation": "বায়োমেট্রিক অ্যাটেনডেন্স একটি দাপ্তরিক প্রক্রিয়া, এটি চিকিৎসা পদ্ধতি নয়।",
+    "subject": "Physics"
+  },
+  {
+    "question": "Antonym of 'Refractory' is:",
+    "options": {
+      "A": "Obedient",
+      "B": "Cussed",
+      "C": "Intractable",
+      "D": "Stubborn"
+    },
+    "answer": "A",
+    "explanation": "'Refractory' মানে অবাধ্য, এর বিপরীত হলো 'Obedient' বা বাধ্য।",
+    "subject": "English"
+  },
+  {
+    "question": "হৃৎপিণ্ডে অবস্থিত কোন সংযোগকারি কলা (Junctional tissue) কে পেসমেকার বলা হয়?",
+    "options": {
+      "A": "সাইনো-অ্যাট্রিয়াল নোড",
+      "B": "বান্ডেল অব হিস",
+      "C": "পারকিঞ্জি তত্ত্ব",
+      "D": "অ্যাট্রিও-ভেন্ট্রিকুলার নোড"
+    },
+    "answer": "A",
+    "explanation": "SA Node বা সাইনো-অ্যাট্রিয়াল নোডকে প্রাকৃতিক পেসমেকার বলা হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "Which one of the following is past participle form of 'swim'?",
+    "options": {
+      "A": "swum",
+      "B": "swom",
+      "C": "swam",
+      "D": "sweem"
+    },
+    "answer": "A",
+    "explanation": "Swim (V1) - Swam (V2) - Swum (V3)।",
+    "subject": "English"
+  },
+  {
+    "question": "সেন্টিগ্রেড স্কেলে 98.5° ফারেনহাইট তাপমাত্রার মান কত?",
+    "options": {
+      "A": "45.456°C",
+      "B": "35.944°C",
+      "C": "36.544°C",
+      "D": "36.944°C"
+    },
+    "answer": "D",
+    "explanation": "C/5 = (F-32)/9 সূত্র ব্যবহার করে পাওয়া যায় প্রায় ৩৬.৯৪৪°C।",
+    "subject": "Physics"
+  },
+  {
+    "question": "হাইড্রার কোন অংশে নিডোসাইট কোষ সব চেয়ে বেশি থাকে?",
+    "options": {
+      "A": "দেহকাণ্ড",
+      "B": "দেহ প্রাচীর",
+      "C": "পাদ চাকতি",
+      "D": "কর্ষিকা"
+    },
+    "answer": "D",
+    "explanation": "হাইড্রার কর্ষিকায় সবচেয়ে বেশি সংখ্যক নিডোসাইট থাকে যা শিকার ধরতে ব্যবহৃত হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "মুখ বিবরে 'র‍্যাড়ুলা' নামক অংশ থাকে কোন পর্বের প্রাণীতে?",
+    "options": {
+      "A": "Chordata",
+      "B": "Mollusca",
+      "C": "Arthropoda",
+      "D": "Nematoda"
+    },
+    "answer": "B",
+    "explanation": "মলাস্কা পর্বের প্রাণীদের (যেমন শামুক) মুখগহ্বরে র‍্যাড়ুলা বা রেতজিহ্বা থাকে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "Choose the correct sentence-",
+    "options": {
+      "A": "I have been lived here since five years",
+      "B": "I am living here for five years",
+      "C": "I have been living here for five years",
+      "D": "I live here for five years"
+    },
+    "answer": "C",
+    "explanation": "নির্দিষ্ট সময়ের পরিধি (Duration) বোঝাতে 'for' ব্যবহৃত হয় এবং এটি Present Perfect Continuous।",
+    "subject": "English"
+  },
+{
+    "question": "চৌম্বক সম্পর্কিত নিচের কোন এককটি সঠিক?",
+    "options": {
+      "A": "চৌম্বক ফ্লাক্স-ওয়েরস্টেড",
+      "B": "চৌম্বক প্রবেশ্যতা-ওয়েবার",
+      "C": "চৌম্বক ক্ষেত্র-টেসলা",
+      "D": "চৌম্বক ভ্রামক-হেনরি"
+    },
+    "answer": "C",
+    "explanation": "চৌম্বক ক্ষেত্রের একক হলো টেসলা (T)।",
+    "subject": "Physics"
+  },
+  {
+    "question": "পর্যায়কাল ও বল ধ্রুবকের মধ্যে সম্পর্ক সূচক সমীকরণ কোনটি?",
+    "options": {
+      "A": "T ∝ √K",
+      "B": "T ∝ 1/√K",
+      "C": "K ∝ √T",
+      "D": "T ∝ K"
+    },
+    "answer": "B",
+    "explanation": "পর্যায়কাল T = 2π√(m/K), অর্থাৎ T বল ধ্রুবকের বর্গমূলের ব্যস্তানুপাতিক।",
+    "subject": "Physics"
+  },
+  {
+    "question": "\"ফ্লাজেলাযুক্ত স্পোর\" কি নামে অবহিত?",
+    "options": {
+      "A": "Resting spore",
+      "B": "Aplanospore",
+      "C": "Hypnospore",
+      "D": "Zoospore"
+    },
+    "answer": "D",
+    "explanation": "চলনক্ষম বা ফ্লাজেলাযুক্ত স্পোরকে জুস্পোর বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "কোন সালে বাংলাদেশ ক্রিকেটে \"ওয়ান ডে স্ট্যাটাস\" লাভ করে?",
+    "options": {
+      "A": "১৯৯৬",
+      "B": "১৯৯৭",
+      "C": "১৯৯৯",
+      "D": "১৯৯৮"
+    },
+    "answer": "B",
+    "explanation": "বাংলাদেশ ১৯৯৭ সালে আইসিসি ট্রফি জেতার পর ওয়ানডে স্ট্যাটাস পায়।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "She said, \"I taught in many schools\"- what is the indirect speech of this sentence?",
+    "options": {
+      "A": "She said: she had taught in many schools.",
+      "B": "She said that she had taught in many schools.",
+      "C": "She said she had educated in many schools.",
+      "D": "She said that she taught in many schools."
+    },
+    "answer": "B",
+    "explanation": "Reporting verb past-এ থাকলে speech-এর tense change হয়ে past perfect হয়।",
+    "subject": "English"
+  },
+  {
+    "question": "কোন Lipoprotein কে Bad Cholesterol বলে?",
+    "options": {
+      "A": "Low density lipoprotein",
+      "B": "Very low density lipoprotein",
+      "C": "High density lipoprotein",
+      "D": "Chylomicron"
+    },
+    "answer": "A",
+    "explanation": "LDL বা Low density lipoprotein রক্তনালীতে চর্বি জমায় বলে একে ব্যাড কোলেস্টেরল বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "মানবদেহের কোন অঙ্গে সর্বোচ্চ সংখ্যক গবলেট কোষ পাওয়া যায়?",
+    "options": {
+      "A": "বৃহদন্ত্র",
+      "B": "যকৃত",
+      "C": "ফুসফুস",
+      "D": "ক্ষুদ্রান্ত্র"
+    },
+    "answer": "A",
+    "explanation": "গবলেট কোষ থেকে মিউকাস নিঃসৃত হয় যা বৃহদন্ত্রে মল পিচ্ছিল করতে সাহায্য করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি 'Gaseous oxidizing agent'?",
+    "options": {
+      "A": "H2O2",
+      "B": "H2SO4",
+      "C": "KMnO4",
+      "D": "O3"
+    },
+    "answer": "D",
+    "explanation": "ওজোন (O3) একটি গ্যাসীয় জারক।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "Which one of the following is not a noun?",
+    "options": {
+      "A": "Fairly",
+      "B": "Childhood",
+      "C": "Loneliness",
+      "D": "Purity"
+    },
+    "answer": "A",
+    "explanation": "'Fairly' হলো Adverb, বাকিগুলো Noun।",
+    "subject": "English"
+  },
+  {
+    "question": "শূন্যে আলোর গতি হচ্ছে.... meter/second.",
+    "options": {
+      "A": "499 992 658",
+      "B": "599 692 758",
+      "C": "399 892 558",
+      "D": "299 792 458"
+    },
+    "answer": "D",
+    "explanation": "আলোর গতি প্রায় ৩ লক্ষ কিমি/সেকেন্ড বা সঠিকভাবে ২৯৯,৭৯২,৪৫৮ মি/সে।",
+    "subject": "Physics"
+  },
+  {
+    "question": "পরম শূন্য তাপমাত্রা হচ্ছে, ঋণাত্মক-",
+    "options": {
+      "A": "273.15°C",
+      "B": "273.25°C",
+      "C": "273.45°C",
+      "D": "273.35°C"
+    },
+    "answer": "A",
+    "explanation": "পরম শূন্য তাপমাত্রা বা ০ কেলভিন = -২৭৩.১৫ ডিগ্রি সেলসিয়াস।",
+    "subject": "Physics"
+  },
+  {
+    "question": "নিচের কোন 'হাইড্রক্সাইড' টি অম্লধর্মীয়?",
+    "options": {
+      "A": "Zn(OH)2",
+      "B": "B(OH)3",
+      "C": "Mg(OH)2",
+      "D": "Ga(OH)3"
+    },
+    "answer": "B",
+    "explanation": "B(OH)3 বা বোরিক এসিড একটি অম্লধর্মী যৌগ।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোনটি যৌগিক পাতাযুক্ত উদ্ভিদ নয়?",
+    "options": {
+      "A": "লজ্জাবতী",
+      "B": "জবা",
+      "C": "নারিকেল",
+      "D": "গোলাপ"
+    },
+    "answer": "B",
+    "explanation": "জবা হলো একটি সরল পত্রযুক্ত উদ্ভিদ।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটি এসিড বৃষ্টির জন্য দায়ী?",
+    "options": {
+      "A": "O2",
+      "B": "SO2",
+      "C": "CO",
+      "D": "CO2"
+    },
+    "answer": "B",
+    "explanation": "SO2 ও NOx গ্যাস বৃষ্টির পানির সাথে মিশে এসিড বৃষ্টি তৈরি করে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "তরলিত প্রাকৃতিক গ্যাস (LNG) কিসে সমৃদ্ধ?",
+    "options": {
+      "A": "Hexane",
+      "B": "Butane",
+      "C": "Methane",
+      "D": "Propane"
+    },
+    "answer": "C",
+    "explanation": "প্রাকৃতিক গ্যাসের প্রধান উপাদান হলো মিথেন।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "মাইটোসিসে কোষের ভিতরে নিউক্লিয়াসের বিভাজনকে কি বলে?",
+    "options": {
+      "A": "অ্যামাইটোসিস",
+      "B": "ডায়াকাইনেসিস",
+      "C": "সাইটোকাইনেসিস",
+      "D": "ক্যারিওকাইনেসিস"
+    },
+    "answer": "D",
+    "explanation": "নিউক্লিয়াসের বিভাজনকে ক্যারিওকাইনেসিস এবং সাইটোপ্লাজমের বিভাজনকে সাইটোকাইনেসিস বলে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "'LASER' এর পূর্ণ রূপ কি?",
+    "options": {
+      "A": "Light Amplification by Stimulated Emission of Electromagnetic Radiation",
+      "B": "Light Amplification by Stimulated Emission of Radiation",
+      "C": "Light Augmentation by Stimulated Emission of Radiation",
+      "D": "Light Amplification by Stimulated Emission of Rays"
+    },
+    "answer": "B",
+    "explanation": "LASER stands for Light Amplification by Stimulated Emission of Radiation.",
+    "subject": "Physics"
+  },
+  {
+    "question": "The word 'right' has been used as a verb in which of the following sentences?",
+    "options": {
+      "A": "It is a matter of right.",
+      "B": "Serve him right.",
+      "C": "He is the right man for the job.",
+      "D": "It is such a fault that it will right itself."
+    },
+    "answer": "D",
+    "explanation": "এখানে 'right' কথাটি 'ঠিক হওয়া' অর্থে verb হিসেবে ব্যবহৃত হয়েছে।",
+    "subject": "English"
+  },
+  {
+    "question": "নিচের কোনটি 'Oxidation Reduction Reaction'?",
+    "options": {
+      "A": "NaCl+AgNO3 → NaNO3+AgCl",
+      "B": "HF+KOH → KF+H2O",
+      "C": "CaCO3 → CaO+CO2",
+      "D": "2H2S+SO2 → 2H2O+3S"
+    },
+    "answer": "D",
+    "explanation": "এখানে জারণ ও বিজারণ উভয়ই ঘটেছে।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "সার্বজনীন গ্রহীতা blood group কোনটি?",
+    "options": {
+      "A": "AB",
+      "B": "B",
+      "C": "O",
+      "D": "A"
+    },
+    "answer": "A",
+    "explanation": "AB রক্ত গ্রুপে কোনো অ্যান্টিবডি না থাকায় এটি সবার থেকে রক্ত নিতে পারে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোন এনজাইম glucose কে ethyl alcohol এ পরিবর্তিত করে?",
+    "options": {
+      "A": "Zymase",
+      "B": "Diastase",
+      "C": "Maltase",
+      "D": "Invertase"
+    },
+    "answer": "A",
+    "explanation": "জাইমেজ এনজাইম গ্লুকোজকে ফারমেন্টেশনের মাধ্যমে ইথাইল অ্যালকোহল ও CO2-তে পরিণত করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "অর্থ জীবন (half-life) এর প্রতীক কোনটি?",
+    "options": {
+      "A": "t1/2",
+      "B": "1/2T",
+      "C": "T1/2",
+      "D": "1/2t"
+    },
+    "answer": "C",
+    "explanation": "অর্ধায়ু বা হাফ-লাইফকে সাধারণত T1/2 দ্বারা প্রকাশ করা হয়।",
+    "subject": "Physics"
+  },
+  {
+    "question": "বিশ্ব স্বাস্থ্য সংস্থার নির্দেশিকা অনুযায়ী পানীয় জলে আর্সেনিকের নিরাপদ মাত্রা কত?",
+    "options": {
+      "A": "1 mg/L",
+      "B": "0.001 mg/L",
+      "C": "0.1 mg/L",
+      "D": "0.01 mg/L"
+    },
+    "answer": "D",
+    "explanation": "WHO এর মতে পানীয় জলে আর্সেনিকের মাত্রা ০.০১ মিগ্রা/লি হওয়া উচিত।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "কোন বিখ্যাত গায়ক মুক্তিযুদ্ধ চলাকালীন সময়ে বাংলাদেশের জন্য নিউইয়র্কে কনসার্ট করে অর্থ সংগ্রহ করেন?",
+    "options": {
+      "A": "লতা মুঙ্গেশকর",
+      "B": "মোহাম্মদ রাফি",
+      "C": "জর্জ হ্যারিসন",
+      "D": "এলিভস প্রিসলি"
+    },
+    "answer": "C",
+    "explanation": "১৯৭১ সালে জর্জ হ্যারিসন 'Concert for Bangladesh' এর আয়োজন করেন।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "মানবদেহের কোন অঙ্গ ফিব্রিনোজেন তৈরি করে?",
+    "options": {
+      "A": "হৃৎপিণ্ড",
+      "B": "ফুসফুস",
+      "C": "যকৃত",
+      "D": "ক্ষুদ্রাস্ত্র"
+    },
+    "answer": "C",
+    "explanation": "যকৃত বা লিভার অধিকাংশ প্লাজমা প্রোটিন ও ফিব্রিনোজেন তৈরি করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটিতে পদার্থবিদ্যা লব্ধ জ্ঞান চিকিৎসা বিদ্যায় প্রয়োগ করা হয় না?",
+    "options": {
+      "A": "MRI",
+      "B": "X-ray",
+      "C": "Biometric attendance",
+      "D": "Ultrasound"
+    },
+    "answer": "C",
+    "explanation": "বায়োমেট্রিক অ্যাটেনডেন্স একটি দাপ্তরিক প্রক্রিয়া, এটি চিকিৎসা পদ্ধতি নয়।",
+    "subject": "Physics"
+  },
+  {
+    "question": "Antonym of 'Refractory' is:",
+    "options": {
+      "A": "Obedient",
+      "B": "Cussed",
+      "C": "Intractable",
+      "D": "Stubborn"
+    },
+    "answer": "A",
+    "explanation": "'Refractory' মানে অবাধ্য, এর বিপরীত হলো 'Obedient' বা বাধ্য।",
+    "subject": "English"
+  },
+  {
+    "question": "হৃৎপিণ্ডে অবস্থিত কোন সংযোগকারি কলা (Junctional tissue) কে পেসমেকার বলা হয়?",
+    "options": {
+      "A": "সাইনো-অ্যাট্রিয়াল নোড",
+      "B": "বান্ডেল অব হিস",
+      "C": "পারকিঞ্জি তত্ত্ব",
+      "D": "অ্যাট্রিও-ভেন্ট্রিকুলার নোড"
+    },
+    "answer": "A",
+    "explanation": "SA Node বা সাইনো-অ্যাট্রিয়াল নোডকে প্রাকৃতিক পেসমেকার বলা হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "Which one of the following is past participle form of 'swim'?",
+    "options": {
+      "A": "swum",
+      "B": "swom",
+      "C": "swam",
+      "D": "sweem"
+    },
+    "answer": "A",
+    "explanation": "Swim (V1) - Swam (V2) - Swum (V3)।",
+    "subject": "English"
+  },
+  {
+    "question": "সেন্টিগ্রেড স্কেলে 98.5° ফারেনহাইট তাপমাত্রার মান কত?",
+    "options": {
+      "A": "45.456°C",
+      "B": "35.944°C",
+      "C": "36.544°C",
+      "D": "36.944°C"
+    },
+    "answer": "D",
+    "explanation": "C/5 = (F-32)/9 সূত্র ব্যবহার করে পাওয়া যায় প্রায় ৩৬.৯৪৪°C।",
+    "subject": "Physics"
+  },
+  {
+    "question": "হাইড্রার কোন অংশে নিডোসাইট কোষ সব চেয়ে বেশি থাকে?",
+    "options": {
+      "A": "দেহকাণ্ড",
+      "B": "দেহ প্রাচীর",
+      "C": "পাদ চাকতি",
+      "D": "কর্ষিকা"
+    },
+    "answer": "D",
+    "explanation": "হাইড্রার কর্ষিকায় সবচেয়ে বেশি সংখ্যক নিডোসাইট থাকে যা শিকার ধরতে ব্যবহৃত হয়।",
+    "subject": "Biology"
+  },
+  {
+    "question": "মুখ বিবরে 'র‍্যাড়ুলা' নামক অংশ থাকে কোন পর্বের প্রাণীতে?",
+    "options": {
+      "A": "Chordata",
+      "B": "Mollusca",
+      "C": "Arthropoda",
+      "D": "Nematoda"
+    },
+    "answer": "B",
+    "explanation": "মলাস্কা পর্বের প্রাণীদের (যেমন শামুক) মুখগহ্বরে র‍্যাড়ুলা বা রেতজিহ্বা থাকে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "Choose the correct sentence-",
+    "options": {
+      "A": "I have been lived here since five years",
+      "B": "I am living here for five years",
+      "C": "I have been living here for five years",
+      "D": "I live here for five years"
+    },
+    "answer": "C",
+    "explanation": "নির্দিষ্ট সময়ের পরিধি (Duration) বোঝাতে 'for' ব্যবহৃত হয় এবং এটি Present Perfect Continuous।",
+    "subject": "English"
+  },
+{
+    "question": "চৌম্বক সম্পর্কিত নিচের কোন এককটি সঠিক?",
+    "options": {
+      "A": "চৌম্বক ফ্লাক্স-ওয়েরস্টেড",
+      "B": "চৌম্বক প্রবেশ্যতা-ওয়েবার",
+      "C": "চৌম্বক ক্ষেত্র-টেসলা",
+      "D": "চৌম্বক ভ্রামক-হেনরি"
+    },
+    "answer": "C",
+    "explanation": "চৌম্বক ক্ষেত্রের একক হলো টেসলা (T)।",
+    "subject": "Physics"
+  },
+  {
+    "question": "পর্যায়কাল ও বল ধ্রুবকের মধ্যে সম্পর্ক সূচক সমীকরণ কোনটি?",
+    "options": {
+      "A": "T ∝ √K",
+      "B": "T ∝ 1/√K",
+      "C": "K ∝ √T",
+      "D": "T ∝ K"
+    },
+    "answer": "B",
+    "explanation": "পর্যায়কাল T = 2π√(m/K), অর্থাৎ T বল ধ্রুবকের বর্গমূলের ব্যস্তানুপাতিক।",
+    "subject": "Physics"
+  },
+  {
+    "question": "কোন জাতীয় ব্যারোরিসেপ্টর রক্তের আয়তন নিয়ন্ত্রণে ভূমিকা রাখে?",
+    "options": {
+      "A": "উচ্চচাপ ব্যারোরিসেপ্টর",
+      "B": "ক্যারোটিড ব্যারোরিসেপ্টর",
+      "C": "নিম্নচাপ ব্যারোরিসেপ্টর",
+      "D": "অ্যাট্রিয়াল ব্যারোরিসেপ্টর"
+    },
+    "answer": "C",
+    "explanation": "নিম্নচাপ ব্যারোরিসেপ্টর বা আয়তন রিসেপ্টর রক্তের আয়তন ও চাপ নিয়ন্ত্রণে কাজ করে।",
+    "subject": "Biology"
+  },
+  {
+    "question": "'ধনধান্য পুষ্প ভরা আমাদের এই বসুন্ধরা'-চরণের রচয়িতা কে?",
+    "options": {
+      "A": "যতীন্দ্রমোহন বাগচী",
+      "B": "কাজী নজরুল ইসলাম",
+      "C": "দ্বিজেন্দ্রলাল রায়",
+      "D": "রবীন্দ্রনাথ ঠাকুর"
+    },
+    "answer": "C",
+    "explanation": "এটি দ্বিজেন্দ্রলাল রায়ের একটি বিখ্যাত দেশাত্মবোধক গান।",
+    "subject": "General Knowledge"
+  },
+  {
+    "question": "রুই মাছের আঁইশ কোন ধরনের?",
+    "options": {
+      "A": "প্ল্যাকয়েড",
+      "B": "সাইনয়েড",
+      "C": "টিনয়েড",
+      "D": "সাইক্লয়েড"
+    },
+    "answer": "D",
+    "explanation": "রুই মাছের আঁইশ হলো সাইক্লয়েড ধরনের।",
+    "subject": "Biology"
+  },
+  {
+    "question": "পাকা কলায় নিচের কোনটি থাকে?",
+    "options": {
+      "A": "পেন্টাইল এসিটেট এস্টার",
+      "B": "অক্সাইল এসিটেট এস্টার",
+      "C": "বিউটাইল বিউটারেট এস্টার",
+      "D": "বেনজাইল এসিটেট এস্টার"
+    },
+    "answer": "A",
+    "explanation": "পাকা কলার সুগন্ধ মূলত পেন্টাইল (বা অ্যামাইল) এসিটেট এস্টারের কারণে হয়।",
+    "subject": "Chemistry"
+  },
+  {
+    "question": "নিচের কোন অঙ্গানুটি কোষে 'Translation' প্রক্রিয়ার সাথে জড়িত?",
+    "options": {
+      "A": "Mitochondria",
+      "B": "Lysosome",
+      "C": "Endoplasmic reticulum",
+      "D": "Ribosome"
+    },
+    "answer": "D",
+    "explanation": "রাইবোসোম প্রোটিন সংশ্লেষণ বা ট্রান্সলেশন প্রক্রিয়ার মূল কেন্দ্র।",
+    "subject": "Biology"
+  },
+  {
+    "question": "নিচের কোনটির কার্যকরীমূলক সঠিক?",
+    "options": {
+      "A": "কিটোন -CO-",
+      "B": "এস্টার -COOH",
+      "C": "জৈব এসিড -COOR",
+      "D": "অ্যালকেন নাইট্রাইল -CONH2"
+    },
+    "answer": "A",
+    "explanation": "কিটোনের কার্যকরী মূলক হলো কার্বনিল গ্রুপ (-CO-)।",
+    "subject": "Chemistry"
+    }
 ]
+
 
   
 
