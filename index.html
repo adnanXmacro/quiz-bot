@@ -384,6 +384,10 @@ async function connect() {
     setStatus('connected', `Connected to ${repo}`);
     showAlert('setupAlert', 'success', '✅ Connected successfully!');
     document.getElementById('dashboard').style.display = 'block';
+    // Show info if config values look like defaults
+    if (!document.getElementById('cfgChannel').value || document.getElementById('cfgChannel').value === '0') {
+      showAlert('configAlert', 'info', 'ℹ️ Config loaded. Set your Channel ID and save.');
+    }
 
   } catch (e) {
     setStatus('error', 'Connection failed');
@@ -397,7 +401,9 @@ function parseConfig(content) {
     const m = content.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
     return m ? parseInt(m[1]) : null;
   };
-  const chMatch = content.match(/CHANNEL_ID\s*=\s*int\(os\.environ\.get\("CHANNEL_ID",\s*"(\d+)"\)\)/);
+  // Match CHANNEL_ID from environment variable default or direct assignment
+  const chMatch = content.match(/CHANNEL_ID[^=]*=\s*int\([^,)]*[",'](\d+)[",']/) ||
+                  content.match(/CHANNEL_ID\s*=\s*(\d+)/);
 
   const q = extract('QUESTIONS_PER_SESSION');
   const a = extract('ALIVE_MINUTES');

@@ -317,7 +317,10 @@ class MCQView(discord.ui.View):
     def __init__(self, question: dict):
         super().__init__(timeout=ALIVE_MINUTES * 60)
         self.question = question
-        self.answered_users = set()
+        # Normalize option keys to uppercase
+        self.question["options"] = {k.upper(): v for k, v in question.get("options", {}).items()}
+        self.question["answer"]  = question.get("answer", "A").upper()
+        self.answered_users  = set()
         self.user_start_times = {}
         for i, label in enumerate(["A", "B", "C", "D"]):
             btn = discord.ui.Button(
@@ -501,23 +504,24 @@ async def run_quiz_session(channel: discord.TextChannel):
         subject = q.get("subject", "General")
 
         if q["type"] == "mcq":
-            embed = discord.Embed(
-                title=q["question"],
-                color=meta["color"]
-            )
+            opts = q.get("options", {})
+            # Normalize keys — handle both uppercase and lowercase
+            opts = {k.upper(): v for k, v in opts.items()}
+            embed = discord.Embed(title=q["question"], color=meta["color"])
             embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Question {i} of {len(questions)}")
-            # Options in a clean 2-column layout with labels
             embed.add_field(
                 name="",
                 value=(
-                    f"**A.**  {q['options']['A']}\n"
-                    f"**B.**  {q['options']['B']}\n"
-                    f"**C.**  {q['options']['C']}\n"
-                    f"**D.**  {q['options']['D']}"
+                    f"**A.**  {opts.get('A', '—')}\n"
+                    f"**B.**  {opts.get('B', '—')}\n"
+                    f"**C.**  {opts.get('C', '—')}\n"
+                    f"**D.**  {opts.get('D', '—')}"
                 ),
                 inline=False
             )
             embed.set_footer(text=f"⏱ {PERSONAL_TIMER_MIN} min from first tap  ·  Only you see your result")
+            # Also normalize options in the question object for button callbacks
+            q["options"] = opts
             await channel.send(embed=embed, view=MCQView(q))
         else:
             embed = discord.Embed(title=q["question"], color=meta["color"])
