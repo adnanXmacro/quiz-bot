@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Bot Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --danger: #f85149;
+    --warning: #d29922;
+    --text: #e6edf3;
+    --muted: #8b949e;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    display: inline-block;
+  }
+  .status-dot.connected { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+  .status-dot.error { background: var(--danger); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .card.full { grid-column: 1 / -1; }
+
+  .card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  input, select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 1rem;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  input[type="password"] { font-family: monospace; letter-spacing: 2px; }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  button {
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: inherit;
+  }
+  button:hover { opacity: 0.85; }
+  button:active { transform: scale(0.98); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-primary { background: var(--accent); color: #0d1117; }
+  .btn-success { background: var(--accent2); color: #0d1117; }
+  .btn-danger  { background: var(--danger);  color: white; }
+  .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-full    { width: 100%; }
+
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .alert {
+    padding: 0.6rem 0.875rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .alert.show { display: block; }
+  .alert-success { background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.3); color: var(--accent2); }
+  .alert-error   { background: rgba(248,81,73,0.12);  border: 1px solid rgba(248,81,73,0.3);  color: var(--danger); }
+  .alert-info    { background: rgba(88,166,255,0.1);  border: 1px solid rgba(88,166,255,0.3); color: var(--accent); }
+
+  .scores-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .scores-table th {
+    text-align: left;
+    padding: 0.4rem 0.5rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .scores-table td {
+    padding: 0.5rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .scores-table tr:last-child td { border-bottom: none; }
+  .scores-table tr:hover td { background: var(--surface2); }
+
+  .rank-badge {
+    font-size: 1rem;
+    width: 28px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .pts-input {
+    width: 80px !important;
+    margin-bottom: 0 !important;
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .save-btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .empty { color: var(--muted); text-align: center; padding: 2rem; font-size: 0.9rem; }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  .tag-blue   { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .tag-green  { background: rgba(63,185,80,0.15);  color: var(--accent2); }
+  .tag-yellow { background: rgba(210,153,34,0.15); color: var(--warning); }
+
+  .sep { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+  code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-family: monospace;
+    font-size: 0.85em;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width:900px; margin:0 auto;">
+
+  <div class="header">
+    <h1>⚙️ Quiz Bot Admin</h1>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText" style="color:var(--muted); font-size:0.85rem;">Not connected</span>
+    </div>
+  </div>
+
+  <!-- SETUP CARD -->
+  <div class="card full" id="setupCard">
+    <div class="card-title">🔑 GitHub Connection</div>
+    <div class="alert alert-info show">
+      Enter your GitHub credentials to connect. These are stored only in your browser — never sent anywhere except GitHub's API.
+    </div>
+    <div class="input-row">
+      <div>
+        <label>GitHub Personal Access Token</label>
+        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
+      </div>
+      <div>
+        <label>Repository (owner/repo)</label>
+        <input type="text" id="githubRepo" placeholder="adnanXmacro/quiz-bot">
+      </div>
+    </div>
+    <div class="input-row">
+      <div>
+        <label>Gist ID (for scores)</label>
+        <input type="text" id="gistId" placeholder="abc123def456...">
+      </div>
+      <div style="display:flex; align-items:flex-end; padding-bottom:1rem;">
+        <button class="btn-primary btn-full" onclick="connect()">Connect</button>
+      </div>
+    </div>
+    <div class="alert" id="setupAlert"></div>
+  </div>
+
+  <!-- MAIN DASHBOARD (hidden until connected) -->
+  <div id="dashboard" style="display:none;">
+
+    <div class="grid">
+
+      <!-- BOT CONFIG -->
+      <div class="card">
+        <div class="card-title">🎛️ Bot Settings</div>
+        <div class="alert" id="configAlert"></div>
+
+        <label>Questions per session</label>
+        <input type="number" id="cfgQuestions" min="1" max="30" value="10">
+
+        <label>Session alive time (minutes)</label>
+        <input type="number" id="cfgAlive" min="10" max="180" value="60">
+
+        <label>Personal timer per user (minutes)</label>
+        <input type="number" id="cfgTimer" min="1" max="60" value="10">
+
+        <label>Sessions per scoreboard cycle</label>
+        <input type="number" id="cfgCycle" min="1" max="30" value="10">
+
+        <button class="btn-primary btn-full" onclick="saveConfig()">Save to bot.py</button>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="card">
+        <div class="card-title">⚡ Quick Actions</div>
+        <div class="alert" id="actionAlert"></div>
+
+        <label>Discord Channel ID</label>
+        <input type="text" id="cfgChannel" placeholder="123456789012345678">
+
+        <button class="btn-success btn-full" onclick="triggerQuiz()" style="margin-bottom:0.75rem;">
+          ▶ Trigger Quiz Now
+        </button>
+
+        <hr class="sep">
+
+        <label>Reset scoreboard</label>
+        <div class="btn-row">
+          <button class="btn-danger" onclick="resetScores()">Reset All Scores</button>
+          <button class="btn-ghost" onclick="loadScores()">↻ Refresh</button>
+        </div>
+
+        <hr class="sep">
+
+        <div style="font-size:0.82rem; color:var(--muted); line-height:1.6;">
+          <div><strong style="color:var(--text);">Trigger Quiz</strong> — starts a new workflow run on GitHub Actions</div>
+          <br>
+          <div><strong style="color:var(--text);">Reset Scores</strong> — clears all points but keeps streaks</div>
+        </div>
+      </div>
+
+      <!-- SCORES TABLE -->
+      <div class="card full">
+        <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>📊 Current Scores</span>
+          <span id="scoresCount" style="font-size:0.8rem; color:var(--muted);"></span>
+        </div>
+        <div class="alert" id="scoresAlert"></div>
+        <div id="scoresContainer"><div class="empty">Connect to load scores</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let STATE = {
+  token: '',
+  repo: '',
+  gistId: '',
+  botSha: '',   // SHA of bot.py for updates
+  gistData: null
+};
+
+// ── CONNECT ──────────────────────────────────────────────────────────────────
+async function connect() {
+  const token  = document.getElementById('githubToken').value.trim();
+  const repo   = document.getElementById('githubRepo').value.trim();
+  const gistId = document.getElementById('gistId').value.trim();
+
+  if (!token || !repo || !gistId) {
+    showAlert('setupAlert', 'error', 'Please fill in all fields.');
+    return;
+  }
+
+  setStatus('loading', 'Connecting...');
+  showAlert('setupAlert', 'info', '⏳ Testing connection...');
+
+  try {
+    // Test GitHub API
+    const res = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`Repo not found or bad token (${res.status})`);
+
+    // Get bot.py SHA
+    const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/bot.py`, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!fileRes.ok) throw new Error('bot.py not found in repo');
+    const fileData = await fileRes.json();
+
+    STATE = { token, repo, gistId, botSha: fileData.sha, gistData: null };
+
+    // Load current config from bot.py
+    const content = atob(fileData.content.replace(/\n/g, ''));
+    parseConfig(content);
+
+    // Load scores
+    await loadScores();
+
+    setStatus('connected', `Connected to ${repo}`);
+    showAlert('setupAlert', 'success', '✅ Connected successfully!');
+    document.getElementById('dashboard').style.display = 'block';
+
+  } catch (e) {
+    setStatus('error', 'Connection failed');
+    showAlert('setupAlert', 'error', `❌ ${e.message}`);
+  }
+}
+
+// ── PARSE CONFIG FROM bot.py ─────────────────────────────────────────────────
+function parseConfig(content) {
+  const extract = (key) => {
+    const m = content.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
+    return m ? parseInt(m[1]) : null;
+  };
+  const chMatch = content.match(/CHANNEL_ID\s*=\s*int\(os\.environ\.get\("CHANNEL_ID",\s*"(\d+)"\)\)/);
+
+  const q = extract('QUESTIONS_PER_SESSION');
+  const a = extract('ALIVE_MINUTES');
+  const t = extract('PERSONAL_TIMER_MIN');
+  const c = extract('SESSIONS_PER_CYCLE');
+
+  if (q) document.getElementById('cfgQuestions').value = q;
+  if (a) document.getElementById('cfgAlive').value = a;
+  if (t) document.getElementById('cfgTimer').value = t;
+  if (c) document.getElementById('cfgCycle').value = c;
+  if (chMatch) document.getElementById('cfgChannel').value = chMatch[1];
+}
+
+// ── SAVE CONFIG ──────────────────────────────────────────────────────────────
+async function saveConfig() {
+  const q  = parseInt(document.getElementById('cfgQuestions').value);
+  const a  = parseInt(document.getElementById('cfgAlive').value);
+  const t  = parseInt(document.getElementById('cfgTimer').value);
+  const c  = parseInt(document.getElementById('cfgCycle').value);
+  const ch = document.getElementById('cfgChannel').value.trim();
+
+  showAlert('configAlert', 'info', '⏳ Fetching bot.py...');
+
+  try {
+    // Get latest bot.py
+    const fileRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
+      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    const fileData = await fileRes.json();
+    STATE.botSha = fileData.sha;
+    let content = atob(fileData.content.replace(/\n/g, ''));
+
+    // Replace config values
+    content = content.replace(/(QUESTIONS_PER_SESSION\s*=\s*)\d+/, `$1${q}`);
+    content = content.replace(/(ALIVE_MINUTES\s*=\s*)\d+/, `$1${a}`);
+    content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
+    content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
+    if (ch) {
+      content = content.replace(
+        /CHANNEL_ID\s*=\s*int\(os\.environ\.get\("CHANNEL_ID",\s*"\d*"\)\)/,
+        `CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "${ch}"))`
+      );
+    }
+
+    // Push to GitHub
+    const updateRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Admin: update bot config (q=${q}, alive=${a}m, timer=${t}m)`,
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: STATE.botSha
+      })
+    });
+
+    if (!updateRes.ok) {
+      const err = await updateRes.json();
+      throw new Error(err.message || 'Update failed');
+    }
+
+    const updated = await updateRes.json();
+    STATE.botSha = updated.content.sha;
+    showAlert('configAlert', 'success', '✅ bot.py updated on GitHub!');
+  } catch(e) {
+    showAlert('configAlert', 'error', `❌ ${e.message}`);
+  }
+}
+
+// ── TRIGGER QUIZ ─────────────────────────────────────────────────────────────
+async function triggerQuiz() {
+  showAlert('actionAlert', 'info', '⏳ Triggering workflow...');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
+      method: 'POST',
+      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: 'main' })
+    });
+    if (res.status === 204) {
+      showAlert('actionAlert', 'success', '✅ Quiz workflow triggered! Check Discord in ~30 seconds.');
+    } else {
+      const err = await res.json();
+      throw new Error(err.message || `Status ${res.status}`);
+    }
+  } catch(e) {
+    showAlert('actionAlert', 'error', `❌ ${e.message}`);
+  }
+}
+
+// ── LOAD SCORES ───────────────────────────────────────────────────────────────
+async function loadScores() {
+  try {
+    const res = await fetch(`https://api.github.com/gists/${STATE.gistId}`, {
+      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`Gist fetch failed (${res.status})`);
+    const data = await res.json();
+    const raw  = JSON.parse(data.files['scores.json'].content);
+    STATE.gistData = raw;
+    renderScores(raw);
+  } catch(e) {
+    showAlert('scoresAlert', 'error', `❌ ${e.message}`);
+  }
+}
+
+function renderScores(data) {
+  const scores  = data.scores  || {};
+  const streaks = data.streaks || {};
+  const entries = Object.entries(scores).sort((a, b) => b[1].points - a[1].points);
+
+  document.getElementById('scoresCount').textContent = `${entries.length} players`;
+
+  if (entries.length === 0) {
+    document.getElementById('scoresContainer').innerHTML = '<div class="empty">No scores yet</div>';
+    return;
+  }
+
+  const rankIcon = (i) => ['🥇','🥈','🥉'][i] || `#${i+1}`;
+
+  const rows = entries.map(([uid, s], i) => {
+    const acc    = s.total > 0 ? Math.round(100*s.correct/s.total) : 0;
+    const streak = streaks[uid]?.streak || 0;
+    const sf     = streak >= 14 ? '🔥🔥🔥' : streak >= 7 ? '🔥🔥' : streak >= 3 ? '🔥' : '';
+    return `<tr>
+      <td><span class="rank-badge">${rankIcon(i)}</span></td>
+      <td><strong>${s.username || uid}</strong></td>
+      <td><span class="tag tag-blue">${s.points} pts</span></td>
+      <td>${acc}%</td>
+      <td>${s.correct}/${s.total}</td>
+      <td>${streak > 0 ? `${sf} ${streak}d` : '—'}</td>
+      <td>
+        <input type="number" class="pts-input" value="${s.points}" id="pts_${uid}">
+        <button class="btn-ghost save-btn-sm" onclick="updateScore('${uid}','${s.username}')">Save</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('scoresContainer').innerHTML = `
+    <table class="scores-table">
+      <thead><tr>
+        <th>Rank</th><th>Player</th><th>Points</th><th>Accuracy</th>
+        <th>Correct</th><th>Streak</th><th>Edit</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── UPDATE SINGLE SCORE ───────────────────────────────────────────────────────
+async function updateScore(uid, username) {
+  const newPts = parseInt(document.getElementById(`pts_${uid}`).value);
+  if (isNaN(newPts)) return;
+
+  STATE.gistData.scores[uid].points = newPts;
+  await pushGist(STATE.gistData);
+  showAlert('scoresAlert', 'success', `✅ ${username}'s score updated to ${newPts} pts`);
+  renderScores(STATE.gistData);
+}
+
+// ── RESET SCORES ─────────────────────────────────────────────────────────────
+async function resetScores() {
+  if (!confirm('Reset ALL scores to zero? Streaks will be kept. This cannot be undone.')) return;
+  STATE.gistData.scores = {};
+  await pushGist(STATE.gistData);
+  showAlert('actionAlert', 'success', '✅ Scores reset!');
+  renderScores(STATE.gistData);
+}
+
+// ── PUSH GIST ─────────────────────────────────────────────────────────────────
+async function pushGist(data) {
+  const res = await fetch(`https://api.github.com/gists/${STATE.gistId}`, {
+    method: 'PATCH',
+    headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      files: { 'scores.json': { content: JSON.stringify(data, null, 2) } }
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'Gist update failed');
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function setStatus(state, text) {
+  const dot  = document.getElementById('statusDot');
+  const span = document.getElementById('statusText');
+  dot.className = 'status-dot' + (state === 'connected' ? ' connected' : state === 'error' ? ' error' : '');
+  span.textContent = text;
+}
+
+function showAlert(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = `alert alert-${type} show`;
+  el.textContent = msg;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// Load saved credentials from localStorage
+window.onload = () => {
+  const saved = localStorage.getItem('quiz_admin');
+  if (saved) {
+    try {
+      const d = JSON.parse(saved);
+      if (d.token) document.getElementById('githubToken').value = d.token;
+      if (d.repo)  document.getElementById('githubRepo').value  = d.repo;
+      if (d.gistId) document.getElementById('gistId').value = d.gistId;
+    } catch(e) {}
+  }
+};
+
+// Save to localStorage when connecting
+const _origConnect = connect;
+connect = async function() {
+  localStorage.setItem('quiz_admin', JSON.stringify({
+    token: document.getElementById('githubToken').value.trim(),
+    repo:  document.getElementById('githubRepo').value.trim(),
+    gistId: document.getElementById('gistId').value.trim()
+  }));
+  await _origConnect();
+};
+</script>
+</body>
+</html>
