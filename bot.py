@@ -16,9 +16,9 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 0
-ALIVE_MINUTES         = 1
-PERSONAL_TIMER_MIN    = 1
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 60
+PERSONAL_TIMER_MIN    = 10
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -212,16 +212,16 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
         f"  ·  Resets in `{sessions_left}` sessions"
     )
 
-    # Podium top 3 with ties
-    rank = 0
-    prev_pts = None
+    # Podium top 3 with ties — same score = same rank, next rank = rank+1 (not skipped)
+    rank      = 0
+    prev_pts  = None
     podium_lines = []
     rest_lines   = []
     podium_icons = ["🥇", "🥈", "🥉"]
 
     for i, s in enumerate(sorted_scores[:10]):
         if s["points"] != prev_pts:
-            rank = i + 1
+            rank     = rank + 1  # only increment rank when score changes
         prev_pts = s["points"]
 
         acc    = round(100 * s["correct"] / s["total"]) if s["total"] > 0 else 0
