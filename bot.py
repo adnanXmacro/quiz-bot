@@ -11,41 +11,41 @@ from concurrent.futures import ThreadPoolExecutor
 
 executor = ThreadPoolExecutor(max_workers=4)
 
-# ─── CONFIG ────────────────────────────────────────────────────────────────────
+# âââ CONFIG ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
+CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "1493121034226761758"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 10
-ALIVE_MINUTES         = 60
-PERSONAL_TIMER_MIN    = 10
-# ────────────────────────────────────────────────────────────────────────────────
+QUESTIONS_PER_SESSION = 0
+ALIVE_MINUTES         = 1
+PERSONAL_TIMER_MIN    = 1
+# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-# ─── QUESTION BANK ──────────────────────────────────────────────────────────────
-# ▼▼▼ PASTE YOUR QUESTIONS HERE — replace the placeholder below ▼▼▼
+# âââ QUESTION BANK ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# â¼â¼â¼ PASTE YOUR QUESTIONS HERE â replace the placeholder below â¼â¼â¼
 QUESTION_BANK = [
-    {"type":"mcq","subject":"Biology","question":"নিচের কোনটিতে হাইড্রার বহিঃকোষীয় পরিপাক সংঘটিত হয়?","options":{"A":"গ্যাস্ট্রোডার্মিস","B":"হাইপোস্টোম","C":"সিলেন্টেরন","D":"কর্ষিকা"},"answer":"C","explanation":"হাইড্রার সিলেন্টেরনে বহিঃকোষীয় পরিপাক ঘটে।"},
-    {"type":"mcq","subject":"Biology","question":"কোষ বিভাজনের সময় কোষপ্লেট তৈরিতে সাহায্য করে কোন অঙ্গাণু?","options":{"A":"লাইসোসোম","B":"গলগি বস্তু","C":"মাইটোকন্ড্রিয়া","D":"রাইবোসোম"},"answer":"B","explanation":"গলগি বস্তু কোষ বিভাজনের সময় কোষপ্লেট গঠনে সাহায্য করে।"},
-    {"type":"mcq","subject":"Biology","question":"রেস্ট্রিকশন এনজাইমের কাজ কী?","options":{"A":"DNA অণু বৃদ্ধিকরণ","B":"DNA খণ্ডকে জোড়া লাগানো","C":"নির্দিষ্ট জীবে রিকম্বিনেন্ট DNA প্রবেশ করানো","D":"কাঙ্ক্ষিত DNA কে নির্দিষ্ট স্থানে ছেদন করা"},"answer":"D","explanation":"রেস্ট্রিকশন এনজাইম নির্দিষ্ট স্থানে DNA ছেদন করে।"},
-    {"type":"mcq","subject":"Chemistry","question":"18°C তাপমাত্রায় 0.8 atm চাপে একটি গ্যাসের ঘনত্ব 2.25 gL⁻¹ হলে আণবিক ভর কত?","options":{"A":"36.63 g mol⁻¹","B":"36.24 g mol⁻¹","C":"24.36 g mol⁻¹","D":"67.11 g mol⁻¹"},"answer":"A","explanation":"PV=nRT ব্যবহার করে M = dRT/P ≈ 36.63 g/mol"},
-    {"type":"mcq","subject":"Chemistry","question":"কোন দ্রবণের OH⁻ আয়নের ঘনমাত্রা 3.5×10⁻⁴ M হলে pH কত?","options":{"A":"12.50","B":"13.55","C":"10.54","D":"3.55"},"answer":"C","explanation":"pOH = -log(3.5×10⁻⁴) ≈ 3.46; pH = 14-3.46 = 10.54"},
-    {"type":"mcq","subject":"Physics","question":"ফোকাস দূরত্ব 1000 cm হলে উত্তল লেন্সের ক্ষমতা কত?","options":{"A":"+10 D","B":"+100 D","C":"+0.1 D","D":"-0.1 D"},"answer":"C","explanation":"P = 1/f(m) = 1/10 = +0.1 D"},
-    {"type":"mcq","subject":"Physics","question":"দুটি ভেক্টর 8 ও 6 একক, 30° কোণে ক্রিয়াশীল হলে ভেক্টর গুণফল কত?","options":{"A":"16","B":"20","C":"48","D":"24"},"answer":"D","explanation":"A×B = |A||B|sinθ = 8×6×sin30° = 24"},
-    {"type":"mcq","subject":"English","question":"Synonym of 'anarchy'—","options":{"A":"serenity","B":"placidity","C":"lawlessness","D":"discipline"},"answer":"C","explanation":"Anarchy = a state of disorder/lawlessness."},
-    {"type":"mcq","subject":"GK","question":"বাংলাদেশের ১০০ টাকার নোটে কোন মসজিদের ছবি আছে?","options":{"A":"মডেল মসজিদ","B":"ষাট গম্বুজ মসজিদ","C":"আতিয়া মসজিদ","D":"তারা মসজিদ"},"answer":"B","explanation":"১০০ টাকার নোটে ষাট গম্বুজ মসজিদ।"},
-    {"type":"mcq","subject":"GK","question":"WHO কালাজ্বরমুক্ত দেশ হিসেবে বাংলাদেশকে স্বীকৃতি দেয় কবে?","options":{"A":"৩০ সেপ্টেম্বর ২০২৩","B":"৩১ অক্টোবর ২০২৩","C":"০১ নভেম্বর ২০২৩","D":"৩০ নভেম্বর ২০২৩"},"answer":"B","explanation":"৩১ অক্টোবর ২০২৩ সালে WHO এই স্বীকৃতি দেয়।"},
-    {"type":"mcq","subject":"Math","question":"কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট একই মান দেখায়?","options":{"A":"-40°","B":"32°","C":"40°","D":"-32°"},"answer":"A","explanation":"C=F হলে, C = 9C/5+32 → C = -40°"},
-    {"type":"mcq","subject":"Biology","question":"হিমোগ্লোবিনের কোন অংশে CO₂ যুক্ত হয়?","options":{"A":"−OH","B":"−COOH","C":"−HCO₃","D":"−NH₂"},"answer":"D","explanation":"CO₂, হিমোগ্লোবিনের −NH₂ গ্রুপের সাথে যুক্ত হয়।"},
+    {"type":"mcq","subject":"Biology","question":"à¦¨à¦¿à¦à§à¦° à¦à§à¦¨à¦à¦¿à¦¤à§ à¦¹à¦¾à¦à¦¡à§à¦°à¦¾à¦° à¦¬à¦¹à¦¿à¦à¦à§à¦·à§à¦¯à¦¼ à¦ªà¦°à¦¿à¦ªà¦¾à¦ à¦¸à¦à¦à¦à¦¿à¦¤ à¦¹à¦¯à¦¼?","options":{"A":"à¦à§à¦¯à¦¾à¦¸à§à¦à§à¦°à§à¦¡à¦¾à¦°à§à¦®à¦¿à¦¸","B":"à¦¹à¦¾à¦à¦ªà§à¦¸à§à¦à§à¦®","C":"à¦¸à¦¿à¦²à§à¦¨à§à¦à§à¦°à¦¨","D":"à¦à¦°à§à¦·à¦¿à¦à¦¾"},"answer":"C","explanation":"à¦¹à¦¾à¦à¦¡à§à¦°à¦¾à¦° à¦¸à¦¿à¦²à§à¦¨à§à¦à§à¦°à¦¨à§ à¦¬à¦¹à¦¿à¦à¦à§à¦·à§à¦¯à¦¼ à¦ªà¦°à¦¿à¦ªà¦¾à¦ à¦à¦à§à¥¤"},
+    {"type":"mcq","subject":"Biology","question":"à¦à§à¦· à¦¬à¦¿à¦­à¦¾à¦à¦¨à§à¦° à¦¸à¦®à¦¯à¦¼ à¦à§à¦·à¦ªà§à¦²à§à¦ à¦¤à§à¦°à¦¿à¦¤à§ à¦¸à¦¾à¦¹à¦¾à¦¯à§à¦¯ à¦à¦°à§ à¦à§à¦¨ à¦à¦à§à¦à¦¾à¦£à§?","options":{"A":"à¦²à¦¾à¦à¦¸à§à¦¸à§à¦®","B":"à¦à¦²à¦à¦¿ à¦¬à¦¸à§à¦¤à§","C":"à¦®à¦¾à¦à¦à§à¦à¦¨à§à¦¡à§à¦°à¦¿à¦¯à¦¼à¦¾","D":"à¦°à¦¾à¦à¦¬à§à¦¸à§à¦®"},"answer":"B","explanation":"à¦à¦²à¦à¦¿ à¦¬à¦¸à§à¦¤à§ à¦à§à¦· à¦¬à¦¿à¦­à¦¾à¦à¦¨à§à¦° à¦¸à¦®à¦¯à¦¼ à¦à§à¦·à¦ªà§à¦²à§à¦ à¦à¦ à¦¨à§ à¦¸à¦¾à¦¹à¦¾à¦¯à§à¦¯ à¦à¦°à§à¥¤"},
+    {"type":"mcq","subject":"Biology","question":"à¦°à§à¦¸à§à¦à§à¦°à¦¿à¦à¦¶à¦¨ à¦à¦¨à¦à¦¾à¦à¦®à§à¦° à¦à¦¾à¦ à¦à§?","options":{"A":"DNA à¦à¦£à§ à¦¬à§à¦¦à§à¦§à¦¿à¦à¦°à¦£","B":"DNA à¦à¦£à§à¦¡à¦à§ à¦à§à¦¡à¦¼à¦¾ à¦²à¦¾à¦à¦¾à¦¨à§","C":"à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦ à¦à§à¦¬à§ à¦°à¦¿à¦à¦®à§à¦¬à¦¿à¦¨à§à¦¨à§à¦ DNA à¦ªà§à¦°à¦¬à§à¦¶ à¦à¦°à¦¾à¦¨à§","D":"à¦à¦¾à¦à§à¦à§à¦·à¦¿à¦¤ DNA à¦à§ à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦ à¦¸à§à¦¥à¦¾à¦¨à§ à¦à§à¦¦à¦¨ à¦à¦°à¦¾"},"answer":"D","explanation":"à¦°à§à¦¸à§à¦à§à¦°à¦¿à¦à¦¶à¦¨ à¦à¦¨à¦à¦¾à¦à¦® à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦ à¦¸à§à¦¥à¦¾à¦¨à§ DNA à¦à§à¦¦à¦¨ à¦à¦°à§à¥¤"},
+    {"type":"mcq","subject":"Chemistry","question":"18Â°C à¦¤à¦¾à¦ªà¦®à¦¾à¦¤à§à¦°à¦¾à¦¯à¦¼ 0.8 atm à¦à¦¾à¦ªà§ à¦à¦à¦à¦¿ à¦à§à¦¯à¦¾à¦¸à§à¦° à¦à¦¨à¦¤à§à¦¬ 2.25 gLâ»Â¹ à¦¹à¦²à§ à¦à¦£à¦¬à¦¿à¦ à¦­à¦° à¦à¦¤?","options":{"A":"36.63 g molâ»Â¹","B":"36.24 g molâ»Â¹","C":"24.36 g molâ»Â¹","D":"67.11 g molâ»Â¹"},"answer":"A","explanation":"PV=nRT à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦à¦°à§ M = dRT/P â 36.63 g/mol"},
+    {"type":"mcq","subject":"Chemistry","question":"à¦à§à¦¨ à¦¦à§à¦°à¦¬à¦£à§à¦° OHâ» à¦à¦¯à¦¼à¦¨à§à¦° à¦à¦¨à¦®à¦¾à¦¤à§à¦°à¦¾ 3.5Ã10â»â´ M à¦¹à¦²à§ pH à¦à¦¤?","options":{"A":"12.50","B":"13.55","C":"10.54","D":"3.55"},"answer":"C","explanation":"pOH = -log(3.5Ã10â»â´) â 3.46; pH = 14-3.46 = 10.54"},
+    {"type":"mcq","subject":"Physics","question":"à¦«à§à¦à¦¾à¦¸ à¦¦à§à¦°à¦¤à§à¦¬ 1000 cm à¦¹à¦²à§ à¦à¦¤à§à¦¤à¦² à¦²à§à¦¨à§à¦¸à§à¦° à¦à§à¦·à¦®à¦¤à¦¾ à¦à¦¤?","options":{"A":"+10 D","B":"+100 D","C":"+0.1 D","D":"-0.1 D"},"answer":"C","explanation":"P = 1/f(m) = 1/10 = +0.1 D"},
+    {"type":"mcq","subject":"Physics","question":"à¦¦à§à¦à¦¿ à¦­à§à¦à§à¦à¦° 8 à¦ 6 à¦à¦à¦, 30Â° à¦à§à¦£à§ à¦à§à¦°à¦¿à¦¯à¦¼à¦¾à¦¶à§à¦² à¦¹à¦²à§ à¦­à§à¦à§à¦à¦° à¦à§à¦£à¦«à¦² à¦à¦¤?","options":{"A":"16","B":"20","C":"48","D":"24"},"answer":"D","explanation":"AÃB = |A||B|sinÎ¸ = 8Ã6Ãsin30Â° = 24"},
+    {"type":"mcq","subject":"English","question":"Synonym of 'anarchy'â","options":{"A":"serenity","B":"placidity","C":"lawlessness","D":"discipline"},"answer":"C","explanation":"Anarchy = a state of disorder/lawlessness."},
+    {"type":"mcq","subject":"GK","question":"à¦¬à¦¾à¦à¦²à¦¾à¦¦à§à¦¶à§à¦° à§§à§¦à§¦ à¦à¦¾à¦à¦¾à¦° à¦¨à§à¦à§ à¦à§à¦¨ à¦®à¦¸à¦à¦¿à¦¦à§à¦° à¦à¦¬à¦¿ à¦à¦à§?","options":{"A":"à¦®à¦¡à§à¦² à¦®à¦¸à¦à¦¿à¦¦","B":"à¦·à¦¾à¦ à¦à¦®à§à¦¬à§à¦ à¦®à¦¸à¦à¦¿à¦¦","C":"à¦à¦¤à¦¿à¦¯à¦¼à¦¾ à¦®à¦¸à¦à¦¿à¦¦","D":"à¦¤à¦¾à¦°à¦¾ à¦®à¦¸à¦à¦¿à¦¦"},"answer":"B","explanation":"à§§à§¦à§¦ à¦à¦¾à¦à¦¾à¦° à¦¨à§à¦à§ à¦·à¦¾à¦ à¦à¦®à§à¦¬à§à¦ à¦®à¦¸à¦à¦¿à¦¦à¥¤"},
+    {"type":"mcq","subject":"GK","question":"WHO à¦à¦¾à¦²à¦¾à¦à§à¦¬à¦°à¦®à§à¦à§à¦¤ à¦¦à§à¦¶ à¦¹à¦¿à¦¸à§à¦¬à§ à¦¬à¦¾à¦à¦²à¦¾à¦¦à§à¦¶à¦à§ à¦¸à§à¦¬à§à¦à§à¦¤à¦¿ à¦¦à§à¦¯à¦¼ à¦à¦¬à§?","options":{"A":"à§©à§¦ à¦¸à§à¦ªà§à¦à§à¦®à§à¦¬à¦° à§¨à§¦à§¨à§©","B":"à§©à§§ à¦à¦à§à¦à§à¦¬à¦° à§¨à§¦à§¨à§©","C":"à§¦à§§ à¦¨à¦­à§à¦®à§à¦¬à¦° à§¨à§¦à§¨à§©","D":"à§©à§¦ à¦¨à¦­à§à¦®à§à¦¬à¦° à§¨à§¦à§¨à§©"},"answer":"B","explanation":"à§©à§§ à¦à¦à§à¦à§à¦¬à¦° à§¨à§¦à§¨à§© à¦¸à¦¾à¦²à§ WHO à¦à¦ à¦¸à§à¦¬à§à¦à§à¦¤à¦¿ à¦¦à§à¦¯à¦¼à¥¤"},
+    {"type":"mcq","subject":"Math","question":"à¦à§à¦¨ à¦¤à¦¾à¦ªà¦®à¦¾à¦¤à§à¦°à¦¾à¦¯à¦¼ à¦¸à§à¦²à¦¸à¦¿à¦¯à¦¼à¦¾à¦¸ à¦ à¦«à¦¾à¦°à§à¦¨à¦¹à¦¾à¦à¦ à¦à¦à¦ à¦®à¦¾à¦¨ à¦¦à§à¦à¦¾à¦¯à¦¼?","options":{"A":"-40Â°","B":"32Â°","C":"40Â°","D":"-32Â°"},"answer":"A","explanation":"C=F à¦¹à¦²à§, C = 9C/5+32 â C = -40Â°"},
+    {"type":"mcq","subject":"Biology","question":"à¦¹à¦¿à¦®à§à¦à§à¦²à§à¦¬à¦¿à¦¨à§à¦° à¦à§à¦¨ à¦à¦à¦¶à§ COâ à¦¯à§à¦à§à¦¤ à¦¹à¦¯à¦¼?","options":{"A":"âOH","B":"âCOOH","C":"âHCOâ","D":"âNHâ"},"answer":"D","explanation":"COâ, à¦¹à¦¿à¦®à§à¦à§à¦²à§à¦¬à¦¿à¦¨à§à¦° âNHâ à¦à§à¦°à§à¦ªà§à¦° à¦¸à¦¾à¦¥à§ à¦¯à§à¦à§à¦¤ à¦¹à¦¯à¦¼à¥¤"},
 ]
-# ▲▲▲ END OF QUESTION BANK ▲▲▲
-# ────────────────────────────────────────────────────────────────────────────────
+# â²â²â² END OF QUESTION BANK â²â²â²
+# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 
-# ─── GIST DATA STORAGE ──────────────────────────────────────────────────────────
+# âââ GIST DATA STORAGE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 # Saves to Gist on every answer using a lock to prevent 409 conflicts.
 
 SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
-_save_lock   = None  # asyncio.Lock — initialized in on_ready
+_save_lock   = None  # asyncio.Lock â initialized in on_ready
 
 def _load_data_sync() -> dict:
     try:
@@ -91,7 +91,7 @@ async def load_session_data():
     print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
 
 async def save_to_gist():
-    """Save to Gist — queued via lock so only one write at a time, no 409."""
+    """Save to Gist â queued via lock so only one write at a time, no 409."""
     if not GIST_TOKEN or not GIST_ID or _save_lock is None:
         return
     async with _save_lock:
@@ -133,9 +133,9 @@ def update_score_sync(user_id: str, username: str, correct: bool,
     return s["points"]
 
 def get_streak_badge(streak: int) -> str:
-    if streak >= 14: return "🔥🔥🔥"
-    elif streak >= 7: return "🔥🔥"
-    elif streak >= 3: return "🔥"
+    if streak >= 14: return "ð¥ð¥ð¥"
+    elif streak >= 7: return "ð¥ð¥"
+    elif streak >= 3: return "ð¥"
     return ""
 
 async def update_score(user_id: str, username: str, correct: bool,
@@ -149,28 +149,28 @@ async def load_scores() -> dict:
     return SESSION_DATA.get("scores", {})
 
 
-# ─── UI HELPERS ─────────────────────────────────────────────────────────────────
+# âââ UI HELPERS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 SUBJECT_META = {
-    "Physics":   {"emoji": "⚡", "color": 0x5865F2, "label": "Physics"},
-    "Chemistry": {"emoji": "⚗️",  "color": 0xED4245, "label": "Chemistry"},
-    "Math":      {"emoji": "📐", "color": 0x57F287, "label": "Mathematics"},
-    "Biology":   {"emoji": "🔬", "color": 0xFEE75C, "label": "Biology"},
-    "English":   {"emoji": "📖", "color": 0x00B4FF, "label": "English"},
-    "GK":        {"emoji": "🌐", "color": 0xFF8C00, "label": "General Knowledge"},
+    "Physics":   {"emoji": "â¡", "color": 0x5865F2, "label": "Physics"},
+    "Chemistry": {"emoji": "âï¸",  "color": 0xED4245, "label": "Chemistry"},
+    "Math":      {"emoji": "ð", "color": 0x57F287, "label": "Mathematics"},
+    "Biology":   {"emoji": "ð¬", "color": 0xFEE75C, "label": "Biology"},
+    "English":   {"emoji": "ð", "color": 0x00B4FF, "label": "English"},
+    "GK":        {"emoji": "ð", "color": 0xFF8C00, "label": "General Knowledge"},
 }
 
 def get_subject(subject: str) -> dict:
-    return SUBJECT_META.get(subject, {"emoji": "📋", "color": 0x5865F2, "label": subject})
+    return SUBJECT_META.get(subject, {"emoji": "ð", "color": 0x5865F2, "label": subject})
 
 def get_rank(points: int) -> tuple:
     """Returns (badge_emoji, title, color_hex)"""
-    if points >= 1000: return ("💎", "ELITE",      0xA8D8EA)
-    elif points >= 500: return ("👑", "LEGEND",     0xFFD700)
-    elif points >= 200: return ("🔥", "CHAMPION",   0xFF6B35)
-    elif points >= 100: return ("⚡", "SCHOLAR",    0x5865F2)
-    elif points >= 50:  return ("📚", "APPRENTICE", 0x57F287)
-    return                     ("🌱", "ROOKIE",     0x99AAB5)
+    if points >= 1000: return ("ð", "ELITE",      0xA8D8EA)
+    elif points >= 500: return ("ð", "LEGEND",     0xFFD700)
+    elif points >= 200: return ("ð¥", "CHAMPION",   0xFF6B35)
+    elif points >= 100: return ("â¡", "SCHOLAR",    0x5865F2)
+    elif points >= 50:  return ("ð", "APPRENTICE", 0x57F287)
+    return                     ("ð±", "ROOKIE",     0x99AAB5)
 
 SESSIONS_PER_CYCLE = 10  # Scoreboard resets every 10 sessions
 
@@ -182,10 +182,10 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
 
     if not scores:
         embed = discord.Embed(
-            title="🏆  Leaderboard",
+            title="ð  Leaderboard",
             description=(
                 f"No participants yet.\n\n"
-                f"**Cycle #{cycle_num}**  ·  Session `{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}`\n"
+                f"**Cycle #{cycle_num}**  Â·  Session `{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}`\n"
                 f"Resets in `{sessions_left}` sessions."
             ),
             color=0x2B2D31,
@@ -198,26 +198,26 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
     id_map  = {v["username"]: k for k, v in scores.items()}
 
     embed = discord.Embed(
-        title=f"🏆  Leaderboard  ·  {now_bd.strftime('%d %B %Y')}",
+        title=f"ð  Leaderboard  Â·  {now_bd.strftime('%d %B %Y')}",
         color=0xFFD700,
         timestamp=datetime.datetime.utcnow()
     )
 
     # Cycle progress bar
     filled_cycle = round(((session_count % SESSIONS_PER_CYCLE) / SESSIONS_PER_CYCLE) * 10)
-    cycle_bar    = "█" * filled_cycle + "░" * (10 - filled_cycle)
+    cycle_bar    = "â" * filled_cycle + "â" * (10 - filled_cycle)
     embed.description = (
         f"**Cycle #{cycle_num}**  `{cycle_bar}`  "
         f"Session **{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}**"
-        f"  ·  Resets in `{sessions_left}` sessions"
+        f"  Â·  Resets in `{sessions_left}` sessions"
     )
 
-    # Podium top 3 with ties — same score = same rank, next rank = rank+1 (not skipped)
+    # Podium top 3 with ties â same score = same rank, next rank = rank+1 (not skipped)
     rank      = 0
     prev_pts  = None
     podium_lines = []
     rest_lines   = []
-    podium_icons = ["🥇", "🥈", "🥉"]
+    podium_icons = ["ð¥", "ð¥", "ð¥"]
 
     for i, s in enumerate(sorted_scores[:10]):
         if s["points"] != prev_pts:
@@ -235,19 +235,19 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
             icon = podium_icons[rank - 1]
             podium_lines.append(
                 f"{icon} **{s['username']}**  {badge} {title}{st}\n"
-                f"　`{s['points']} pts`  ·  **{acc}%** accuracy  ·  {s['correct']}/{s['total']} ✓"
+                f"ã`{s['points']} pts`  Â·  **{acc}%** accuracy  Â·  {s['correct']}/{s['total']} â"
             )
         else:
             filled = round((s["points"] / max_pts) * 10)
-            bar    = "▰" * filled + "▱" * (10 - filled)
+            bar    = "â°" * filled + "â±" * (10 - filled)
             rest_lines.append(
-                f"`#{rank:02d}` **{s['username'][:14]}**  {bar}  `{s['points']} pts`  ·  {acc}%{st}"
+                f"`#{rank:02d}` **{s['username'][:14]}**  {bar}  `{s['points']} pts`  Â·  {acc}%{st}"
             )
 
     if podium_lines:
-        embed.add_field(name="🏅 Podium", value="\n\n".join(podium_lines), inline=False)
+        embed.add_field(name="ð Podium", value="\n\n".join(podium_lines), inline=False)
     if rest_lines:
-        embed.add_field(name="📋 Rankings", value="\n".join(rest_lines), inline=False)
+        embed.add_field(name="ð Rankings", value="\n".join(rest_lines), inline=False)
 
     # Session stats
     total_p = len(sorted_scores)
@@ -257,15 +257,15 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
     ) / max(total_p, 1))
 
     embed.add_field(
-        name="📊 This Session",
-        value=f"`{total_p}` players  ·  `{total_a}` answers  ·  `{avg_acc}%` avg accuracy",
+        name="ð This Session",
+        value=f"`{total_p}` players  Â·  `{total_a}` answers  Â·  `{avg_acc}%` avg accuracy",
         inline=False
     )
-    embed.set_footer(text="🔥3d · 🔥🔥7d · 🔥🔥🔥14d  |  💎1000 · 👑500 · 🔥200 · ⚡100 · 📚50 · 🌱0")
+    embed.set_footer(text="ð¥3d Â· ð¥ð¥7d Â· ð¥ð¥ð¥14d  |  ð1000 Â· ð500 Â· ð¥200 Â· â¡100 Â· ð50 Â· ð±0")
     return embed
 
 
-# ─── QUESTION PICKER ────────────────────────────────────────────────────────────
+# âââ QUESTION PICKER ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 async def pick_questions_smart(count: int) -> list:
     """Pick questions avoiding recently asked ones, using in-memory SESSION_DATA."""
@@ -300,7 +300,7 @@ async def pick_questions_smart(count: int) -> list:
     print(f"Fresh: {len(fresh)} / {len(pool)}")
 
     if len(fresh) < count:
-        print("Full cycle complete — resetting asked history!")
+        print("Full cycle complete â resetting asked history!")
         asked = set()
         fresh = pool.copy()
         SESSION_DATA["asked"] = []
@@ -311,7 +311,7 @@ async def pick_questions_smart(count: int) -> list:
     return selected
 
 
-# ─── DISCORD VIEWS ──────────────────────────────────────────────────────────────
+# âââ DISCORD VIEWS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 class MCQView(discord.ui.View):
     def __init__(self, question: dict):
@@ -345,7 +345,7 @@ class MCQView(discord.ui.View):
                     if elapsed > PERSONAL_TIMER_MIN * 60:
                         expiry = self.user_start_times[user_id] + datetime.timedelta(minutes=PERSONAL_TIMER_MIN)
                         e = discord.Embed(
-                            title="⏰  Time's Up",
+                            title="â°  Time's Up",
                             description=f"Your {PERSONAL_TIMER_MIN}-minute window expired at **{expiry.strftime('%H:%M')} UTC**.",
                             color=0x2B2D31
                         )
@@ -354,7 +354,7 @@ class MCQView(discord.ui.View):
 
                 if user_id in self.answered_users:
                     e = discord.Embed(
-                        title="⚠️  Already Answered",
+                        title="â ï¸  Already Answered",
                         description="You have already responded to this question.",
                         color=0xFFA500
                     )
@@ -382,37 +382,37 @@ class MCQView(discord.ui.View):
                 if is_correct:
                     e = discord.Embed(color=0x57F287)
                     e.add_field(
-                        name="✅  Correct",
+                        name="â  Correct",
                         value=f"**{label}.  {self.question['options'][label]}**",
                         inline=False
                     )
                     if explanation:
-                        e.add_field(name="💡 Explanation", value=explanation, inline=False)
+                        e.add_field(name="ð¡ Explanation", value=explanation, inline=False)
                     e.add_field(
                         name="Score",
-                        value=f"`+10 pts` → **{new_points} pts total**  ·  {badge} {rank_title}{streak_text}",
+                        value=f"`+10 pts` â **{new_points} pts total**  Â·  {badge} {rank_title}{streak_text}",
                         inline=False
                     )
                 else:
                     e = discord.Embed(color=0xED4245)
                     e.add_field(
-                        name="❌  Incorrect",
+                        name="â  Incorrect",
                         value=f"~~{label}.  {self.question['options'][label]}~~",
                         inline=False
                     )
                     e.add_field(
-                        name="✅  Correct Answer",
+                        name="â  Correct Answer",
                         value=f"**{correct}.  {self.question['options'][correct]}**",
                         inline=False
                     )
                     if explanation:
-                        e.add_field(name="💡 Explanation", value=explanation, inline=False)
+                        e.add_field(name="ð¡ Explanation", value=explanation, inline=False)
                     e.add_field(
                         name="Score",
-                        value=f"**{new_points} pts total**  ·  {badge} {rank_title}{streak_text}",
+                        value=f"**{new_points} pts total**  Â·  {badge} {rank_title}{streak_text}",
                         inline=False
                     )
-                e.set_footer(text=f"Your window closes at {expiry_str}  ·  {PERSONAL_TIMER_MIN} min per session")
+                e.set_footer(text=f"Your window closes at {expiry_str}  Â·  {PERSONAL_TIMER_MIN} min per session")
                 await interaction.response.send_message(embed=e, ephemeral=True)
             except discord.errors.NotFound:
                 pass
@@ -440,7 +440,7 @@ class FlashcardView(discord.ui.View):
                 if elapsed > PERSONAL_TIMER_MIN * 60:
                     expiry = self.user_start_times[user_id] + datetime.timedelta(minutes=PERSONAL_TIMER_MIN)
                     e = discord.Embed(
-                        title="⏰  Time's Up",
+                        title="â°  Time's Up",
                         description=f"Your window expired at **{expiry.strftime('%H:%M')} UTC**.",
                         color=0x2B2D31
                     )
@@ -462,10 +462,10 @@ class FlashcardView(discord.ui.View):
             expiry_str = (self.user_start_times[user_id] + datetime.timedelta(minutes=PERSONAL_TIMER_MIN)).strftime("%H:%M UTC")
 
             e = discord.Embed(color=0x5865F2)
-            e.add_field(name="💡  Answer", value=f"**{self.question['answer']}**", inline=False)
+            e.add_field(name="ð¡  Answer", value=f"**{self.question['answer']}**", inline=False)
             if self.question.get("explanation"):
-                e.add_field(name="📖 Explanation", value=self.question["explanation"], inline=False)
-            pts_text = f"`+5 pts` → **{new_points} pts total**  ·  {badge} {rank_title}" if not already else f"**{new_points} pts total**  ·  {badge} {rank_title}"
+                e.add_field(name="ð Explanation", value=self.question["explanation"], inline=False)
+            pts_text = f"`+5 pts` â **{new_points} pts total**  Â·  {badge} {rank_title}" if not already else f"**{new_points} pts total**  Â·  {badge} {rank_title}"
             e.add_field(name="Score", value=pts_text, inline=False)
             e.set_footer(text=f"Your window closes at {expiry_str}")
             await interaction.response.send_message(embed=e, ephemeral=True)
@@ -475,7 +475,7 @@ class FlashcardView(discord.ui.View):
             print(f"Flashcard error: {ex}")
 
 
-# ─── QUIZ SESSION ────────────────────────────────────────────────────────────────
+# âââ QUIZ SESSION ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 async def run_quiz_session(channel: discord.TextChannel):
     now = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
@@ -483,7 +483,7 @@ async def run_quiz_session(channel: discord.TextChannel):
     end_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=ALIVE_MINUTES)
 
     announce = discord.Embed(
-        title=f"📋  Daily Quiz  ·  {date_str}",
+        title=f"ð  Daily Quiz  Â·  {date_str}",
         color=0x5865F2
     )
     announce.add_field(name="Questions",  value=f"`{QUESTIONS_PER_SESSION}`", inline=True)
@@ -492,7 +492,7 @@ async def run_quiz_session(channel: discord.TextChannel):
     announce.add_field(name="Your Timer", value=f"`{PERSONAL_TIMER_MIN} min` from first tap", inline=True)
     announce.add_field(name="Session Ends", value=f"<t:{int(end_time.timestamp())}:R>", inline=True)
     announce.add_field(name="Visibility", value="Only you see your answers", inline=True)
-    announce.set_footer(text="💎 Elite · 👑 Legend · 🔥 Champion · ⚡ Scholar · 📚 Apprentice · 🌱 Rookie")
+    announce.set_footer(text="ð Elite Â· ð Legend Â· ð¥ Champion Â· â¡ Scholar Â· ð Apprentice Â· ð± Rookie")
     await channel.send(embed=announce)
     await asyncio.sleep(1.5)
 
@@ -505,34 +505,34 @@ async def run_quiz_session(channel: discord.TextChannel):
 
         if q["type"] == "mcq":
             opts = q.get("options", {})
-            # Normalize keys — handle both uppercase and lowercase
+            # Normalize keys â handle both uppercase and lowercase
             opts = {k.upper(): v for k, v in opts.items()}
             embed = discord.Embed(title=q["question"], color=meta["color"])
-            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Question {i} of {len(questions)}")
+            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  Â·  Question {i} of {len(questions)}")
             embed.add_field(
                 name="",
                 value=(
-                    f"**A.**  {opts.get('A', '—')}\n"
-                    f"**B.**  {opts.get('B', '—')}\n"
-                    f"**C.**  {opts.get('C', '—')}\n"
-                    f"**D.**  {opts.get('D', '—')}"
+                    f"**A.**  {opts.get('A', 'â')}\n"
+                    f"**B.**  {opts.get('B', 'â')}\n"
+                    f"**C.**  {opts.get('C', 'â')}\n"
+                    f"**D.**  {opts.get('D', 'â')}"
                 ),
                 inline=False
             )
-            embed.set_footer(text=f"⏱ {PERSONAL_TIMER_MIN} min from first tap  ·  Only you see your result")
+            embed.set_footer(text=f"â± {PERSONAL_TIMER_MIN} min from first tap  Â·  Only you see your result")
             # Also normalize options in the question object for button callbacks
             q["options"] = opts
             await channel.send(embed=embed, view=MCQView(q))
         else:
             embed = discord.Embed(title=q["question"], color=meta["color"])
-            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  ·  Flashcard {i} of {len(questions)}")
-            embed.set_footer(text="💭 Think of your answer, then tap Reveal  ·  Only you see the result")
+            embed.set_author(name=f"{meta['emoji']}  {meta['label']}  Â·  Flashcard {i} of {len(questions)}")
+            embed.set_footer(text="ð­ Think of your answer, then tap Reveal  Â·  Only you see the result")
             await channel.send(embed=embed, view=FlashcardView(q))
 
         await asyncio.sleep(1.5)
 
     closing = discord.Embed(
-        title="⏳  Session Running",
+        title="â³  Session Running",
         description=(
             f"All {len(questions)} questions posted.\n\n"
             f"Tap any button to start your **{PERSONAL_TIMER_MIN}-minute** personal timer.\n"
@@ -554,22 +554,22 @@ async def post_scoreboard(channel: discord.TextChannel):
     embed = build_scoreboard_embed(scores, streaks, session_count)
     await channel.send(embed=embed)
 
-    # Check if cycle complete — reset scores every 10 sessions
+    # Check if cycle complete â reset scores every 10 sessions
     if session_count % SESSIONS_PER_CYCLE == 0:
         cycle_num = session_count // SESSIONS_PER_CYCLE
         SESSION_DATA["scores"] = {}
         reset_embed = discord.Embed(
-            title=f"🔄  Cycle #{cycle_num} Complete!",
+            title=f"ð  Cycle #{cycle_num} Complete!",
             description=(
                 f"The **{SESSIONS_PER_CYCLE}-session scoreboard** has been reset.\n\n"
-                f"All scores back to zero — a fresh start for everyone!\n"
-                f"Streaks are preserved. Good luck in Cycle #{cycle_num + 1}! 🚀"
+                f"All scores back to zero â a fresh start for everyone!\n"
+                f"Streaks are preserved. Good luck in Cycle #{cycle_num + 1}! ð"
             ),
             color=0x5865F2,
             timestamp=datetime.datetime.utcnow()
         )
         await channel.send(embed=reset_embed)
-        print(f"Cycle {cycle_num} complete — scores reset!")
+        print(f"Cycle {cycle_num} complete â scores reset!")
 
     # Save to Gist ONCE
     await save_session_data()
@@ -604,10 +604,10 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
             badge, rank_title, _ = get_rank(s["points"])
             streak = streaks.get(user_id, {}).get("streak", 0)
             streak_badge = get_streak_badge(streak)
-            user_rank = rank_map.get(s["username"], "—")
+            user_rank = rank_map.get(s["username"], "â")
 
             embed = discord.Embed(
-                title=f"📊  Your Report Card",
+                title=f"ð  Your Report Card",
                 color=0x5865F2,
                 timestamp=datetime.datetime.utcnow()
             )
@@ -617,7 +617,7 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
             embed.add_field(
                 name="Overall",
                 value=(
-                    f"Rank: **#{user_rank}**  ·  {badge} {rank_title}\n"
+                    f"Rank: **#{user_rank}**  Â·  {badge} {rank_title}\n"
                     f"Points: **{s['points']} pts**\n"
                     f"Accuracy: **{acc}%** ({s['correct']}/{s['total']} correct)\n"
                     + (f"Streak: {streak_badge} **{streak} days**" if streak >= 1 else "Streak: just started!")
@@ -635,37 +635,37 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
                 for subj, stat in subjects.items():
                     sub_acc = round(100*stat["correct"]/stat["total"]) if stat["total"] > 0 else 0
                     bar_f = round(sub_acc/10)
-                    bar = "▰"*bar_f + "▱"*(10-bar_f)
-                    meta = SUBJECT_META.get(subj, {"emoji":"📋"})
+                    bar = "â°"*bar_f + "â±"*(10-bar_f)
+                    meta = SUBJECT_META.get(subj, {"emoji":"ð"})
                     sub_lines.append(f"{meta['emoji']} **{subj}**  {bar}  {sub_acc}% ({stat['correct']}/{stat['total']})")
 
-                embed.add_field(name="📚 Subject Breakdown", value="\n".join(sub_lines), inline=False)
+                embed.add_field(name="ð Subject Breakdown", value="\n".join(sub_lines), inline=False)
                 embed.add_field(
-                    name="💪 Strength & Weakness",
-                    value=f"Best: **{best_sub[0]}**  ·  Needs work: **{worst_sub[0]}**",
+                    name="ðª Strength & Weakness",
+                    value=f"Best: **{best_sub[0]}**  Â·  Needs work: **{worst_sub[0]}**",
                     inline=False
                 )
 
             # Motivational line
             if acc >= 80:
-                msg = "Excellent work! You're on fire 🔥"
+                msg = "Excellent work! You're on fire ð¥"
             elif acc >= 60:
-                msg = "Good job! Keep pushing 💪"
+                msg = "Good job! Keep pushing ðª"
             elif acc >= 40:
-                msg = "Not bad — review your weak subjects 📖"
+                msg = "Not bad â review your weak subjects ð"
             else:
-                msg = "Don't give up! Consistency beats talent 🌱"
+                msg = "Don't give up! Consistency beats talent ð±"
             embed.set_footer(text=msg)
 
             await member.send(embed=embed)
             await asyncio.sleep(0.5)  # avoid rate limit
         except discord.Forbidden:
-            print(f"Can't DM {user_id} — DMs closed")
+            print(f"Can't DM {user_id} â DMs closed")
         except Exception as ex:
             print(f"Report card error for {user_id}: {ex}")
 
 
-# ─── BOT ────────────────────────────────────────────────────────────────────────
+# âââ BOT ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -698,9 +698,9 @@ async def savescores_cmd(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
     ok = await save_session_data()
     if ok:
-        await interaction.followup.send("✅ Scores saved to Gist! You can now edit the Gist safely.", ephemeral=True)
+        await interaction.followup.send("â Scores saved to Gist! You can now edit the Gist safely.", ephemeral=True)
     else:
-        await interaction.followup.send("❌ Save failed. Check logs.", ephemeral=True)
+        await interaction.followup.send("â Save failed. Check logs.", ephemeral=True)
 
 
 @bot.tree.command(name="editscore", description="[Admin] Manually set a player's points")
@@ -712,12 +712,12 @@ async def editscore_cmd(interaction: discord.Interaction, username: str, points:
             old = s["points"]
             s["points"] = points
             await interaction.response.send_message(
-                f"✅ **{s['username']}**: `{old} pts` → `{points} pts`",
+                f"â **{s['username']}**: `{old} pts` â `{points} pts`",
                 ephemeral=True
             )
             return
     await interaction.response.send_message(
-        f"❌ Player `{username}` not found in current session.",
+        f"â Player `{username}` not found in current session.",
         ephemeral=True
     )
 
