@@ -216,6 +216,22 @@
 
   .sep { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
 
+  /* Toggle switch */
+  .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 99px; transition: 0.2s;
+  }
+  .toggle-slider:before {
+    content: ""; position: absolute;
+    width: 16px; height: 16px; left: 3px; top: 3px;
+    background: var(--muted); border-radius: 50%; transition: 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: rgba(63,185,80,0.25); border-color: var(--accent2); }
+  .toggle-switch input:checked + .toggle-slider:before { background: var(--accent2); transform: translateX(18px); }
+
   code {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -288,6 +304,17 @@
 
         <label>Sessions per scoreboard cycle</label>
         <input type="number" id="cfgCycle" min="1" max="30" value="10">
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+          <div>
+            <div style="font-size:0.85rem; color:var(--muted); margin-bottom:0.15rem;">Send report cards after session</div>
+            <div style="font-size:0.75rem; color:var(--muted);">DM each player their personal stats</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="cfgReportCards" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
 
         <button class="btn-primary btn-full" onclick="saveConfig()">Save to bot.py</button>
       </div>
@@ -409,12 +436,15 @@ function parseConfig(content) {
   const c = getNum('SESSIONS_PER_CYCLE');
   // CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "0"))
   const chMatch = content.match(/CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*"(\d+)"\)\)/);
+  // SEND_REPORT_CARDS = True/False
+  const rcMatch = content.match(/SEND_REPORT_CARDS\s*=\s*(True|False)/);
 
   if (q !== null) document.getElementById('cfgQuestions').value = q;
   if (a !== null) document.getElementById('cfgAlive').value = a;
   if (t !== null) document.getElementById('cfgTimer').value = t;
   if (c !== null) document.getElementById('cfgCycle').value = c;
   if (chMatch)    document.getElementById('cfgChannel').value = chMatch[1];
+  if (rcMatch)    document.getElementById('cfgReportCards').checked = (rcMatch[1] === 'True');
 
   // Clear "Not Found" if values loaded
   if (q !== null) document.getElementById('configAlert').classList.remove('show');
@@ -427,6 +457,7 @@ async function saveConfig() {
   const t  = parseInt(document.getElementById('cfgTimer').value);
   const c  = parseInt(document.getElementById('cfgCycle').value);
   const ch = document.getElementById('cfgChannel').value.trim();
+  const rc = document.getElementById('cfgReportCards').checked ? 'True' : 'False';
 
   showAlert('configAlert', 'info', '⏳ Fetching bot.py...');
 
@@ -444,6 +475,7 @@ async function saveConfig() {
     content = content.replace(/(ALIVE_MINUTES\s*=\s*)\d+/, `$1${a}`);
     content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
     content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
+    content = content.replace(/(SEND_REPORT_CARDS\s*=\s*)(True|False)/, `$1${rc}`);
     if (ch) {
       content = content.replace(
         /(CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*")\d+("\)\))/,
@@ -456,7 +488,7 @@ async function saveConfig() {
       method: 'PUT',
       headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: `Admin: update bot config (q=${q}, alive=${a}m, timer=${t}m)`,
+        message: `Admin: update bot config (q=${q}, alive=${a}m, timer=${t}m, report_cards=${rc})`,
         content: btoa(unescape(encodeURIComponent(content))),
         sha: STATE.botSha
       })
@@ -477,15 +509,20 @@ async function saveConfig() {
 
 // ── TRIGGER QUIZ ─────────────────────────────────────────────────────────────
 async function triggerQuiz() {
+  const ch = document.getElementById('cfgChannel').value.trim();
+  if (!ch) {
+    showAlert('actionAlert', 'error', '❌ Enter a Channel ID first.');
+    return;
+  }
   showAlert('actionAlert', 'info', '⏳ Triggering workflow...');
   try {
     const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
       method: 'POST',
       headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ref: 'main' })
+      body: JSON.stringify({ ref: 'main', inputs: { channel_id: ch } })
     });
     if (res.status === 204) {
-      showAlert('actionAlert', 'success', '✅ Quiz triggered! Check Discord in ~30 seconds.');
+      showAlert('actionAlert', 'success', `✅ Quiz triggered for channel ${ch}! Check Discord in ~30 seconds.`);
     } else if (res.status === 403) {
       showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope. Go to GitHub → Settings → Developer settings → Personal access tokens → Edit your token → check ✅ workflow → Save.');
     } else {
@@ -535,12 +572,13 @@ function renderScores(data) {
       <td><span class="rank-badge">${rankIcon(i)}</span></td>
       <td><strong>${s.username || uid}</strong></td>
       <td><span class="tag tag-blue">${s.points} pts</span></td>
-      <td>${acc}%</td>
+      <td>${Math.min(acc,100)}%</td>
       <td>${s.correct}/${s.total}</td>
       <td>${streak > 0 ? `${sf} ${streak}d` : '—'}</td>
-      <td>
-        <input type="number" class="pts-input" value="${s.points}" id="pts_${uid}">
-        <button class="btn-ghost save-btn-sm" onclick="updateScore('${uid}','${s.username}')">Save</button>
+      <td style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap;">
+        <input type="number" class="pts-input" value="${s.points}" id="pts_${uid}" placeholder="pts">
+        <input type="number" class="pts-input" value="${streak}" id="str_${uid}" placeholder="streak" min="0" style="width:60px!important;">
+        <button class="btn-ghost save-btn-sm" onclick="updatePlayer('${uid}','${s.username}')">Save</button>
       </td>
     </tr>`;
   }).join('');
@@ -549,22 +587,32 @@ function renderScores(data) {
     <table class="scores-table">
       <thead><tr>
         <th>Rank</th><th>Player</th><th>Points</th><th>Accuracy</th>
-        <th>Correct</th><th>Streak</th><th>Edit</th>
+        <th>Correct</th><th>Streak</th><th>Edit pts · streak</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
 
-// ── UPDATE SINGLE SCORE ───────────────────────────────────────────────────────
-async function updateScore(uid, username) {
-  const newPts = parseInt(document.getElementById(`pts_${uid}`).value);
-  if (isNaN(newPts)) return;
+// ── UPDATE SINGLE PLAYER (points + streak) ───────────────────────────────────
+async function updatePlayer(uid, username) {
+  const newPts    = parseInt(document.getElementById(`pts_${uid}`).value);
+  const newStreak = parseInt(document.getElementById(`str_${uid}`).value);
+  if (isNaN(newPts) || isNaN(newStreak)) return;
 
   STATE.gistData.scores[uid].points = newPts;
+
+  // Update streak — preserve last_date so bot doesn't reset it
+  if (!STATE.gistData.streaks) STATE.gistData.streaks = {};
+  if (!STATE.gistData.streaks[uid]) STATE.gistData.streaks[uid] = { streak: 0, last_date: '' };
+  STATE.gistData.streaks[uid].streak = newStreak;
+
   await pushGist(STATE.gistData);
-  showAlert('scoresAlert', 'success', `✅ ${username}'s score updated to ${newPts} pts`);
+  showAlert('scoresAlert', 'success', `✅ ${username}: ${newPts} pts, ${newStreak}-day streak`);
   renderScores(STATE.gistData);
 }
+
+// kept for backward compat (reset scores still calls renderScores directly)
+async function updateScore(uid, username) { await updatePlayer(uid, username); }
 
 // ── RESET SCORES ─────────────────────────────────────────────────────────────
 async function resetScores() {

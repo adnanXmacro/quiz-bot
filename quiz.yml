@@ -1,0 +1,39 @@
+name: Daily Quiz Bot
+
+on:
+  schedule:
+    - cron: '35 15 * * *'  # 3:35 PM UTC = 9:35 PM Bangladesh (UTC+6)
+  workflow_dispatch:        # Also allows manual trigger from GitHub
+    inputs:
+      channel_id:
+        description: 'Discord channel ID to send quiz to (overrides secret)'
+        required: false
+        default: ''
+
+jobs:
+  run-quiz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200    # 3h 20min max (covers 3h alive + buffer)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install discord.py
+
+      - name: Run Quiz Bot
+        env:
+          PYTHONUNBUFFERED: "1"
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          OVERRIDE_CHANNEL_ID: ${{ github.event.inputs.channel_id }}
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          GIST_ID: ${{ secrets.GIST_ID }}
+        run: |
+          python -u bot.py

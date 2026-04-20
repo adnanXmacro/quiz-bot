@@ -13,12 +13,14 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
+_override_ch          = os.environ.get("OVERRIDE_CHANNEL_ID", "").strip()
+CHANNEL_ID            = int(_override_ch) if _override_ch else int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 0
-ALIVE_MINUTES         = 1
-PERSONAL_TIMER_MIN    = 1
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 60
+PERSONAL_TIMER_MIN    = 10
+SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -37,7 +39,6 @@ QUESTION_BANK = [
     {"type":"mcq","subject":"Math","question":"কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট একই মান দেখায়?","options":{"A":"-40°","B":"32°","C":"40°","D":"-32°"},"answer":"A","explanation":"C=F হলে, C = 9C/5+32 → C = -40°"},
     {"type":"mcq","subject":"Biology","question":"হিমোগ্লোবিনের কোন অংশে CO₂ যুক্ত হয়?","options":{"A":"−OH","B":"−COOH","C":"−HCO₃","D":"−NH₂"},"answer":"D","explanation":"CO₂, হিমোগ্লোবিনের −NH₂ গ্রুপের সাথে যুক্ত হয়।"},
 ]
-
 # ▲▲▲ END OF QUESTION BANK ▲▲▲
 # ────────────────────────────────────────────────────────────────────────────────
 
@@ -579,7 +580,8 @@ async def post_scoreboard(channel: discord.TextChannel):
     await save_session_data()
     print("Session data saved to Gist.")
     # Send individual report cards
-    await send_report_cards(channel.guild, scores, streaks)
+    if SEND_REPORT_CARDS:
+        await send_report_cards(channel.guild, scores, streaks)
 
 
 async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
