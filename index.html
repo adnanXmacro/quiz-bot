@@ -397,24 +397,27 @@ async function connect() {
 
 // ── PARSE CONFIG FROM bot.py ─────────────────────────────────────────────────
 function parseConfig(content) {
-  const extract = (key) => {
-    const m = content.match(new RegExp(`${key}\\s*=\\s*(\\d+)`));
+  // Match exact patterns from bot.py
+  const getNum = (key) => {
+    const m = content.match(new RegExp(key + '\\s*=\\s*(\\d+)'));
     return m ? parseInt(m[1]) : null;
   };
-  // Match CHANNEL_ID from environment variable default or direct assignment
-  const chMatch = content.match(/CHANNEL_ID[^=]*=\s*int\([^,)]*[",'](\d+)[",']/) ||
-                  content.match(/CHANNEL_ID\s*=\s*(\d+)/);
 
-  const q = extract('QUESTIONS_PER_SESSION');
-  const a = extract('ALIVE_MINUTES');
-  const t = extract('PERSONAL_TIMER_MIN');
-  const c = extract('SESSIONS_PER_CYCLE');
+  const q = getNum('QUESTIONS_PER_SESSION');
+  const a = getNum('ALIVE_MINUTES');
+  const t = getNum('PERSONAL_TIMER_MIN');
+  const c = getNum('SESSIONS_PER_CYCLE');
+  // CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "0"))
+  const chMatch = content.match(/CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*"(\d+)"\)\)/);
 
-  if (q) document.getElementById('cfgQuestions').value = q;
-  if (a) document.getElementById('cfgAlive').value = a;
-  if (t) document.getElementById('cfgTimer').value = t;
-  if (c) document.getElementById('cfgCycle').value = c;
-  if (chMatch) document.getElementById('cfgChannel').value = chMatch[1];
+  if (q !== null) document.getElementById('cfgQuestions').value = q;
+  if (a !== null) document.getElementById('cfgAlive').value = a;
+  if (t !== null) document.getElementById('cfgTimer').value = t;
+  if (c !== null) document.getElementById('cfgCycle').value = c;
+  if (chMatch)    document.getElementById('cfgChannel').value = chMatch[1];
+
+  // Clear "Not Found" if values loaded
+  if (q !== null) document.getElementById('configAlert').classList.remove('show');
 }
 
 // ── SAVE CONFIG ──────────────────────────────────────────────────────────────
@@ -436,15 +439,15 @@ async function saveConfig() {
     STATE.botSha = fileData.sha;
     let content = atob(fileData.content.replace(/\n/g, ''));
 
-    // Replace config values
+    // Replace config values — match exact bot.py format
     content = content.replace(/(QUESTIONS_PER_SESSION\s*=\s*)\d+/, `$1${q}`);
     content = content.replace(/(ALIVE_MINUTES\s*=\s*)\d+/, `$1${a}`);
     content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
     content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
     if (ch) {
       content = content.replace(
-        /CHANNEL_ID\s*=\s*int\(os\.environ\.get\("CHANNEL_ID",\s*"\d*"\)\)/,
-        `CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "${ch}"))`
+        /(CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*")\d+("\)\))/,
+        `$1${ch}$2`
       );
     }
 
@@ -482,7 +485,9 @@ async function triggerQuiz() {
       body: JSON.stringify({ ref: 'main' })
     });
     if (res.status === 204) {
-      showAlert('actionAlert', 'success', '✅ Quiz workflow triggered! Check Discord in ~30 seconds.');
+      showAlert('actionAlert', 'success', '✅ Quiz triggered! Check Discord in ~30 seconds.');
+    } else if (res.status === 403) {
+      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope. Go to GitHub → Settings → Developer settings → Personal access tokens → Edit your token → check ✅ workflow → Save.');
     } else {
       const err = await res.json();
       throw new Error(err.message || `Status ${res.status}`);
