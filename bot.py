@@ -37,6 +37,7 @@ QUESTION_BANK = [
     {"type":"mcq","subject":"Math","question":"কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট একই মান দেখায়?","options":{"A":"-40°","B":"32°","C":"40°","D":"-32°"},"answer":"A","explanation":"C=F হলে, C = 9C/5+32 → C = -40°"},
     {"type":"mcq","subject":"Biology","question":"হিমোগ্লোবিনের কোন অংশে CO₂ যুক্ত হয়?","options":{"A":"−OH","B":"−COOH","C":"−HCO₃","D":"−NH₂"},"answer":"D","explanation":"CO₂, হিমোগ্লোবিনের −NH₂ গ্রুপের সাথে যুক্ত হয়।"},
 ]
+
 # ▲▲▲ END OF QUESTION BANK ▲▲▲
 # ────────────────────────────────────────────────────────────────────────────────
 
@@ -112,6 +113,9 @@ def update_score_sync(user_id: str, username: str, correct: bool,
     s = scores[user_id]
     s["username"] = username
     s["total"]    += 1
+    # Self-heal: if correct somehow exceeds total (corrupted from old data), clamp it
+    if s.get("correct", 0) > s["total"]:
+        s["correct"] = min(s.get("correct", 0), s["total"] - 1)
     s.setdefault("subjects", {})
     s["subjects"].setdefault(subject, {"correct": 0, "total": 0})
     s["subjects"][subject]["total"] += 1
@@ -205,7 +209,7 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
 
     # Cycle progress bar
     filled_cycle = round(((session_count % SESSIONS_PER_CYCLE) / SESSIONS_PER_CYCLE) * 10)
-    cycle_bar    = "█" * filled_cycle + "░" * (10 - filled_cycle)
+    cycle_bar    = "\u2588" * filled_cycle + "\u2591" * (10 - filled_cycle)
     embed.description = (
         f"**Cycle #{cycle_num}**  `{cycle_bar}`  "
         f"Session **{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}**"
@@ -239,7 +243,7 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
             )
         else:
             filled = round((s["points"] / max_pts) * 10)
-            bar    = "▰" * filled + "▱" * (10 - filled)
+            bar    = "\u2588" * filled + "\u2591" * (10 - filled)
             rest_lines.append(
                 f"`#{rank:02d}` **{s['username'][:14]}**  {bar}  `{s['points']} pts`  ·  {acc}%{st}"
             )
@@ -601,6 +605,7 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
                 continue
 
             acc = round(100*s["correct"]/s["total"]) if s["total"] > 0 else 0
+            acc = min(acc, 100)  # guard against corrupted data where correct > total
             badge, rank_title, _ = get_rank(s["points"])
             streak = streaks.get(user_id, {}).get("streak", 0)
             streak_badge = get_streak_badge(streak)
@@ -634,8 +639,9 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
 
                 for subj, stat in subjects.items():
                     sub_acc = round(100*stat["correct"]/stat["total"]) if stat["total"] > 0 else 0
+                    sub_acc = min(sub_acc, 100)  # guard against corrupted data
                     bar_f = round(sub_acc/10)
-                    bar = "▰"*bar_f + "▱"*(10-bar_f)
+                    bar = "\u2588"*bar_f + "\u2591"*(10-bar_f)
                     meta = SUBJECT_META.get(subj, {"emoji":"📋"})
                     sub_lines.append(f"{meta['emoji']} **{subj}**  {bar}  {sub_acc}% ({stat['correct']}/{stat['total']})")
 

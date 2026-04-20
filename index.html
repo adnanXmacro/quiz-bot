@@ -374,8 +374,8 @@ async function connect() {
 
     STATE = { token, repo, gistId, botSha: fileData.sha, gistData: null };
 
-    // Load current config from bot.py
-    const content = atob(fileData.content.replace(/\n/g, ''));
+    // Load current config from bot.py (UTF-8 safe decode)
+    const content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
     parseConfig(content);
 
     // Load scores
@@ -437,7 +437,7 @@ async function saveConfig() {
     });
     const fileData = await fileRes.json();
     STATE.botSha = fileData.sha;
-    let content = atob(fileData.content.replace(/\n/g, ''));
+    let content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
 
     // Replace config values — match exact bot.py format
     content = content.replace(/(QUESTIONS_PER_SESSION\s*=\s*)\d+/, `$1${q}`);
