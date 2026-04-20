@@ -20,7 +20,7 @@ GIST_ID               = os.environ.get("GIST_ID")
 QUESTIONS_PER_SESSION = 30
 ALIVE_MINUTES         = 31
 PERSONAL_TIMER_MIN    = 30
-SEND_REPORT_CARDS     = True
+SEND_REPORT_CARDS     = False
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
