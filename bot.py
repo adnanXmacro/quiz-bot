@@ -1,3 +1,5 @@
+import unicodedata
+
 import discord
 from discord.ext import commands
 import json
@@ -13,14 +15,12 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-_override_ch          = os.environ.get("OVERRIDE_CHANNEL_ID", "").strip()
-CHANNEL_ID            = int(_override_ch) if _override_ch else int(os.environ.get("CHANNEL_ID", "0"))
+CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
 QUESTIONS_PER_SESSION = 10
 ALIVE_MINUTES         = 60
 PERSONAL_TIMER_MIN    = 10
-SEND_REPORT_CARDS     = False
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -114,9 +114,6 @@ def update_score_sync(user_id: str, username: str, correct: bool,
     s = scores[user_id]
     s["username"] = username
     s["total"]    += 1
-    # Self-heal: if correct somehow exceeds total (corrupted from old data), clamp it
-    if s.get("correct", 0) > s["total"]:
-        s["correct"] = min(s.get("correct", 0), s["total"] - 1)
     s.setdefault("subjects", {})
     s["subjects"].setdefault(subject, {"correct": 0, "total": 0})
     s["subjects"][subject]["total"] += 1
@@ -165,6 +162,13 @@ SUBJECT_META = {
     "GK":        {"emoji": "🌐", "color": 0xFF8C00, "label": "General Knowledge"},
 }
 
+def normalize(text: str) -> str:
+    """Aggressive normalization for deduplication."""
+    text = unicodedata.normalize("NFKC", text)
+    text = text.lower().strip()
+    text = " ".join(text.split())
+    return text
+
 def get_subject(subject: str) -> dict:
     return SUBJECT_META.get(subject, {"emoji": "📋", "color": 0x5865F2, "label": subject})
 
@@ -210,7 +214,7 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
 
     # Cycle progress bar
     filled_cycle = round(((session_count % SESSIONS_PER_CYCLE) / SESSIONS_PER_CYCLE) * 10)
-    cycle_bar    = "\u2588" * filled_cycle + "\u2591" * (10 - filled_cycle)
+    cycle_bar    = "█" * filled_cycle + "░" * (10 - filled_cycle)
     embed.description = (
         f"**Cycle #{cycle_num}**  `{cycle_bar}`  "
         f"Session **{session_count % SESSIONS_PER_CYCLE}/{SESSIONS_PER_CYCLE}**"
@@ -244,7 +248,7 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
             )
         else:
             filled = round((s["points"] / max_pts) * 10)
-            bar    = "\u2588" * filled + "\u2591" * (10 - filled)
+            bar    = "▰" * filled + "▱" * (10 - filled)
             rest_lines.append(
                 f"`#{rank:02d}` **{s['username'][:14]}**  {bar}  `{s['points']} pts`  ·  {acc}%{st}"
             )
@@ -273,9 +277,10 @@ def build_scoreboard_embed(scores: dict, streaks: dict = None, session_count: in
 # ─── QUESTION PICKER ────────────────────────────────────────────────────────────
 
 async def pick_questions_smart(count: int) -> list:
-    """Pick questions avoiding recently asked ones, using in-memory SESSION_DATA."""
+    """Pick questions with zero repeats — within session and across sessions."""
     asked = set(SESSION_DATA.get("asked", []))
 
+    # Load pool
     if os.path.exists("questions.json"):
         try:
             with open("questions.json", "r", encoding="utf-8") as f:
@@ -283,36 +288,46 @@ async def pick_questions_smart(count: int) -> list:
             for q in raw_pool:
                 q.setdefault("type", "mcq")
                 q.setdefault("subject", "General")
-            # Deduplicate by question text
-            seen = set()
-            pool = []
-            for q in raw_pool:
-                if q["question"] not in seen:
-                    seen.add(q["question"])
-                    pool.append(q)
-            dupes = len(raw_pool) - len(pool)
-            if dupes > 0:
-                print(f"Removed {dupes} duplicate questions. Unique: {len(pool)}")
-            else:
-                print(f"Loaded {len(pool)} questions from questions.json")
         except Exception as e:
             print(f"Failed to load questions.json: {e}, using built-in bank")
-            pool = QUESTION_BANK.copy()
+            raw_pool = QUESTION_BANK.copy()
     else:
-        pool = QUESTION_BANK.copy()
+        raw_pool = QUESTION_BANK.copy()
 
-    fresh = [q for q in pool if q["question"] not in asked]
+    # Step 1: Deduplicate using normalized text
+    seen_norm = set()
+    pool = []
+    for q in raw_pool:
+        key = normalize(q["question"])
+        if key not in seen_norm:
+            seen_norm.add(key)
+            pool.append(q)
+    dupes = len(raw_pool) - len(pool)
+    if dupes > 0:
+        print(f"Removed {dupes} duplicate questions. Unique pool: {len(pool)}")
+    else:
+        print(f"Unique pool: {len(pool)}")
+
+    # Step 2: Filter out already-asked (compare normalized)
+    # Also normalize the asked set entries for comparison
+    asked_norm = {normalize(a) for a in asked}
+    fresh = [q for q in pool if normalize(q["question"]) not in asked_norm]
     print(f"Fresh: {len(fresh)} / {len(pool)}")
 
+    # Step 3: If not enough fresh, reset history
     if len(fresh) < count:
         print("Full cycle complete — resetting asked history!")
-        asked = set()
-        fresh = pool.copy()
         SESSION_DATA["asked"] = []
+        asked_norm = set()
+        fresh = pool.copy()
 
-    random.shuffle(fresh)
-    selected = fresh[:min(count, len(fresh))]
-    SESSION_DATA["asked"] = list(asked | {q["question"] for q in selected})
+    # Step 4: random.sample guarantees NO repeats within session
+    selected = random.sample(fresh, min(count, len(fresh)))
+
+    # Step 5: Save asked — store original text (not normalized) for readability
+    new_asked = list(asked | {q["question"] for q in selected})
+    SESSION_DATA["asked"] = new_asked
+    print(f"Selected {len(selected)} questions. Total asked: {len(new_asked)}")
     return selected
 
 
@@ -580,8 +595,7 @@ async def post_scoreboard(channel: discord.TextChannel):
     await save_session_data()
     print("Session data saved to Gist.")
     # Send individual report cards
-    if SEND_REPORT_CARDS:
-        await send_report_cards(channel.guild, scores, streaks)
+    await send_report_cards(channel.guild, scores, streaks)
 
 
 async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
@@ -607,7 +621,6 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
                 continue
 
             acc = round(100*s["correct"]/s["total"]) if s["total"] > 0 else 0
-            acc = min(acc, 100)  # guard against corrupted data where correct > total
             badge, rank_title, _ = get_rank(s["points"])
             streak = streaks.get(user_id, {}).get("streak", 0)
             streak_badge = get_streak_badge(streak)
@@ -641,9 +654,8 @@ async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
 
                 for subj, stat in subjects.items():
                     sub_acc = round(100*stat["correct"]/stat["total"]) if stat["total"] > 0 else 0
-                    sub_acc = min(sub_acc, 100)  # guard against corrupted data
                     bar_f = round(sub_acc/10)
-                    bar = "\u2588"*bar_f + "\u2591"*(10-bar_f)
+                    bar = "▰"*bar_f + "▱"*(10-bar_f)
                     meta = SUBJECT_META.get(subj, {"emoji":"📋"})
                     sub_lines.append(f"{meta['emoji']} **{subj}**  {bar}  {sub_acc}% ({stat['correct']}/{stat['total']})")
 
