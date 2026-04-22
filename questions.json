@@ -9411,7 +9411,7 @@
       "D": "$R_{max}=\\frac{2{v_{0}}^{2}}{g}$"
     },
     "answer": "C",
-    "explanation": "প্রাসের অনুভূমিক পাল্লার সূত্র হলো $R = (v^2 sin 2\alpha) / g$।",
+    "explanation": "প্রাসের অনুভূমিক পাল্লার সূত্র হলো $R = (v^2 \\sin 2\\alpha) / g$",
     "subject": "Physics"
   },
   {
