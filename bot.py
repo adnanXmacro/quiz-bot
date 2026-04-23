@@ -99,8 +99,97 @@ async def save_to_gist():
     async with _save_lock:
         await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, SESSION_DATA)
 
+def _merge_save_sync(session_data: dict) -> bool:
+    """
+    Re-fetch the gist, then merge in-memory scores ON TOP of the live gist data.
+    This preserves any manual edits made to the gist during the session.
+
+    Merge rules per player:
+      - points  : take whichever is higher (manual boost vs bot-earned)
+      - correct / total : take the bot's values (they reflect real answers)
+      - username: bot's value (always up-to-date display name)
+      - subjects: merge per-subject, same points-max / correct+total logic
+    Any player added manually to the gist (not in bot memory) is kept as-is.
+    """
+    # 1. Pull the current gist state
+    try:
+        req = urllib.request.Request(
+            f"https://api.github.com/gists/{GIST_ID}",
+            headers={"Authorization": f"token {GIST_TOKEN}", "Accept": "application/vnd.github.v3+json"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            raw = json.loads(resp.read().decode())
+            live = json.loads(raw["files"]["scores.json"]["content"])
+            if "scores" not in live:
+                live = {"scores": live, "asked": [], "streaks": {}, "session_count": 0}
+            live.setdefault("session_count", 0)
+    except Exception as e:
+        print(f"Merge-fetch error: {e} — falling back to plain save")
+        return _save_data_sync(session_data)
+
+    # 2. Build merged data starting from the live gist (preserves manual edits)
+    merged = live.copy()
+    merged_scores  = dict(live.get("scores",  {}))
+    merged_streaks = dict(live.get("streaks", {}))
+
+    bot_scores  = session_data.get("scores",  {})
+    bot_streaks = session_data.get("streaks", {})
+
+    for uid, bot_s in bot_scores.items():
+        if uid not in merged_scores:
+            # New player — just add them
+            merged_scores[uid] = bot_s
+        else:
+            live_s = merged_scores[uid]
+            merged_s = dict(live_s)
+            # Always honour the live gist value when it differs from what the bot
+            # has in memory — that difference means you edited it manually.
+            # If they're the same, just keep the bot value (normal session update).
+            bot_pts  = bot_s.get("points", 0)
+            live_pts = live_s.get("points", 0)
+            merged_s["points"] = live_pts if live_pts != bot_pts else bot_pts
+
+            # Bot values are authoritative for answer counts
+            merged_s["correct"] = bot_s.get("correct", live_s.get("correct", 0))
+            merged_s["total"]   = bot_s.get("total",   live_s.get("total",   0))
+            merged_s["username"] = bot_s.get("username", live_s.get("username", ""))
+            # Merge subjects
+            live_subj = live_s.get("subjects", {})
+            bot_subj  = bot_s.get("subjects",  {})
+            merged_subj = dict(live_subj)
+            for subj, bst in bot_subj.items():
+                if subj not in merged_subj:
+                    merged_subj[subj] = bst
+                else:
+                    lst = merged_subj[subj]
+                    merged_subj[subj] = {
+                        "correct": bst.get("correct", lst.get("correct", 0)),
+                        "total":   bst.get("total",   lst.get("total",   0)),
+                    }
+            merged_s["subjects"] = merged_subj
+            merged_scores[uid] = merged_s
+
+    # Merge streaks — bot is authoritative (it tracks daily activity)
+    for uid, bst in bot_streaks.items():
+        merged_streaks[uid] = bst
+
+    merged["scores"]        = merged_scores
+    merged["streaks"]       = merged_streaks
+    merged["asked"]         = session_data.get("asked", live.get("asked", []))
+    merged["session_count"] = session_data.get("session_count", live.get("session_count", 0))
+
+    # 3. Also update SESSION_DATA so the scoreboard embed uses merged values
+    session_data["scores"]  = merged_scores
+    session_data["streaks"] = merged_streaks
+
+    return _save_data_sync(merged)
+
 async def save_session_data():
-    await save_to_gist()
+    """Called at scoreboard time — does a merge-save to respect manual gist edits."""
+    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
+        return
+    async with _save_lock:
+        await asyncio.get_event_loop().run_in_executor(executor, _merge_save_sync, SESSION_DATA)
 
 def update_score_sync(user_id: str, username: str, correct: bool,
                       subject: str = "General", points_to_add: int = 10) -> int:
