@@ -15,12 +15,12 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "1493121034226761758"))
+CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 1
-ALIVE_MINUTES         = 3
-PERSONAL_TIMER_MIN    = 3
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 180
+PERSONAL_TIMER_MIN    = 10
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -79,12 +79,35 @@ async def load_session_data():
     SESSION_DATA = data
     print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
 
-async def save_to_gist():
-    """Save to Gist — queued via lock so only one write at a time, no 409."""
+async def save_to_gist() -> bool:
+    """Merge current session updates with latest Gist data before saving."""
+    global SESSION_DATA
     if not GIST_TOKEN or not GIST_ID or _save_lock is None:
-        return
+        return False
+        
     async with _save_lock:
-        await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, SESSION_DATA)
+        # 1. Pull the absolute latest data from the Gist (your manual edits)
+        remote_data = await load_session_data() 
+        
+        if remote_data:
+            # 2. Merge logic:
+            # Keep remote scores (your edits) but update them with 
+            # any new points earned in this specific session.
+            current_scores = SESSION_DATA.get("scores", {})
+            for uid, data in current_scores.items():
+                remote_data.setdefault("scores", {})[uid] = data
+            
+            # Update session-specific fields
+            remote_data["streaks"] = SESSION_DATA.get("streaks", {})
+            remote_data["asked"] = SESSION_DATA.get("asked", [])
+            
+            # Sync local memory with the merged data
+            SESSION_DATA = remote_data
+
+        # 3. Save the merged result back to GitHub
+        return await asyncio.get_event_loop().run_in_executor(
+            executor, _save_data_sync, SESSION_DATA
+        )
 
 async def save_session_data():
     await save_to_gist()
