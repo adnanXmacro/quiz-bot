@@ -31,10 +31,9 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-          # This line below is the fix:
-          CHANNEL_ID: ${{ github.event.inputs.channel_id != '' && github.event.inputs.channel_id || secrets.CHANNEL_ID }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          OVERRIDE_CHANNEL_ID: ${{ github.event.inputs.channel_id }}
           GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
         run: |
           python -u bot.py
-
