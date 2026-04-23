@@ -18,9 +18,9 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 1
-ALIVE_MINUTES         = 3
-PERSONAL_TIMER_MIN    = 3
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 180
+PERSONAL_TIMER_MIN    = 10
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -37,21 +37,28 @@ SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
 _save_lock   = None  # asyncio.Lock — initialized in on_ready
 
 def _load_data_sync() -> dict:
+    """Fetch latest data from Gist with a cache-buster to ensure freshness."""
     try:
+        # Adding a timestamp (?t=...) forces GitHub to give us the REAL latest data
+        timestamp = int(datetime.datetime.now().timestamp())
+        url = f"https://api.github.com/gists/{GIST_ID}?t={timestamp}"
+        
         req = urllib.request.Request(
-            f"https://api.github.com/gists/{GIST_ID}",
-            headers={"Authorization": f"token {GIST_TOKEN}", "Accept": "application/vnd.github.v3+json"}
+            url,
+            headers={
+                "Authorization": f"token {GIST_TOKEN}",
+                "Accept": "application/vnd.github.v3+json",
+                "Cache-Control": "no-cache" # Tells GitHub not to use a cache
+            }
         )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode())
-            raw  = json.loads(data["files"]["scores.json"]["content"])
-            if "scores" not in raw:
-                return {"scores": raw, "asked": [], "streaks": {}, "session_count": 0}
-            raw.setdefault("session_count", 0)
-            return raw
+        with urllib.request.urlopen(req) as response:
+            gist = json.load(response)
+            file_content = gist['files']['quiz_data.json']['content']
+            return json.loads(file_content)
     except Exception as e:
-        print(f"Gist load error: {e}")
+        print(f"Error loading Gist: {e}")
         return {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
+
 
 def _save_data_sync(data: dict) -> bool:
     try:
