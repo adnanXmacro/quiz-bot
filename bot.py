@@ -15,12 +15,12 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
+CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "1493121034226761758"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 0
-ALIVE_MINUTES         = 5
-PERSONAL_TIMER_MIN    = 5
+QUESTIONS_PER_SESSION = 1
+ALIVE_MINUTES         = 3
+PERSONAL_TIMER_MIN    = 3
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
