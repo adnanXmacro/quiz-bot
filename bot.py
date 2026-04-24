@@ -860,5 +860,72 @@ async def editscore_cmd(interaction: discord.Interaction, username: str, points:
     )
 
 
+@bot.tree.command(name="status", description="See your current score, rank, and accuracy")
+async def status_cmd(interaction: discord.Interaction):
+    uid    = str(interaction.user.id)
+    scores = SESSION_DATA.get("scores", {})
+    streaks = SESSION_DATA.get("streaks", {})
+
+    if uid not in scores:
+        await interaction.response.send_message(
+            "❌ You haven't answered any questions in this session yet!",
+            ephemeral=True
+        )
+        return
+
+    s = scores[uid]
+    pts     = s.get("points", 0)
+    correct = s.get("correct", 0)
+    total   = s.get("total", 0)
+    acc     = round(100 * correct / total) if total > 0 else 0
+    badge, title, _ = get_rank(pts)
+    streak  = streaks.get(uid, {}).get("streak", 0)
+    sb      = get_streak_badge(streak)
+
+    # Calculate rank among all players
+    sorted_pts = sorted((v.get("points", 0) for v in scores.values()), reverse=True)
+    rank = next((i + 1 for i, p in enumerate(sorted_pts) if p == pts), len(sorted_pts))
+
+    # Subjects breakdown
+    subjects = s.get("subjects", {})
+    subj_lines = []
+    for subj, st in sorted(subjects.items()):
+        s_acc = round(100 * st["correct"] / st["total"]) if st["total"] > 0 else 0
+        subj_lines.append(f"　`{subj}` — {st['correct']}/{st['total']} ({s_acc}%)")
+
+    embed = discord.Embed(
+        title=f"{badge} {interaction.user.display_name}",
+        description=f"{title}  ·  Rank **#{rank}** of {len(scores)}",
+        color=discord.Color.blurple()
+    )
+    embed.add_field(
+        name="📊 Stats",
+        value=(
+            f"**Points:** `{pts}`
+"
+            f"**Correct:** {correct}/{total}
+"
+            f"**Accuracy:** {acc}%"
+        ),
+        inline=True
+    )
+    if streak >= 1:
+        embed.add_field(
+            name="🔥 Streak",
+            value=f"{sb} `{streak}` day{'s' if streak != 1 else ''}",
+            inline=True
+        )
+    if subj_lines:
+        embed.add_field(
+            name="📚 Subjects",
+            value="
+".join(subj_lines),
+            inline=False
+        )
+    embed.set_footer(text="Only you can see this  ·  /status")
+
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
 if __name__ == "__main__":
     bot.run(DISCORD_TOKEN)
