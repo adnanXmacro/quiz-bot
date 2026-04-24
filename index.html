@@ -449,8 +449,8 @@ function parseConfig(content) {
   const a = getNum('ALIVE_MINUTES');
   const t = getNum('PERSONAL_TIMER_MIN');
   const c = getNum('SESSIONS_PER_CYCLE');
-  // CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "0"))
-  const chMatch = content.match(/CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*"(\d+)"\)\)/);
+  // CHANNEL_ID — read default from secret fallback (display only; actual override sent via dispatch)
+  const chMatch = content.match(/os\.environ\.get\("CHANNEL_ID",\s*"(\d+)"\)/);
   // SEND_REPORT_CARDS = True/False
   const rcMatch = content.match(/SEND_REPORT_CARDS\s*=\s*(True|False)/);
 
@@ -491,12 +491,7 @@ async function saveConfig() {
     content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
     content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
     content = content.replace(/(SEND_REPORT_CARDS\s*=\s*)(True|False)/, `$1${rc}`);
-    if (ch) {
-      content = content.replace(
-        /(CHANNEL_ID\s*=\s*int\(os\.environ\.get\([^,]+,\s*")\d+("\)\))/,
-        `$1${ch}$2`
-      );
-    }
+    // Channel ID is sent as a workflow dispatch input (OVERRIDE_CHANNEL_ID), not hardcoded in bot.py
 
     // Push to GitHub
     const updateRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
@@ -534,7 +529,7 @@ async function triggerQuiz() {
     const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
       method: 'POST',
       headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ref: 'main', inputs: { channel_id: ch } })
+      body: JSON.stringify({ ref: 'main', inputs: { channel_id: ch, override_channel_id: ch } })
     });
     if (res.status === 204) {
       showAlert('actionAlert', 'success', `✅ Quiz triggered for channel ${ch}! Check Discord in ~30 seconds.`);

@@ -15,12 +15,13 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
-CHANNEL_ID            = int(os.environ.get("CHANNEL_ID", "0"))
+CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
 QUESTIONS_PER_SESSION = 10
 ALIVE_MINUTES         = 180
 PERSONAL_TIMER_MIN    = 10
+SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -710,8 +711,9 @@ async def post_scoreboard(channel: discord.TextChannel):
     # Save to Gist ONCE
     await save_session_data()
     print("Session data saved to Gist.")
-    # Send individual report cards
-    await send_report_cards(channel.guild, scores, streaks)
+    # Send individual report cards (only if enabled in config)
+    if SEND_REPORT_CARDS:
+        await send_report_cards(channel.guild, scores, streaks)
 
 
 async def send_report_cards(guild: discord.Guild, scores: dict, streaks: dict):
