@@ -18,10 +18,10 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 1
-ALIVE_MINUTES         = 1
-PERSONAL_TIMER_MIN    = 1
-SEND_REPORT_CARDS     = False
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 180
+PERSONAL_TIMER_MIN    = 10
+SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -901,10 +901,8 @@ async def status_cmd(interaction: discord.Interaction):
     embed.add_field(
         name="📊 Stats",
         value=(
-            f"**Points:** `{pts}`
-"
-            f"**Correct:** {correct}/{total}
-"
+            f"**Points:** `{pts}`\n"
+            f"**Correct:** {correct}/{total}\n"
             f"**Accuracy:** {acc}%"
         ),
         inline=True
@@ -918,8 +916,7 @@ async def status_cmd(interaction: discord.Interaction):
     if subj_lines:
         embed.add_field(
             name="📚 Subjects",
-            value="
-".join(subj_lines),
+            value="\n".join(subj_lines),
             inline=False
         )
     embed.set_footer(text="Only you can see this  ·  /status")
