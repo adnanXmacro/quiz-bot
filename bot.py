@@ -18,10 +18,10 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 1
-ALIVE_MINUTES         = 2
-PERSONAL_TIMER_MIN    = 2
-SEND_REPORT_CARDS     = False
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 180
+PERSONAL_TIMER_MIN    = 10
+SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -45,12 +45,15 @@ QUESTION_BANK = [
 
 
 # ─── GIST DATA STORAGE ──────────────────────────────────────────────────────────
-# Saves to Gist on every answer using a lock to prevent 409 conflicts.
+# Each answer patches ONLY that player's entry in the gist directly.
+# The bot never holds scores in memory — always reads/writes gist.
+# This means manual gist edits are always preserved.
 
-SESSION_DATA = {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
+SESSION_DATA = {"asked": [], "streaks": {}, "session_count": 0}
 _save_lock   = None  # asyncio.Lock — initialized in on_ready
 
-def _load_data_sync() -> dict:
+def _gist_fetch_sync() -> dict:
+    """Fetch and return the full gist data dict."""
     try:
         req = urllib.request.Request(
             f"https://api.github.com/gists/{GIST_ID}",
@@ -60,14 +63,15 @@ def _load_data_sync() -> dict:
             data = json.loads(resp.read().decode())
             raw  = json.loads(data["files"]["scores.json"]["content"])
             if "scores" not in raw:
-                return {"scores": raw, "asked": [], "streaks": {}, "session_count": 0}
+                raw = {"scores": raw, "asked": [], "streaks": {}, "session_count": 0}
             raw.setdefault("session_count", 0)
             return raw
     except Exception as e:
-        print(f"Gist load error: {e}")
+        print(f"Gist fetch error: {e}")
         return {"scores": {}, "asked": [], "streaks": {}, "session_count": 0}
 
-def _save_data_sync(data: dict) -> bool:
+def _gist_write_sync(data: dict) -> bool:
+    """Write the full data dict to the gist."""
     try:
         payload = json.dumps({
             "files": {"scores.json": {"content": json.dumps(data, ensure_ascii=False, indent=2)}}
@@ -75,198 +79,101 @@ def _save_data_sync(data: dict) -> bool:
         req = urllib.request.Request(
             f"https://api.github.com/gists/{GIST_ID}",
             data=payload,
-            headers={"Authorization": f"token {GIST_TOKEN}", "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json"},
+            headers={"Authorization": f"token {GIST_TOKEN}", "Accept": "application/vnd.github.v3+json",
+                     "Content-Type": "application/json"},
             method="PATCH"
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             print(f"Gist saved. Players: {len(data.get('scores', {}))}")
             return True
     except Exception as e:
-        print(f"Gist save error: {e}")
+        print(f"Gist write error: {e}")
         return False
 
-async def load_session_data():
-    global SESSION_DATA
-    if not GIST_TOKEN or not GIST_ID:
-        return
-    data = await asyncio.get_event_loop().run_in_executor(executor, _load_data_sync)
-    SESSION_DATA = data
-    # Snapshot the pre-session scores so merge can calculate per-session deltas
-    SESSION_DATA["_prev"] = {
-        uid: {"correct": s.get("correct", 0), "total": s.get("total", 0), "points": s.get("points", 0)}
-        for uid, s in data.get("scores", {}).items()
-    }
-    print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
-
-async def save_to_gist():
-    """Save to Gist — always merge before writing so manual gist edits are never overwritten."""
-    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
-        return
-    async with _save_lock:
-        await asyncio.get_event_loop().run_in_executor(executor, _merge_save_sync, SESSION_DATA)
-
-def _merge_save_sync(session_data: dict) -> bool:
+def _patch_player_sync(user_id: str, username: str, correct: bool,
+                       subject: str, points_to_add: int) -> int:
     """
-    Re-fetch the gist, then merge in-memory scores ON TOP of the live gist data.
-    This preserves any manual edits made to the gist during the session.
-
-    Merge rules per player:
-      - points  : take whichever is higher (manual boost vs bot-earned)
-      - correct / total : take the bot's values (they reflect real answers)
-      - username: bot's value (always up-to-date display name)
-      - subjects: merge per-subject, same points-max / correct+total logic
-    Any player added manually to the gist (not in bot memory) is kept as-is.
+    Fetch live gist, update ONLY this player's entry, write back.
+    All other players' data (including manual edits) is untouched.
+    Returns the player's new points total.
     """
-    # 1. Pull the current gist state
-    try:
-        req = urllib.request.Request(
-            f"https://api.github.com/gists/{GIST_ID}",
-            headers={"Authorization": f"token {GIST_TOKEN}", "Accept": "application/vnd.github.v3+json"}
-        )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            raw = json.loads(resp.read().decode())
-            live = json.loads(raw["files"]["scores.json"]["content"])
-            if "scores" not in live:
-                live = {"scores": live, "asked": [], "streaks": {}, "session_count": 0}
-            live.setdefault("session_count", 0)
-    except Exception as e:
-        print(f"Merge-fetch error: {e} — falling back to plain save")
-        return _save_data_sync(session_data)
+    today     = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)).strftime("%Y-%m-%d")
+    yesterday = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+                 - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
-    # 2. Build merged data starting from the live gist (preserves manual edits)
-    merged = live.copy()
-    merged_scores  = dict(live.get("scores",  {}))
-    merged_streaks = dict(live.get("streaks", {}))
+    data    = _gist_fetch_sync()
+    scores  = data.setdefault("scores",  {})
+    streaks = data.setdefault("streaks", {})
 
-    bot_scores  = session_data.get("scores",  {})
-    bot_streaks = session_data.get("streaks", {})
-
-    for uid, bot_s in bot_scores.items():
-        if uid not in merged_scores:
-            # New player — just add them
-            merged_scores[uid] = bot_s
-        else:
-            live_s = merged_scores[uid]
-            merged_s = dict(live_s)
-            # Fetch pre-session snapshot once — used for all delta calculations below
-            prev = session_data.get("_prev", {}).get(uid, {})
-
-            # For points: if live gist differs from pre-session snapshot, a manual
-            # edit happened; honour it and add only this session's gain on top.
-            bot_pts   = bot_s.get("points", 0)
-            live_pts  = live_s.get("points", 0)
-            prev_pts  = prev.get("points", bot_pts)
-            session_pts = max(bot_pts - prev_pts, 0)
-
-            if live_pts != prev_pts:
-                merged_s["points"] = live_pts + session_pts
-            else:
-                merged_s["points"] = bot_pts
-
-            # For correct/total: same logic — honour manual edits, add session delta.
-            bot_correct  = bot_s.get("correct", 0)
-            bot_total    = bot_s.get("total",   0)
-            live_correct = live_s.get("correct", 0)
-            live_total   = live_s.get("total",   0)
-            prev_correct = prev.get("correct", bot_correct)
-            prev_total   = prev.get("total",   bot_total)
-            session_correct = max(bot_correct - prev_correct, 0)  # answers gained this session
-            session_total   = max(bot_total   - prev_total,   0)
-
-            if live_correct != prev_correct or live_total != prev_total:
-                # Manual edit detected — start from live value, add this session's delta
-                merged_s["correct"] = live_correct + session_correct
-                merged_s["total"]   = live_total   + session_total
-            else:
-                merged_s["correct"] = bot_correct
-                merged_s["total"]   = bot_total
-            merged_s["username"] = bot_s.get("username", live_s.get("username", ""))
-            # Merge subjects
-            live_subj = live_s.get("subjects", {})
-            bot_subj  = bot_s.get("subjects",  {})
-            merged_subj = dict(live_subj)
-            for subj, bst in bot_subj.items():
-                if subj not in merged_subj:
-                    merged_subj[subj] = bst
-                else:
-                    lst = merged_subj[subj]
-                    merged_subj[subj] = {
-                        "correct": bst.get("correct", lst.get("correct", 0)),
-                        "total":   bst.get("total",   lst.get("total",   0)),
-                    }
-            merged_s["subjects"] = merged_subj
-            merged_scores[uid] = merged_s
-
-    # Merge streaks — bot is authoritative (it tracks daily activity)
-    for uid, bst in bot_streaks.items():
-        merged_streaks[uid] = bst
-
-    merged["scores"]        = merged_scores
-    merged["streaks"]       = merged_streaks
-    merged["asked"]         = session_data.get("asked", live.get("asked", []))
-    merged["session_count"] = session_data.get("session_count", live.get("session_count", 0))
-
-    # 3. Also update SESSION_DATA so the scoreboard embed uses merged values
-    session_data["scores"]  = merged_scores
-    session_data["streaks"] = merged_streaks
-
-    return _save_data_sync(merged)
-
-async def save_session_data():
-    """Called at scoreboard time — does a merge-save to respect manual gist edits."""
-    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
-        return
-    async with _save_lock:
-        await asyncio.get_event_loop().run_in_executor(executor, _merge_save_sync, SESSION_DATA)
-
-def update_score_sync(user_id: str, username: str, correct: bool,
-                      subject: str = "General", points_to_add: int = 10) -> int:
-    scores  = SESSION_DATA.setdefault("scores", {})
-    streaks = SESSION_DATA.setdefault("streaks", {})
-    today   = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)).strftime("%Y-%m-%d")
-
+    # Update player score
     if user_id not in scores:
         scores[user_id] = {"username": username, "points": 0, "correct": 0,
                            "total": 0, "subjects": {}}
     s = scores[user_id]
     s["username"] = username
-    s["total"]    += 1
+    s["total"]   += 1
     s.setdefault("subjects", {})
     s["subjects"].setdefault(subject, {"correct": 0, "total": 0})
     s["subjects"][subject]["total"] += 1
-
     if correct:
         s["points"]  += points_to_add
         s["correct"] += 1
         s["subjects"][subject]["correct"] += 1
 
+    # Update streak
     if user_id not in streaks:
         streaks[user_id] = {"streak": 0, "last_date": ""}
     st = streaks[user_id]
     if st["last_date"] != today:
-        yesterday = (datetime.datetime.utcnow() + datetime.timedelta(hours=6)
-                     - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-        st["streak"] = st["streak"] + 1 if st["last_date"] == yesterday else 1
+        st["streak"]    = st["streak"] + 1 if st["last_date"] == yesterday else 1
         st["last_date"] = today
 
+    # Preserve asked + session_count from SESSION_DATA (bot owns these)
+    data["asked"]         = SESSION_DATA.get("asked", data.get("asked", []))
+    data["streaks"]       = streaks
+    data["session_count"] = SESSION_DATA.get("session_count", data.get("session_count", 0))
+
+    _gist_write_sync(data)
     return s["points"]
 
-def get_streak_badge(streak: int) -> str:
-    if streak >= 14: return "🔥🔥🔥"
-    elif streak >= 7: return "🔥🔥"
-    elif streak >= 3: return "🔥"
-    return ""
+async def load_session_data():
+    """Load asked history, streaks, session_count. Scores stay in gist only."""
+    global SESSION_DATA
+    if not GIST_TOKEN or not GIST_ID:
+        return
+    data = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+    SESSION_DATA["asked"]         = data.get("asked", [])
+    SESSION_DATA["streaks"]       = data.get("streaks", {})
+    SESSION_DATA["session_count"] = data.get("session_count", 0)
+    print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
+
+async def fetch_scores() -> dict:
+    """Always fetch live scores from gist — never use stale memory."""
+    if not GIST_TOKEN or not GIST_ID:
+        return {}
+    data = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+    return data.get("scores", {})
+
+async def save_session_data():
+    """Save asked history + session_count to gist (scores already live there)."""
+    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
+        return
+    async with _save_lock:
+        data = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+        data["asked"]         = SESSION_DATA.get("asked", [])
+        data["session_count"] = SESSION_DATA.get("session_count", 0)
+        await asyncio.get_event_loop().run_in_executor(executor, _gist_write_sync, data)
 
 async def update_score(user_id: str, username: str, correct: bool,
                        subject: str = "General", points_to_add: int = 10) -> int:
-    """Update memory AND save to Gist immediately (queued)."""
-    pts = update_score_sync(user_id, username, correct, subject, points_to_add)
-    await save_to_gist()
+    """Patch this player's gist entry directly. Queued via lock to avoid 409s."""
+    if not GIST_TOKEN or not GIST_ID or _save_lock is None:
+        return 0
+    async with _save_lock:
+        pts = await asyncio.get_event_loop().run_in_executor(
+            executor, _patch_player_sync, user_id, username, correct, subject, points_to_add
+        )
     return pts
-
-async def load_scores() -> dict:
-    return SESSION_DATA.get("scores", {})
-
 
 # ─── UI HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -593,7 +500,8 @@ class FlashcardView(discord.ui.View):
                 subject = self.question.get("subject", "General")
                 new_points = await update_score(user_id, username, True, subject, points_to_add=5)
             else:
-                new_points = SESSION_DATA.get("scores", {}).get(user_id, {}).get("points", 0)
+                scores_live = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+                new_points = scores_live.get("scores", {}).get(user_id, {}).get("points", 0)
 
             badge, rank_title, _ = get_rank(new_points or 0)
             expiry_str = (self.user_start_times[user_id] + datetime.timedelta(minutes=PERSONAL_TIMER_MIN)).strftime("%H:%M UTC")
@@ -683,7 +591,7 @@ async def run_quiz_session(channel: discord.TextChannel):
 
 
 async def post_scoreboard(channel: discord.TextChannel):
-    scores        = SESSION_DATA.get("scores", {})
+    scores        = await fetch_scores()
     streaks       = SESSION_DATA.get("streaks", {})
     session_count = SESSION_DATA.get("session_count", 0) + 1
     SESSION_DATA["session_count"] = session_count
@@ -694,7 +602,9 @@ async def post_scoreboard(channel: discord.TextChannel):
     # Check if cycle complete — reset scores every 10 sessions
     if session_count % SESSIONS_PER_CYCLE == 0:
         cycle_num = session_count // SESSIONS_PER_CYCLE
-        SESSION_DATA["scores"] = {}
+        # Clear scores in gist directly
+        data = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+        data["scores"] = {}
         reset_embed = discord.Embed(
             title=f"🔄  Cycle #{cycle_num} Complete!",
             description=(
@@ -843,32 +753,36 @@ async def savescores_cmd(interaction: discord.Interaction):
 
 @bot.tree.command(name="editscore", description="[Admin] Manually set a player's points")
 async def editscore_cmd(interaction: discord.Interaction, username: str, points: int):
-    scores = SESSION_DATA.setdefault("scores", {})
-    # Find by username
+    await interaction.response.defer(ephemeral=True)
+    data   = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+    scores = data.get("scores", {})
     for uid, s in scores.items():
         if s["username"].lower() == username.lower():
-            old = s["points"]
+            old_pts = s["points"]
             s["points"] = points
-            await interaction.response.send_message(
-                f"✅ **{s['username']}**: `{old} pts` → `{points} pts`",
+            await asyncio.get_event_loop().run_in_executor(executor, _gist_write_sync, data)
+            await interaction.followup.send(
+                f"✅ **{s['username']}**: `{old_pts} pts` → `{points} pts`",
                 ephemeral=True
             )
             return
-    await interaction.response.send_message(
-        f"❌ Player `{username}` not found in current session.",
+    await interaction.followup.send(
+        f"❌ Player `{username}` not found in gist.",
         ephemeral=True
     )
 
 
 @bot.tree.command(name="status", description="See your current score, rank, and accuracy")
 async def status_cmd(interaction: discord.Interaction):
-    uid    = str(interaction.user.id)
-    scores = SESSION_DATA.get("scores", {})
-    streaks = SESSION_DATA.get("streaks", {})
+    await interaction.response.defer(ephemeral=True)
+    uid     = str(interaction.user.id)
+    data    = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+    scores  = data.get("scores", {})
+    streaks = data.get("streaks", {})
 
     if uid not in scores:
-        await interaction.response.send_message(
-            "❌ You haven't answered any questions in this session yet!",
+        await interaction.followup.send(
+            "❌ You haven't answered any questions yet!",
             ephemeral=True
         )
         return
@@ -921,7 +835,7 @@ async def status_cmd(interaction: discord.Interaction):
         )
     embed.set_footer(text="Only you can see this  ·  /status")
 
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    await interaction.followup.send(embed=embed, ephemeral=True)
 
 
 if __name__ == "__main__":
