@@ -18,10 +18,10 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 10
-ALIVE_MINUTES         = 180
-PERSONAL_TIMER_MIN    = 10
-SEND_REPORT_CARDS     = True
+QUESTIONS_PER_SESSION = 1
+ALIVE_MINUTES         = 5
+PERSONAL_TIMER_MIN    = 5
+SEND_REPORT_CARDS     = False
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
