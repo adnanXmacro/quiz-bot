@@ -20,7 +20,7 @@ GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
 QUESTIONS_PER_SESSION = 10
 ALIVE_MINUTES         = 130
-PERSONAL_TIMER_MIN    = 1
+PERSONAL_TIMER_MIN    = 10
 SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
