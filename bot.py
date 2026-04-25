@@ -19,7 +19,7 @@ CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
 QUESTIONS_PER_SESSION = 10
-ALIVE_MINUTES         = 130
+ALIVE_MINUTES         = 180
 PERSONAL_TIMER_MIN    = 10
 SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
@@ -99,11 +99,11 @@ async def load_session_data():
     print(f"Loaded. Players: {len(data.get('scores', {}))}, Asked: {len(data.get('asked', []))}")
 
 async def save_to_gist():
-    """Save to Gist — queued via lock so only one write at a time, no 409."""
+    """Save to Gist — always merge before writing so manual gist edits are never overwritten."""
     if not GIST_TOKEN or not GIST_ID or _save_lock is None:
         return
     async with _save_lock:
-        await asyncio.get_event_loop().run_in_executor(executor, _save_data_sync, SESSION_DATA)
+        await asyncio.get_event_loop().run_in_executor(executor, _merge_save_sync, SESSION_DATA)
 
 def _merge_save_sync(session_data: dict) -> bool:
     """
@@ -148,8 +148,11 @@ def _merge_save_sync(session_data: dict) -> bool:
         else:
             live_s = merged_scores[uid]
             merged_s = dict(live_s)
-            # For points: same delta logic — if live gist differs from pre-session
-            # snapshot, a manual edit happened; honour it and add only this session's gain.
+            # Fetch pre-session snapshot once — used for all delta calculations below
+            prev = session_data.get("_prev", {}).get(uid, {})
+
+            # For points: if live gist differs from pre-session snapshot, a manual
+            # edit happened; honour it and add only this session's gain on top.
             bot_pts   = bot_s.get("points", 0)
             live_pts  = live_s.get("points", 0)
             prev_pts  = prev.get("points", bot_pts)
@@ -160,14 +163,11 @@ def _merge_save_sync(session_data: dict) -> bool:
             else:
                 merged_s["points"] = bot_pts
 
-            # For correct/total: detect manual edits by comparing live gist
-            # against the pre-session snapshot (_prev). If they differ, honour
-            # the manual edit and only add this session's new answers on top.
+            # For correct/total: same logic — honour manual edits, add session delta.
             bot_correct  = bot_s.get("correct", 0)
             bot_total    = bot_s.get("total",   0)
             live_correct = live_s.get("correct", 0)
             live_total   = live_s.get("total",   0)
-            prev         = session_data.get("_prev", {}).get(uid, {})
             prev_correct = prev.get("correct", bot_correct)
             prev_total   = prev.get("total",   bot_total)
             session_correct = max(bot_correct - prev_correct, 0)  # answers gained this session
