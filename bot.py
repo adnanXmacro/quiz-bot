@@ -18,10 +18,10 @@ DISCORD_TOKEN         = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID            = int(os.environ.get("OVERRIDE_CHANNEL_ID") or os.environ.get("CHANNEL_ID", "0"))
 GIST_TOKEN            = os.environ.get("GIST_TOKEN")
 GIST_ID               = os.environ.get("GIST_ID")
-QUESTIONS_PER_SESSION = 20
-ALIVE_MINUTES         = 20
-PERSONAL_TIMER_MIN    = 15
-SEND_REPORT_CARDS     = False
+QUESTIONS_PER_SESSION = 10
+ALIVE_MINUTES         = 180
+PERSONAL_TIMER_MIN    = 10
+SEND_REPORT_CARDS     = True
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
@@ -134,6 +134,8 @@ def _patch_player_sync(user_id: str, username: str, correct: bool,
     data["session_count"] = SESSION_DATA.get("session_count", data.get("session_count", 0))
 
     _gist_write_sync(data)
+    # Keep SESSION_DATA streaks in sync so button callbacks read the right value
+    SESSION_DATA["streaks"] = streaks
     return s["points"]
 
 async def load_session_data():
@@ -204,6 +206,12 @@ def get_rank(points: int) -> tuple:
     elif points >= 100: return ("⚡", "SCHOLAR",    0x5865F2)
     elif points >= 50:  return ("📚", "APPRENTICE", 0x57F287)
     return                     ("🌱", "ROOKIE",     0x99AAB5)
+
+def get_streak_badge(streak: int) -> str:
+    if streak >= 14: return "🔥🔥🔥"
+    elif streak >= 7: return "🔥🔥"
+    elif streak >= 3: return "🔥"
+    return ""
 
 SESSIONS_PER_CYCLE = 10  # Scoreboard resets every 10 sessions
 
@@ -500,7 +508,7 @@ class FlashcardView(discord.ui.View):
                 subject = self.question.get("subject", "General")
                 new_points = await update_score(user_id, username, True, subject, points_to_add=5)
             else:
-                scores_live = await asyncio.get_event_loop().run_in_executor(executor, _gist_fetch_sync)
+                scores_live = _gist_fetch_sync()
                 new_points = scores_live.get("scores", {}).get(user_id, {}).get("points", 0)
 
             badge, rank_title, _ = get_rank(new_points or 0)
