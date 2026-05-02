@@ -346,6 +346,24 @@
           <br>
           <div><strong style="color:var(--text);">Reset Scores</strong> — clears all points but keeps streaks</div>
         </div>
+
+        <hr class="sep">
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+          <div>
+            <div style="font-size:0.85rem; color:var(--text); margin-bottom:0.1rem;">📋 Send Cycle Report Cards</div>
+            <div style="font-size:0.75rem; color:var(--muted);">DM detailed cycle stats to all players</div>
+          </div>
+        </div>
+        <label>Cycle number to report</label>
+        <input type="number" id="cfgCycleReportNum" min="1" value="1" placeholder="e.g. 3" style="margin-bottom:0.75rem;">
+        <button class="btn-primary btn-full" onclick="sendCycleReports()" style="margin-bottom:0.5rem;">
+          📩 Send Cycle Report Cards Now
+        </button>
+        <div style="font-size:0.78rem; color:var(--muted);">
+          Triggers a workflow run that skips the quiz and only DMs report cards.
+          Run this <strong style="color:var(--text);">before</strong> resetting scores.
+        </div>
       </div>
 
       <!-- QUESTION BANK STATS -->
@@ -425,6 +443,7 @@ async function connect() {
 
     setStatus('connected', `Connected to ${repo}`);
     showAlert('setupAlert', 'success', '✅ Connected successfully!');
+    document.getElementById('configAlert').classList.remove('show'); // clear any stale error
     document.getElementById('dashboard').style.display = 'block';
     // Show info if config values look like defaults
     if (!document.getElementById('cfgChannel').value || document.getElementById('cfgChannel').value === '0') {
@@ -481,6 +500,7 @@ async function saveConfig() {
     const fileRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
       headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
     });
+    if (!fileRes.ok) throw new Error(`bot.py fetch failed (${fileRes.status}) — check token scope`);
     const fileData = await fileRes.json();
     STATE.botSha = fileData.sha;
     let content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
@@ -769,6 +789,47 @@ async function pushGist(data) {
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.message || 'Gist update failed');
+  }
+}
+
+// ── SEND CYCLE REPORT CARDS ──────────────────────────────────────────────────
+async function sendCycleReports() {
+  const ch = document.getElementById('cfgChannel').value.trim();
+  if (!ch) {
+    showAlert('actionAlert', 'error', '❌ Enter a Channel ID first (needed so the bot knows where to post the confirmation).');
+    return;
+  }
+  const cycleNum = parseInt(document.getElementById('cfgCycleReportNum').value);
+  if (!cycleNum || cycleNum < 1) {
+    showAlert('actionAlert', 'error', '❌ Enter a valid cycle number.');
+    return;
+  }
+  if (!confirm(`Send Cycle #${cycleNum} report cards to all players via DM? Make sure to run this BEFORE resetting scores.`)) return;
+
+  showAlert('actionAlert', 'info', `⏳ Triggering cycle #${cycleNum} report card workflow...`);
+  try {
+    const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
+      method: 'POST',
+      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ref: 'main',
+        inputs: {
+          channel_id: ch,
+          override_channel_id: ch,
+          send_cycle_report_now: String(cycleNum)
+        }
+      })
+    });
+    if (res.status === 204) {
+      showAlert('actionAlert', 'success', `✅ Cycle #${cycleNum} report cards triggered! Bot will DM all players in ~30 seconds.`);
+    } else if (res.status === 403) {
+      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope.');
+    } else {
+      const err = await res.json();
+      throw new Error(err.message || `Status ${res.status}`);
+    }
+  } catch(e) {
+    showAlert('actionAlert', 'error', `❌ ${e.message}`);
   }
 }
 
