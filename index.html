@@ -354,7 +354,7 @@
           <span>📚 Question Bank</span>
           <div style="display:flex; align-items:center; gap:0.5rem;">
             <span id="qbankSummary" style="font-size:0.8rem; color:var(--muted);"></span>
-            <button class="btn-ghost save-btn-sm" onclick="loadQuestionBank()">↻ Refresh</button>
+            <button class="btn-ghost save-btn-sm" onclick="loadScores().then(loadQuestionBank)">↻ Refresh</button>
           </div>
         </div>
         <div class="alert" id="qbankAlert"></div>
@@ -642,6 +642,15 @@ async function resetScores() {
   renderScores(STATE.gistData);
 }
 
+// ── NORMALIZE (mirrors bot.py logic) ─────────────────────────────────────────
+function normalizeQ(text) {
+  text = text.toLowerCase().trim();
+  text = text.replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-');
+  text = text.replace(/[-\s?:\.!,;।]+$/, '');
+  text = text.replace(/\s+/g, ' ');
+  return text;
+}
+
 // ── QUESTION BANK STATS ───────────────────────────────────────────────────────
 async function loadQuestionBank() {
   showAlert('qbankAlert', 'info', '⏳ Loading questions.json...');
@@ -681,12 +690,14 @@ function renderQuestionBank(questions, rawTotal) {
     byType[t] = (byType[t] || 0) + 1;
   }
 
-  // Asked tracking from gist
-  const askedSet  = new Set(STATE.gistData?.asked || []);
-  const freshCount = questions.filter(q => !askedSet.has(q.question)).length;
+  // ✅ FIXED: normalize both sides so panel matches bot.py logic
+  const askedRaw  = STATE.gistData?.asked || [];
+  const askedNorm = new Set(askedRaw.map(a => normalizeQ(a)));
+  const freshCount = questions.filter(q => !askedNorm.has(normalizeQ(q.question))).length;
+  const askedCount = questions.length - freshCount;
 
   document.getElementById('qbankSummary').textContent =
-    `${questions.length} unique · ${freshCount} fresh · ${askedSet.size} asked`;
+    `${questions.length} unique · ${freshCount} fresh · ${askedRaw.length} in gist`;
 
   const subjectEmoji = { Physics:'⚡', Chemistry:'⚗️', Math:'📐', Biology:'🔬', English:'📖', GK:'🌐', 'General Knowledge':'🌐', General:'📋' };
 
@@ -694,7 +705,8 @@ function renderQuestionBank(questions, rawTotal) {
     .sort((a,b) => (b[1].mcq+b[1].flashcard) - (a[1].mcq+a[1].flashcard))
     .map(([subj, counts]) => {
       const total   = counts.mcq + counts.flashcard;
-      const asked   = questions.filter(q => (q.subject||'General') === subj && askedSet.has(q.question)).length;
+      // ✅ FIXED: normalize here too
+      const asked   = questions.filter(q => (q.subject||'General') === subj && askedNorm.has(normalizeQ(q.question))).length;
       const fresh   = total - asked;
       const pct     = Math.round((asked / total) * 100);
       const barFill = Math.round(pct / 10);
@@ -721,7 +733,7 @@ function renderQuestionBank(questions, rawTotal) {
         <div style="font-size:0.75rem; color:var(--muted);">Not Yet Asked</div>
       </div>
       <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--warning);">${askedSet.size}</div>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--warning);">${askedCount}</div>
         <div style="font-size:0.75rem; color:var(--muted);">Asked This Cycle</div>
       </div>
       <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
