@@ -680,7 +680,24 @@ async function loadQuestionBank() {
     });
     if (!res.ok) throw new Error(`questions.json not found in repo (${res.status})`);
     const fileData = await res.json();
-    const questions = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, '')))));
+
+    let questions;
+    if (fileData.content) {
+      // Small file — decode base64 directly (UTF-8 safe)
+      const raw = atob(fileData.content.replace(/\n/g, ''));
+      const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
+      questions = JSON.parse(new TextDecoder().decode(bytes));
+    } else if (fileData.download_url) {
+      // Large file (>1MB) — GitHub omits content, use download_url instead
+      showAlert('qbankAlert', 'info', '⏳ Large file detected, fetching via download URL...');
+      const dlRes = await fetch(fileData.download_url, {
+        headers: { Authorization: `token ${STATE.token}` }
+      });
+      if (!dlRes.ok) throw new Error(`Failed to download questions.json (${dlRes.status})`);
+      questions = await dlRes.json();
+    } else {
+      throw new Error('questions.json content unavailable from GitHub API');
+    }
 
     // Deduplicate by question text (same logic as bot.py)
     const seen = new Set();
