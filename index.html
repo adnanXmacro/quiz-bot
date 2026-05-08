@@ -305,6 +305,9 @@
         <label>Sessions per scoreboard cycle</label>
         <input type="number" id="cfgCycle" min="1" max="30" value="10">
 
+        <label>Quiz post time — Bangladesh time (24h, e.g. 23 = 11 PM)</label>
+        <input type="number" id="cfgWaitUntil" min="0" max="23" value="23" style="margin-bottom:1rem;">
+
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
           <div>
             <div style="font-size:0.85rem; color:var(--muted); margin-bottom:0.15rem;">Send report cards after session</div>
@@ -327,8 +330,11 @@
         <label>Discord Channel ID</label>
         <input type="text" id="cfgChannel" placeholder="123456789012345678">
 
-        <button class="btn-success btn-full" onclick="triggerQuiz()" style="margin-bottom:0.75rem;">
-          ▶ Trigger Quiz Now
+        <button class="btn-success btn-full" onclick="bringOnline()" style="margin-bottom:0.5rem;">
+          🌐 Bring Bot Online (waits for quiz time)
+        </button>
+        <button class="btn-muted btn-full" onclick="triggerQuiz()" style="margin-bottom:0.75rem;">
+          ▶ Trigger Quiz Now (skip wait)
         </button>
 
         <hr class="sep">
@@ -342,7 +348,9 @@
         <hr class="sep">
 
         <div style="font-size:0.82rem; color:var(--muted); line-height:1.6;">
-          <div><strong style="color:var(--text);">Trigger Quiz</strong> — starts a new workflow run on GitHub Actions</div>
+          <div><strong style="color:var(--text);">Bring Bot Online</strong> — bot comes online now, posts quiz at the set time</div>
+          <br>
+          <div><strong style="color:var(--text);">Trigger Quiz Now</strong> — skips wait, posts quiz immediately (testing/emergency)</div>
           <br>
           <div><strong style="color:var(--text);">Reset Scores</strong> — clears all points but keeps streaks</div>
         </div>
@@ -471,7 +479,8 @@ function parseConfig(content) {
   // CHANNEL_ID — read default from secret fallback (display only; actual override sent via dispatch)
   const chMatch = content.match(/os\.environ\.get\("CHANNEL_ID",\s*"(\d+)"\)/);
   // SEND_REPORT_CARDS = True/False
-  const rcMatch = content.match(/SEND_REPORT_CARDS\s*=\s*(True|False)/);
+  const rcMatch  = content.match(/SEND_REPORT_CARDS\s*=\s*(True|False)/);
+  const wuMatch  = content.match(/WAIT_UNTIL_HOUR\s*=\s*int\(os\.environ\.get\([^,]+,\s*"(\d+)"\)\)/);
 
   if (q !== null) document.getElementById('cfgQuestions').value = q;
   if (a !== null) document.getElementById('cfgAlive').value = a;
@@ -479,6 +488,7 @@ function parseConfig(content) {
   if (c !== null) document.getElementById('cfgCycle').value = c;
   if (chMatch)    document.getElementById('cfgChannel').value = chMatch[1];
   if (rcMatch)    document.getElementById('cfgReportCards').checked = (rcMatch[1] === 'True');
+  if (wuMatch)    document.getElementById('cfgWaitUntil').value = wuMatch[1];
 
   // Clear "Not Found" if values loaded
   if (q !== null) document.getElementById('configAlert').classList.remove('show');
@@ -511,6 +521,11 @@ async function saveConfig() {
     content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
     content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
     content = content.replace(/(SEND_REPORT_CARDS\s*=\s*)(True|False)/, `$1${rc}`);
+    const wu = document.getElementById('cfgWaitUntil').value.trim();
+    content = content.replace(
+      /(WAIT_UNTIL_HOUR\s*=\s*int\(os\.environ\.get\([^,]+,\s*")\d+("\)\))/,
+      `$1${wu}$2`
+    );
     // Channel ID is sent as a workflow dispatch input (OVERRIDE_CHANNEL_ID), not hardcoded in bot.py
 
     // Push to GitHub
@@ -538,23 +553,34 @@ async function saveConfig() {
 }
 
 // ── TRIGGER QUIZ ─────────────────────────────────────────────────────────────
-async function triggerQuiz() {
+async function dispatchWorkflow(skipKeepalive) {
   const ch = document.getElementById('cfgChannel').value.trim();
   if (!ch) {
     showAlert('actionAlert', 'error', '❌ Enter a Channel ID first.');
-    return;
+    return false;
   }
-  showAlert('actionAlert', 'info', '⏳ Triggering workflow...');
+  const label = skipKeepalive ? '⏳ Triggering quiz immediately...' : '⏳ Bringing bot online...';
+  showAlert('actionAlert', 'info', label);
   try {
     const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
       method: 'POST',
       headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ref: 'main', inputs: { channel_id: ch, override_channel_id: ch } })
+      body: JSON.stringify({
+        ref: 'main',
+        inputs: {
+          channel_id: ch,
+          override_channel_id: ch,
+          skip_keepalive: skipKeepalive ? 'true' : 'false'
+        }
+      })
     });
     if (res.status === 204) {
-      showAlert('actionAlert', 'success', `✅ Quiz triggered for channel ${ch}! Check Discord in ~30 seconds.`);
+      const msg = skipKeepalive
+        ? `✅ Quiz triggered! Bot will post questions in ~30 seconds.`
+        : `✅ Bot coming online! Will post quiz at the scheduled time. Slash commands active shortly.`;
+      showAlert('actionAlert', 'success', msg);
     } else if (res.status === 403) {
-      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope. Go to GitHub → Settings → Developer settings → Personal access tokens → Edit your token → check ✅ workflow → Save.');
+      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope.');
     } else {
       const err = await res.json();
       throw new Error(err.message || `Status ${res.status}`);
@@ -563,6 +589,9 @@ async function triggerQuiz() {
     showAlert('actionAlert', 'error', `❌ ${e.message}`);
   }
 }
+
+async function bringOnline() { await dispatchWorkflow(false); }
+async function triggerQuiz()  { await dispatchWorkflow(true);  }
 
 // ── LOAD SCORES ───────────────────────────────────────────────────────────────
 async function loadScores() {
