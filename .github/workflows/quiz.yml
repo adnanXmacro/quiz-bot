@@ -2,26 +2,79 @@ name: Daily Quiz Bot
 
 on:
   schedule:
-    - cron: '35 15 * * *'  # 3:35 PM UTC = 9:35 PM Bangladesh (UTC+6)
-  workflow_dispatch:        # Also allows manual trigger from GitHub
+    - cron: '0 10 * * *'   # 4:00 PM Bangladesh (UTC+6) — bot comes online
+  workflow_dispatch:
     inputs:
       channel_id:
-        description: 'Discord channel ID to send quiz to (overrides secret)'
+        description: 'Discord channel ID override'
         required: false
         default: ''
       override_channel_id:
-        description: 'Discord channel ID to send quiz to (overrides secret)'
+        description: 'Discord channel ID override'
         required: false
         default: ''
       send_cycle_report_now:
-        description: 'If set to a cycle number (e.g. 3), skip quiz and just DM cycle report cards'
+        description: 'Cycle number to DM report cards (skips quiz)'
         required: false
         default: ''
+      skip_keepalive:
+        description: 'Set to "true" to skip keepalive and go straight to quiz'
+        required: false
+        default: 'false'
 
 jobs:
+
+  # ── JOB 1: Keepalive ──────────────────────────────────────────────────────
+  # Bot comes online at ~4 PM BD, stays alive for up to 355 minutes (~5h 55m).
+  # Slash commands (/status etc.) work during this window.
+  # Exits just before GitHub's 6-hour job limit, instantly triggering Job 2.
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355    # Just under GitHub's 6-hour limit
+
+    # Skip keepalive if manually triggered with skip_keepalive=true
+    if: ${{ github.event_name == 'schedule' || github.event.inputs.skip_keepalive != 'true' }}
+
+    outputs:
+      channel_id: ${{ steps.info.outputs.channel_id }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install discord.py
+
+      - name: Export channel id
+        id: info
+        run: echo "channel_id=${{ github.event.inputs.override_channel_id || github.event.inputs.channel_id }}" >> $GITHUB_OUTPUT
+
+      - name: Run Bot (keepalive — waits until 23:00 BD then exits)
+        env:
+          PYTHONUNBUFFERED: "1"
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          OVERRIDE_CHANNEL_ID: ${{ github.event.inputs.override_channel_id || github.event.inputs.channel_id }}
+          SEND_CYCLE_REPORT_NOW: ${{ github.event.inputs.send_cycle_report_now }}
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          GIST_ID: ${{ secrets.GIST_ID }}
+          WAIT_UNTIL_HOUR: "23"       # Wait until 11 PM BD before posting quiz
+          KEEPALIVE_ONLY: "true"      # Don't post quiz — just stay online
+        run: python -u bot.py
+
+  # ── JOB 2: Quiz ───────────────────────────────────────────────────────────
+  # Starts instantly after Job 1 exits. Waits for 11 PM BD if not there yet,
+  # posts quiz, runs 3 hours, shuts down ~2 AM BD.
   run-quiz:
     runs-on: ubuntu-latest
-    timeout-minutes: 200    # 3h 20min max (covers 3h alive + buffer)
+    timeout-minutes: 240    # 4 hours max (1hr wait buffer + 3hr quiz)
+    needs: keepalive
+    if: always()            # Run even if keepalive was skipped
 
     steps:
       - name: Checkout code
@@ -40,9 +93,9 @@ jobs:
           PYTHONUNBUFFERED: "1"
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          OVERRIDE_CHANNEL_ID: ${{ github.event.inputs.override_channel_id || github.event.inputs.channel_id }}
+          OVERRIDE_CHANNEL_ID: ${{ needs.keepalive.outputs.channel_id || github.event.inputs.override_channel_id || github.event.inputs.channel_id }}
           SEND_CYCLE_REPORT_NOW: ${{ github.event.inputs.send_cycle_report_now }}
           GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
-        run: |
-          python -u bot.py
+          WAIT_UNTIL_HOUR: "23"       # Wait until 11 PM BD if Job 2 starts early
+        run: python -u bot.py
