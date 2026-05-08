@@ -22,12 +22,14 @@ QUESTIONS_PER_SESSION = 10
 ALIVE_MINUTES         = 180
 PERSONAL_TIMER_MIN    = 10
 SEND_REPORT_CARDS     = False
+WAIT_UNTIL_HOUR       = int(os.environ.get("WAIT_UNTIL_HOUR", "0"))  # BD time hour to wait until before posting quiz
+KEEPALIVE_ONLY        = os.environ.get("KEEPALIVE_ONLY", "").lower() == "true"  # Stay online but don't post quiz
 # ────────────────────────────────────────────────────────────────────────────────
 
 # ─── QUESTION BANK ──────────────────────────────────────────────────────────────
 # ▼▼▼ PASTE YOUR QUESTIONS HERE — replace the placeholder below ▼▼▼
 QUESTION_BANK = [
-    {"type":"mcq","subject":"Biology","question":"নিচের কোনটিতে হাইড্রার বহিঃকোষীয় পরিপাক সংঘটিত হয়?","options":{"A":"গ্যাস্ট্রোডার্মিস","B":"হাইপোস্টোম","C":"সিলেন্টেরন","D":"কর্ষিকা"},"answer":"C","explanation":"হাইড্রার সিলেন্টেরনে বহিঃকোষীয় পরিপাক ঘটে।"},
+        {"type":"mcq","subject":"Biology","question":"নিচের কোনটিতে হাইড্রার বহিঃকোষীয় পরিপাক সংঘটিত হয়?","options":{"A":"গ্যাস্ট্রোডার্মিস","B":"হাইপোস্টোম","C":"সিলেন্টেরন","D":"কর্ষিকা"},"answer":"C","explanation":"হাইড্রার সিলেন্টেরনে বহিঃকোষীয় পরিপাক ঘটে।"},
     {"type":"mcq","subject":"Biology","question":"কোষ বিভাজনের সময় কোষপ্লেট তৈরিতে সাহায্য করে কোন অঙ্গাণু?","options":{"A":"লাইসোসোম","B":"গলগি বস্তু","C":"মাইটোকন্ড্রিয়া","D":"রাইবোসোম"},"answer":"B","explanation":"গলগি বস্তু কোষ বিভাজনের সময় কোষপ্লেট গঠনে সাহায্য করে।"},
     {"type":"mcq","subject":"Biology","question":"রেস্ট্রিকশন এনজাইমের কাজ কী?","options":{"A":"DNA অণু বৃদ্ধিকরণ","B":"DNA খণ্ডকে জোড়া লাগানো","C":"নির্দিষ্ট জীবে রিকম্বিনেন্ট DNA প্রবেশ করানো","D":"কাঙ্ক্ষিত DNA কে নির্দিষ্ট স্থানে ছেদন করা"},"answer":"D","explanation":"রেস্ট্রিকশন এনজাইম নির্দিষ্ট স্থানে DNA ছেদন করে।"},
     {"type":"mcq","subject":"Chemistry","question":"18°C তাপমাত্রায় 0.8 atm চাপে একটি গ্যাসের ঘনত্ব 2.25 gL⁻¹ হলে আণবিক ভর কত?","options":{"A":"36.63 g mol⁻¹","B":"36.24 g mol⁻¹","C":"24.36 g mol⁻¹","D":"67.11 g mol⁻¹"},"answer":"A","explanation":"PV=nRT ব্যবহার করে M = dRT/P ≈ 36.63 g/mol"},
@@ -39,6 +41,7 @@ QUESTION_BANK = [
     {"type":"mcq","subject":"GK","question":"WHO কালাজ্বরমুক্ত দেশ হিসেবে বাংলাদেশকে স্বীকৃতি দেয় কবে?","options":{"A":"৩০ সেপ্টেম্বর ২০২৩","B":"৩১ অক্টোবর ২০২৩","C":"০১ নভেম্বর ২০২৩","D":"৩০ নভেম্বর ২০২৩"},"answer":"B","explanation":"৩১ অক্টোবর ২০২৩ সালে WHO এই স্বীকৃতি দেয়।"},
     {"type":"mcq","subject":"Math","question":"কোন তাপমাত্রায় সেলসিয়াস ও ফারেনহাইট একই মান দেখায়?","options":{"A":"-40°","B":"32°","C":"40°","D":"-32°"},"answer":"A","explanation":"C=F হলে, C = 9C/5+32 → C = -40°"},
     {"type":"mcq","subject":"Biology","question":"হিমোগ্লোবিনের কোন অংশে CO₂ যুক্ত হয়?","options":{"A":"−OH","B":"−COOH","C":"−HCO₃","D":"−NH₂"},"answer":"D","explanation":"CO₂, হিমোগ্লোবিনের −NH₂ গ্রুপের সাথে যুক্ত হয়।"},
+]
 ]
 # ▲▲▲ END OF QUESTION BANK ▲▲▲
 # ────────────────────────────────────────────────────────────────────────────────
@@ -743,6 +746,29 @@ async def on_ready():
         print(f"Channel {CHANNEL_ID} not found")
         await bot.close()
         return
+    # If WAIT_UNTIL_HOUR is set, sleep until that BD hour
+    if WAIT_UNTIL_HOUR:
+        while True:
+            now_bd = datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+            if now_bd.hour >= WAIT_UNTIL_HOUR:
+                break
+            wait_secs = ((WAIT_UNTIL_HOUR - now_bd.hour) * 3600) - (now_bd.minute * 60) - now_bd.second
+            if wait_secs <= 0:
+                break
+            print(f"Waiting {wait_secs//3600}h {(wait_secs%3600)//60}m for quiz time ({WAIT_UNTIL_HOUR}:00 BD)...")
+            if KEEPALIVE_ONLY and wait_secs <= 300:
+                # About to hit quiz time — exit so Job 2 can take over
+                print("Keepalive window ending. Handing off to quiz job.")
+                await bot.close()
+                return
+            await asyncio.sleep(min(wait_secs, 300))
+
+    # KEEPALIVE_ONLY mode: job exits here, quiz job handles the actual session
+    if KEEPALIVE_ONLY:
+        print("Keepalive complete. Quiz job will handle the session.")
+        await bot.close()
+        return
+
     print(f"Starting quiz in #{channel.name}")
     await run_quiz_session(channel)
     print("Done. Shutting down.")
