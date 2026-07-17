@@ -1,922 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Bot Admin</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #21262d;
-    --border: #30363d;
-    --accent: #58a6ff;
-    --accent2: #3fb950;
-    --danger: #f85149;
-    --warning: #d29922;
-    --text: #e6edf3;
-    --muted: #8b949e;
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-    padding: 1.5rem;
-  }
-
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .header h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    display: inline-block;
-  }
-  .status-dot.connected { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
-  .status-dot.error { background: var(--danger); }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.25rem;
-  }
-
-  .card.full { grid-column: 1 / -1; }
-
-  .card-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  label {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 0.35rem;
-  }
-
-  input, select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.15s;
-    margin-bottom: 1rem;
-  }
-  input:focus, select:focus { border-color: var(--accent); }
-  input[type="password"] { font-family: monospace; letter-spacing: 2px; }
-
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-
-  button {
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    font-family: inherit;
-  }
-  button:hover { opacity: 0.85; }
-  button:active { transform: scale(0.98); }
-  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .btn-primary { background: var(--accent); color: #0d1117; }
-  .btn-success { background: var(--accent2); color: #0d1117; }
-  .btn-danger  { background: var(--danger);  color: white; }
-  .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-full    { width: 100%; }
-
-  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-  .alert {
-    padding: 0.6rem 0.875rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    display: none;
-  }
-  .alert.show { display: block; }
-  .alert-success { background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.3); color: var(--accent2); }
-  .alert-error   { background: rgba(248,81,73,0.12);  border: 1px solid rgba(248,81,73,0.3);  color: var(--danger); }
-  .alert-info    { background: rgba(88,166,255,0.1);  border: 1px solid rgba(88,166,255,0.3); color: var(--accent); }
-
-  .scores-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-  }
-  .scores-table th {
-    text-align: left;
-    padding: 0.4rem 0.5rem;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    font-weight: 500;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .scores-table td {
-    padding: 0.5rem 0.5rem;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  .scores-table tr:last-child td { border-bottom: none; }
-  .scores-table tr:hover td { background: var(--surface2); }
-
-  .rank-badge {
-    font-size: 1rem;
-    width: 28px;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .pts-input {
-    width: 80px !important;
-    margin-bottom: 0 !important;
-    padding: 0.3rem 0.5rem !important;
-    font-size: 0.85rem !important;
-  }
-
-  .save-btn-sm {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.78rem;
-  }
-
-  .empty { color: var(--muted); text-align: center; padding: 2rem; font-size: 0.9rem; }
-
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 0.4rem;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .tag {
-    display: inline-block;
-    padding: 0.15rem 0.5rem;
-    border-radius: 99px;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-  .tag-blue   { background: rgba(88,166,255,0.15); color: var(--accent); }
-  .tag-green  { background: rgba(63,185,80,0.15);  color: var(--accent2); }
-  .tag-yellow { background: rgba(210,153,34,0.15); color: var(--warning); }
-
-  .sep { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
-
-  /* Toggle switch */
-  .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute; cursor: pointer; inset: 0;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 99px; transition: 0.2s;
-  }
-  .toggle-slider:before {
-    content: ""; position: absolute;
-    width: 16px; height: 16px; left: 3px; top: 3px;
-    background: var(--muted); border-radius: 50%; transition: 0.2s;
-  }
-  .toggle-switch input:checked + .toggle-slider { background: rgba(63,185,80,0.25); border-color: var(--accent2); }
-  .toggle-switch input:checked + .toggle-slider:before { background: var(--accent2); transform: translateX(18px); }
-
-  code {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.1rem 0.4rem;
-    font-family: monospace;
-    font-size: 0.85em;
-    color: var(--accent);
-  }
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#070000"/>
+  <meta name="description" content="Quiz Chaos — Medical Admission Preparation"/>
+  <title>Quiz Chaos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
-<body>
+<body class="no-chrome">
 
-<div style="max-width:900px; margin:0 auto;">
+  <div class="glow-blob glow-blob-1"></div>
+  <div class="glow-blob glow-blob-2"></div>
+  <div class="glow-blob glow-blob-3"></div>
+  <canvas id="particle-canvas"></canvas>
 
-  <div class="header">
-    <h1>⚙️ Quiz Bot Admin</h1>
-    <div style="display:flex; align-items:center; gap:0.5rem;">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusText" style="color:var(--muted); font-size:0.85rem;">Not connected</span>
+  <!-- TOP NAV -->
+  <nav id="top-nav" class="hidden">
+    <div class="logo" onclick="showPage('dashboard')">Quiz<span>//</span>Chaos</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <img id="nav-avatar" class="hidden" src="" alt="avatar" onclick="showPage('profile')"/>
+      <div id="nav-user-initial" class="hidden" onclick="showPage('profile')"></div>
+    </div>
+  </nav>
+
+  <!-- ══════════ PAGES ══════════ -->
+
+  <!-- LOGIN -->
+  <div id="pg-login" class="page active">
+    <div class="login-hero fade-up">
+      <div class="logo-big">Quiz Chaos</div>
+      <div class="logo-big-sub">Medical Admission Preparation</div>
+      <div class="login-stats">
+        <div class="stat-chip"><span class="num" id="login-players">—</span><span class="lbl">Players</span></div>
+        <div class="stat-chip"><span class="num" id="login-sessions">—</span><span class="lbl">Sessions</span></div>
+      </div>
+      <button class="btn-discord" onclick="doLogin()">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Login with Discord
+      </button>
+      <a class="btn-support mt-12" href="https://discord.com/users/710746320071032863" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Support
+      </a>
+      <div class="public-lb mt-16">
+        <div class="public-lb-header"><span>Top Players</span><span class="mono" style="font-size:10px;">Points</span></div>
+        <div id="login-lb-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+      </div>
     </div>
   </div>
 
-  <!-- SETUP CARD -->
-  <div class="card full" id="setupCard">
-    <div class="card-title">🔑 GitHub Connection</div>
-    <div class="alert alert-info show">
-      Enter your GitHub credentials to connect. These are stored only in your browser — never sent anywhere except GitHub's API.
-    </div>
-    <div class="input-row">
-      <div>
-        <label>GitHub Personal Access Token</label>
-        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
-      </div>
-      <div>
-        <label>Repository (owner/repo)</label>
-        <input type="text" id="githubRepo" placeholder="adnanXmacro/quiz-bot">
-      </div>
-    </div>
-    <div class="input-row">
-      <div>
-        <label>Gist ID (for scores)</label>
-        <input type="text" id="gistId" placeholder="abc123def456...">
-      </div>
-      <div style="display:flex; align-items:flex-end; padding-bottom:1rem;">
-        <button class="btn-primary btn-full" onclick="connect()">Connect</button>
-      </div>
-    </div>
-    <div class="alert" id="setupAlert"></div>
-  </div>
+  <!-- DASHBOARD -->
+  <div id="pg-dashboard" class="page">
+    <div class="pg-inner">
 
-  <!-- MAIN DASHBOARD (hidden until connected) -->
-  <div id="dashboard" style="display:none;">
-
-    <div class="grid">
-
-      <!-- BOT CONFIG -->
-      <div class="card">
-        <div class="card-title">🎛️ Bot Settings</div>
-        <div class="alert" id="configAlert"></div>
-
-        <label>Questions per session</label>
-        <input type="number" id="cfgQuestions" min="1" max="30" value="10">
-
-        <label>Session alive time (minutes)</label>
-        <input type="number" id="cfgAlive" min="10" max="180" value="60">
-
-        <label>Personal timer per user (minutes)</label>
-        <input type="number" id="cfgTimer" min="1" max="60" value="10">
-
-        <label>Sessions per scoreboard cycle</label>
-        <input type="number" id="cfgCycle" min="1" max="30" value="10">
-
-        <label>Quiz post time — Bangladesh time (24h, e.g. 23 = 11 PM)</label>
-        <input type="number" id="cfgWaitUntil" min="0" max="23" value="23" style="margin-bottom:1rem;">
-
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-          <div>
-            <div style="font-size:0.85rem; color:var(--muted); margin-bottom:0.15rem;">Send report cards after session</div>
-            <div style="font-size:0.75rem; color:var(--muted);">DM each player their personal stats</div>
+      <!-- User greeting hero -->
+      <div class="dash-hero">
+        <div class="dash-hero-left">
+          <div class="dash-greeting" id="dash-greeting">Welcome back</div>
+          <div class="dash-username" id="dash-username">Player</div>
+          <div class="dash-level-badge" id="dash-level-badge">Initiate</div>
+        </div>
+        <div class="dash-hero-right">
+          <div class="dash-stat-col">
+            <div class="dash-stat-val" id="dash-pts-hero">0</div>
+            <div class="dash-stat-lbl">Points</div>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="cfgReportCards" checked>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <button class="btn-primary btn-full" onclick="saveConfig()">Save to bot.py</button>
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="card">
-        <div class="card-title">⚡ Quick Actions</div>
-        <div class="alert" id="actionAlert"></div>
-
-        <label>Discord Channel ID</label>
-        <input type="text" id="cfgChannel" placeholder="123456789012345678">
-
-        <button class="btn-success btn-full" onclick="bringOnline()" style="margin-bottom:0.5rem;">
-          🌐 Bring Bot Online (waits for quiz time)
-        </button>
-        <button class="btn-muted btn-full" onclick="triggerQuiz()" style="margin-bottom:0.75rem;">
-          ▶ Trigger Quiz Now (skip wait)
-        </button>
-
-        <hr class="sep">
-
-        <label>Reset scoreboard</label>
-        <div class="btn-row">
-          <button class="btn-danger" onclick="resetScores()">Reset All Scores</button>
-          <button class="btn-ghost" onclick="loadScores()">↻ Refresh</button>
-        </div>
-
-        <hr class="sep">
-
-        <div style="font-size:0.82rem; color:var(--muted); line-height:1.6;">
-          <div><strong style="color:var(--text);">Bring Bot Online</strong> — bot comes online now, posts quiz at the set time</div>
-          <br>
-          <div><strong style="color:var(--text);">Trigger Quiz Now</strong> — skips wait, posts quiz immediately (testing/emergency)</div>
-          <br>
-          <div><strong style="color:var(--text);">Reset Scores</strong> — clears all points but keeps streaks</div>
-        </div>
-
-        <hr class="sep">
-
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
-          <div>
-            <div style="font-size:0.85rem; color:var(--text); margin-bottom:0.1rem;">📋 Send Cycle Report Cards</div>
-            <div style="font-size:0.75rem; color:var(--muted);">DM detailed cycle stats to all players</div>
+          <div class="dash-stat-divider"></div>
+          <div class="dash-stat-col">
+            <div class="dash-stat-val green" id="dash-streak-hero">0</div>
+            <div class="dash-stat-lbl">Streak</div>
+          </div>
+          <div class="dash-stat-divider"></div>
+          <div class="dash-stat-col">
+            <div class="dash-stat-val gold" id="dash-acc-hero">0%</div>
+            <div class="dash-stat-lbl">Accuracy</div>
           </div>
         </div>
-        <label>Cycle number to report</label>
-        <input type="number" id="cfgCycleReportNum" min="1" value="1" placeholder="e.g. 3" style="margin-bottom:0.75rem;">
-        <button class="btn-primary btn-full" onclick="sendCycleReports()" style="margin-bottom:0.5rem;">
-          📩 Send Cycle Report Cards Now
-        </button>
-        <div style="font-size:0.78rem; color:var(--muted);">
-          Triggers a workflow run that skips the quiz and only DMs report cards.
-          Run this <strong style="color:var(--text);">before</strong> resetting scores.
-        </div>
       </div>
 
-      <!-- QUESTION BANK STATS -->
-      <div class="card full">
-        <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
-          <span>📚 Question Bank</span>
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <span id="qbankSummary" style="font-size:0.8rem; color:var(--muted);"></span>
-            <button class="btn-ghost save-btn-sm" onclick="loadScores().then(loadQuestionBank)">↻ Refresh</button>
+      <!-- Level progress bar -->
+      <div class="level-progress-wrap">
+        <div class="level-progress-bar"><div class="level-progress-fill" id="level-fill" style="width:0%"></div></div>
+        <div class="level-progress-label"><span id="level-current-label">0 pts</span><span id="level-next-label">Next: Scholar</span></div>
+      </div>
+
+      <!-- Quiz status card -->
+      <div class="section-title mt-16">Today's Challenge</div>
+      <div class="quiz-status-card" id="quiz-status-card">
+        <div class="center-spinner"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Catchup -->
+      <div id="catchup-section" class="hidden">
+        <div class="catchup-badge" onclick="startCatchup()">
+          <div class="cb-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           </div>
+          <div class="cb-text">
+            <div class="cb-title" id="catchup-title">Catch-Up Available</div>
+            <div class="cb-sub" id="catchup-sub">Complete them to earn back your points</div>
+          </div>
+          <div class="cb-arrow">›</div>
         </div>
-        <div class="alert" id="qbankAlert"></div>
-        <div id="qbankContainer"><div class="empty">Connect to load question bank</div></div>
       </div>
 
-      <!-- SCORES TABLE -->
-      <div class="card full">
-        <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
-          <span>📊 Current Scores</span>
-          <span id="scoresCount" style="font-size:0.8rem; color:var(--muted);"></span>
+      <!-- Feature grid -->
+      <div class="section-title mt-16">Prepare</div>
+      <div class="feature-grid">
+        <div class="feature-card fc-red" onclick="showPage('practice')">
+          <div class="fc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+          </div>
+          <div class="fc-title">Practice</div>
+          <div class="fc-sub">Question Bank</div>
+          <div class="fc-arrow">→</div>
         </div>
-        <div class="alert" id="scoresAlert"></div>
-        <div id="scoresContainer"><div class="empty">Connect to load scores</div></div>
+        <div class="feature-card fc-green" onclick="showPage('syllabus')">
+          <div class="fc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="fc-title">Syllabus</div>
+          <div class="fc-sub">Track Progress</div>
+          <div class="fc-arrow">→</div>
+        </div>
+        <div class="feature-card fc-purple" onclick="showPage('vocabulary')">
+          <div class="fc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="fc-title">Vocabulary</div>
+          <div class="fc-sub">Daily 10 Words</div>
+          <div class="fc-arrow">→</div>
+        </div>
+        <div class="feature-card fc-blue" onclick="openSimulations()">
+          <div class="fc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div class="fc-title">Simulations</div>
+          <div class="fc-sub">Physics Tools</div>
+          <div class="fc-arrow">→</div>
+        </div>
+      </div>
+
+      <!-- Exam History -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;">
+        <div class="section-title" style="margin:0;">Recent Sessions</div>
+        <button class="see-all-btn" onclick="showPage('history')">See All</button>
+      </div>
+      <div id="dash-history-list" class="mt-8">
+        <div class="center-spinner"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Notifications -->
+      <div id="notif-section" class="hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;">
+          <div class="section-title" style="margin:0;">Notices</div>
+        </div>
+        <div id="notif-list" class="mt-8"></div>
       </div>
 
     </div>
   </div>
-</div>
 
-<script>
-let STATE = {
-  token: '',
-  repo: '',
-  gistId: '',
-  botSha: '',   // SHA of bot.py for updates
-  gistData: null
-};
-
-// ── CONNECT ──────────────────────────────────────────────────────────────────
-async function connect() {
-  const token  = document.getElementById('githubToken').value.trim();
-  const repo   = document.getElementById('githubRepo').value.trim();
-  const gistId = document.getElementById('gistId').value.trim();
-
-  if (!token || !repo || !gistId) {
-    showAlert('setupAlert', 'error', 'Please fill in all fields.');
-    return;
-  }
-
-  setStatus('loading', 'Connecting...');
-  showAlert('setupAlert', 'info', '⏳ Testing connection...');
-
-  try {
-    // Test GitHub API
-    const res = await fetch(`https://api.github.com/repos/${repo}`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) throw new Error(`Repo not found or bad token (${res.status})`);
-
-    // Get bot.py SHA
-    const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/bot.py`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!fileRes.ok) throw new Error('bot.py not found in repo');
-    const fileData = await fileRes.json();
-
-    STATE = { token, repo, gistId, botSha: fileData.sha, gistData: null };
-
-    // Load current config from bot.py (UTF-8 safe decode)
-    const content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
-    parseConfig(content);
-
-    // Load scores
-    await loadScores();
-    // Load question bank stats
-    await loadQuestionBank();
-
-    setStatus('connected', `Connected to ${repo}`);
-    showAlert('setupAlert', 'success', '✅ Connected successfully!');
-    document.getElementById('configAlert').classList.remove('show'); // clear any stale error
-    document.getElementById('dashboard').style.display = 'block';
-    // Show info if config values look like defaults
-    if (!document.getElementById('cfgChannel').value || document.getElementById('cfgChannel').value === '0') {
-      showAlert('configAlert', 'info', 'ℹ️ Config loaded. Set your Channel ID and save.');
-    }
-
-  } catch (e) {
-    setStatus('error', 'Connection failed');
-    showAlert('setupAlert', 'error', `❌ ${e.message}`);
-  }
-}
-
-// ── PARSE CONFIG FROM bot.py ─────────────────────────────────────────────────
-function parseConfig(content) {
-  // Match exact patterns from bot.py
-  const getNum = (key) => {
-    const m = content.match(new RegExp(key + '\\s*=\\s*(\\d+)'));
-    return m ? parseInt(m[1]) : null;
-  };
-
-  const q = getNum('QUESTIONS_PER_SESSION');
-  const a = getNum('ALIVE_MINUTES');
-  const t = getNum('PERSONAL_TIMER_MIN');
-  const c = getNum('SESSIONS_PER_CYCLE');
-  // CHANNEL_ID — read default from secret fallback (display only; actual override sent via dispatch)
-  const chMatch = content.match(/os\.environ\.get\("CHANNEL_ID",\s*"(\d+)"\)/);
-  // SEND_REPORT_CARDS = True/False
-  const rcMatch  = content.match(/SEND_REPORT_CARDS\s*=\s*(True|False)/);
-  const wuMatch  = content.match(/WAIT_UNTIL_HOUR\s*=\s*int\(os\.environ\.get\([^,]+,\s*"(\d+)"\)\)/);
-
-  if (q !== null) document.getElementById('cfgQuestions').value = q;
-  if (a !== null) document.getElementById('cfgAlive').value = a;
-  if (t !== null) document.getElementById('cfgTimer').value = t;
-  if (c !== null) document.getElementById('cfgCycle').value = c;
-  if (chMatch)    document.getElementById('cfgChannel').value = chMatch[1];
-  if (rcMatch)    document.getElementById('cfgReportCards').checked = (rcMatch[1] === 'True');
-  if (wuMatch)    document.getElementById('cfgWaitUntil').value = wuMatch[1];
-
-  // Clear "Not Found" if values loaded
-  if (q !== null) document.getElementById('configAlert').classList.remove('show');
-}
-
-// ── SAVE CONFIG ──────────────────────────────────────────────────────────────
-async function saveConfig() {
-  const q  = parseInt(document.getElementById('cfgQuestions').value);
-  const a  = parseInt(document.getElementById('cfgAlive').value);
-  const t  = parseInt(document.getElementById('cfgTimer').value);
-  const c  = parseInt(document.getElementById('cfgCycle').value);
-  const ch = document.getElementById('cfgChannel').value.trim();
-  const rc = document.getElementById('cfgReportCards').checked ? 'True' : 'False';
-
-  showAlert('configAlert', 'info', '⏳ Fetching bot.py...');
-
-  try {
-    // Get latest bot.py
-    const fileRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!fileRes.ok) throw new Error(`bot.py fetch failed (${fileRes.status}) — check token scope`);
-    const fileData = await fileRes.json();
-    STATE.botSha = fileData.sha;
-    let content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
-
-    // Replace config values — match exact bot.py format
-    content = content.replace(/(QUESTIONS_PER_SESSION\s*=\s*)\d+/, `$1${q}`);
-    content = content.replace(/(ALIVE_MINUTES\s*=\s*)\d+/, `$1${a}`);
-    content = content.replace(/(PERSONAL_TIMER_MIN\s*=\s*)\d+/, `$1${t}`);
-    content = content.replace(/(SESSIONS_PER_CYCLE\s*=\s*)\d+/, `$1${c}`);
-    content = content.replace(/(SEND_REPORT_CARDS\s*=\s*)(True|False)/, `$1${rc}`);
-    const wu = document.getElementById('cfgWaitUntil').value.trim();
-    content = content.replace(
-      /(WAIT_UNTIL_HOUR\s*=\s*int\(os\.environ\.get\([^,]+,\s*")\d+("\)\))/,
-      `$1${wu}$2`
-    );
-    // Channel ID is sent as a workflow dispatch input (OVERRIDE_CHANNEL_ID), not hardcoded in bot.py
-
-    // Push to GitHub
-    const updateRes = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/bot.py`, {
-      method: 'PUT',
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `Admin: update bot config (q=${q}, alive=${a}m, timer=${t}m, report_cards=${rc})`,
-        content: btoa(unescape(encodeURIComponent(content))),
-        sha: STATE.botSha
-      })
-    });
-
-    if (!updateRes.ok) {
-      const err = await updateRes.json();
-      throw new Error(err.message || 'Update failed');
-    }
-
-    const updated = await updateRes.json();
-    STATE.botSha = updated.content.sha;
-    showAlert('configAlert', 'success', '✅ bot.py updated on GitHub!');
-  } catch(e) {
-    showAlert('configAlert', 'error', `❌ ${e.message}`);
-  }
-}
-
-// ── TRIGGER QUIZ ─────────────────────────────────────────────────────────────
-async function dispatchWorkflow(skipKeepalive) {
-  const ch = document.getElementById('cfgChannel').value.trim();
-  if (!ch) {
-    showAlert('actionAlert', 'error', '❌ Enter a Channel ID first.');
-    return false;
-  }
-  const label = skipKeepalive ? '⏳ Triggering quiz immediately...' : '⏳ Bringing bot online...';
-  showAlert('actionAlert', 'info', label);
-  try {
-    const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
-      method: 'POST',
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ref: 'main',
-        inputs: {
-          channel_id: ch,
-          override_channel_id: ch,
-          skip_keepalive: skipKeepalive ? 'true' : 'false'
-        }
-      })
-    });
-    if (res.status === 204) {
-      const msg = skipKeepalive
-        ? `✅ Quiz triggered! Bot will post questions in ~30 seconds.`
-        : `✅ Bot coming online! Will post quiz at the scheduled time. Slash commands active shortly.`;
-      showAlert('actionAlert', 'success', msg);
-    } else if (res.status === 403) {
-      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope.');
-    } else {
-      const err = await res.json();
-      throw new Error(err.message || `Status ${res.status}`);
-    }
-  } catch(e) {
-    showAlert('actionAlert', 'error', `❌ ${e.message}`);
-  }
-}
-
-async function bringOnline() { await dispatchWorkflow(false); }
-async function triggerQuiz()  { await dispatchWorkflow(true);  }
-
-// ── LOAD SCORES ───────────────────────────────────────────────────────────────
-async function loadScores() {
-  try {
-    const res = await fetch(`https://api.github.com/gists/${STATE.gistId}`, {
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) throw new Error(`Gist fetch failed (${res.status})`);
-    const data = await res.json();
-    const raw  = JSON.parse(data.files['scores.json'].content);
-    STATE.gistData = raw;
-    renderScores(raw);
-  } catch(e) {
-    showAlert('scoresAlert', 'error', `❌ ${e.message}`);
-  }
-}
-
-function renderScores(data) {
-  const scores  = data.scores  || {};
-  const streaks = data.streaks || {};
-  const entries = Object.entries(scores).sort((a, b) => b[1].points - a[1].points);
-
-  document.getElementById('scoresCount').textContent = `${entries.length} players`;
-
-  if (entries.length === 0) {
-    document.getElementById('scoresContainer').innerHTML = '<div class="empty">No scores yet</div>';
-    return;
-  }
-
-  const rankIcon = (i) => ['🥇','🥈','🥉'][i] || `#${i+1}`;
-
-  const rows = entries.map(([uid, s], i) => {
-    const acc    = s.total > 0 ? Math.round(100*s.correct/s.total) : 0;
-    const streak = streaks[uid]?.streak || 0;
-    const sf     = streak >= 14 ? '🔥🔥🔥' : streak >= 7 ? '🔥🔥' : streak >= 3 ? '🔥' : '';
-    return `<tr>
-      <td><span class="rank-badge">${rankIcon(i)}</span></td>
-      <td><strong>${s.username || uid}</strong></td>
-      <td><span class="tag tag-blue">${s.points} pts</span></td>
-      <td>${Math.min(acc,100)}%</td>
-      <td>${s.correct}/${s.total}</td>
-      <td>${streak > 0 ? `${sf} ${streak}d` : '—'}</td>
-      <td style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap;">
-        <input type="number" class="pts-input" value="${s.points}" id="pts_${uid}" placeholder="pts">
-        <input type="number" class="pts-input" value="${streak}" id="str_${uid}" placeholder="streak" min="0" style="width:60px!important;">
-        <input type="number" class="pts-input" value="${s.correct}" id="cor_${uid}" placeholder="correct" min="0" style="width:65px!important;" title="Correct answers">
-        <input type="number" class="pts-input" value="${s.total}" id="tot_${uid}" placeholder="total" min="0" style="width:55px!important;" title="Total answered">
-        <button class="btn-ghost save-btn-sm" onclick="updatePlayer('${uid}','${s.username}')">Save</button>
-      </td>
-    </tr>`;
-  }).join('');
-
-  document.getElementById('scoresContainer').innerHTML = `
-    <table class="scores-table">
-      <thead><tr>
-        <th>Rank</th><th>Player</th><th>Points</th><th>Accuracy</th>
-        <th>Correct</th><th>Streak</th><th>Edit (pts · streak · correct · total)</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
-}
-
-// ── UPDATE SINGLE PLAYER (points + streak + correct + total) ─────────────────
-async function updatePlayer(uid, username) {
-  const newPts    = parseInt(document.getElementById(`pts_${uid}`).value);
-  const newStreak = parseInt(document.getElementById(`str_${uid}`).value);
-  const newCor    = parseInt(document.getElementById(`cor_${uid}`).value);
-  const newTot    = parseInt(document.getElementById(`tot_${uid}`).value);
-  if (isNaN(newPts) || isNaN(newStreak) || isNaN(newCor) || isNaN(newTot)) return;
-  if (newCor > newTot) { showAlert('scoresAlert', 'error', `❌ Correct (${newCor}) can't exceed Total (${newTot})`); return; }
-
-  const s = STATE.gistData.scores[uid];
-  s.points  = newPts;
-  s.correct = newCor;
-  s.total   = newTot;
-
-  // Update streak — preserve last_date so bot doesn't reset it
-  if (!STATE.gistData.streaks) STATE.gistData.streaks = {};
-  if (!STATE.gistData.streaks[uid]) STATE.gistData.streaks[uid] = { streak: 0, last_date: '' };
-  STATE.gistData.streaks[uid].streak = newStreak;
-
-  await pushGist(STATE.gistData);
-  const acc = newTot > 0 ? Math.min(100, Math.round(100*newCor/newTot)) : 0;
-  showAlert('scoresAlert', 'success', `✅ ${username}: ${newPts} pts · ${acc}% acc · ${newStreak}d streak`);
-  renderScores(STATE.gistData);
-}
-
-// kept for backward compat (reset scores still calls renderScores directly)
-async function updateScore(uid, username) { await updatePlayer(uid, username); }
-
-// ── RESET SCORES ─────────────────────────────────────────────────────────────
-async function resetScores() {
-  if (!confirm('Reset ALL scores to zero? Streaks will be kept. This cannot be undone.')) return;
-  STATE.gistData.scores = {};
-  await pushGist(STATE.gistData);
-  showAlert('actionAlert', 'success', '✅ Scores reset!');
-  renderScores(STATE.gistData);
-}
-
-// ── NORMALIZE (mirrors bot.py logic) ─────────────────────────────────────────
-function normalizeQ(text) {
-  text = text.toLowerCase().trim();
-  text = text.replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-');
-  text = text.replace(/[-\s?:\.!,;।]+$/, '');
-  text = text.replace(/\s+/g, ' ');
-  return text;
-}
-
-// ── QUESTION BANK STATS ───────────────────────────────────────────────────────
-async function loadQuestionBank() {
-  showAlert('qbankAlert', 'info', '⏳ Loading questions.json...');
-  try {
-    const res = await fetch(`https://api.github.com/repos/${STATE.repo}/contents/questions.json`, {
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) throw new Error(`questions.json not found in repo (${res.status})`);
-    const fileData = await res.json();
-
-    let questions;
-    if (fileData.content) {
-      // Small file — decode base64 directly (UTF-8 safe)
-      const raw = atob(fileData.content.replace(/\n/g, ''));
-      const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
-      questions = JSON.parse(new TextDecoder().decode(bytes));
-    } else if (fileData.download_url) {
-      // Large file (>1MB) — GitHub omits content, use download_url instead
-      showAlert('qbankAlert', 'info', '⏳ Large file detected, fetching via download URL...');
-      const dlRes = await fetch(fileData.download_url, {
-        headers: { Authorization: `token ${STATE.token}` }
-      });
-      if (!dlRes.ok) throw new Error(`Failed to download questions.json (${dlRes.status})`);
-      questions = await dlRes.json();
-    } else {
-      throw new Error('questions.json content unavailable from GitHub API');
-    }
-
-    // Deduplicate by question text (same logic as bot.py)
-    const seen = new Set();
-    const unique = questions.filter(q => {
-      if (seen.has(q.question)) return false;
-      seen.add(q.question); return true;
-    });
-
-    renderQuestionBank(unique, questions.length);
-    document.getElementById('qbankAlert').classList.remove('show');
-  } catch(e) {
-    showAlert('qbankAlert', 'error', `❌ ${e.message}`);
-  }
-}
-
-function renderQuestionBank(questions, rawTotal) {
-  const dupes = rawTotal - questions.length;
-
-  // Count by subject and type
-  const bySubject = {};
-  const byType    = { mcq: 0, flashcard: 0 };
-  for (const q of questions) {
-    const subj = q.subject || 'General';
-    if (!bySubject[subj]) bySubject[subj] = { mcq: 0, flashcard: 0 };
-    const t = q.type || 'mcq';
-    bySubject[subj][t] = (bySubject[subj][t] || 0) + 1;
-    byType[t] = (byType[t] || 0) + 1;
-  }
-
-  // ✅ FIXED: normalize both sides so panel matches bot.py logic
-  const askedRaw  = STATE.gistData?.asked || [];
-  const askedNorm = new Set(askedRaw.map(a => normalizeQ(a)));
-  const freshCount = questions.filter(q => !askedNorm.has(normalizeQ(q.question))).length;
-  const askedCount = questions.length - freshCount;
-
-  document.getElementById('qbankSummary').textContent =
-    `${questions.length} unique · ${freshCount} fresh · ${askedRaw.length} in gist`;
-
-  const subjectEmoji = { Physics:'⚡', Chemistry:'⚗️', Math:'📐', Biology:'🔬', English:'📖', GK:'🌐', 'General Knowledge':'🌐', General:'📋' };
-
-  const subjectRows = Object.entries(bySubject)
-    .sort((a,b) => (b[1].mcq+b[1].flashcard) - (a[1].mcq+a[1].flashcard))
-    .map(([subj, counts]) => {
-      const total   = counts.mcq + counts.flashcard;
-      // ✅ FIXED: normalize here too
-      const asked   = questions.filter(q => (q.subject||'General') === subj && askedNorm.has(normalizeQ(q.question))).length;
-      const fresh   = total - asked;
-      const pct     = Math.round((asked / total) * 100);
-      const barFill = Math.round(pct / 10);
-      const bar     = '█'.repeat(barFill) + '░'.repeat(10 - barFill);
-      const emoji   = subjectEmoji[subj] || '📋';
-      return `<tr>
-        <td><strong>${emoji} ${subj}</strong></td>
-        <td><span class="tag tag-blue">${total}</span></td>
-        <td><span class="tag tag-green">${fresh} fresh</span></td>
-        <td><span class="tag tag-yellow">${asked} asked</span></td>
-        <td style="font-family:monospace; font-size:0.8rem; color:var(--muted);">${bar} ${pct}%</td>
-        <td style="font-size:0.8rem; color:var(--muted);">MCQ: ${counts.mcq||0} · Flash: ${counts.flashcard||0}</td>
-      </tr>`;
-    }).join('');
-
-  document.getElementById('qbankContainer').innerHTML = `
-    <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--accent);">${questions.length}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">Unique Questions</div>
+  <!-- QUIZ -->
+  <div id="pg-quiz" class="page">
+    <div class="quiz-wrap">
+      <div class="quiz-header">
+        <div class="q-counter" id="q-counter">Q 1 / 10</div>
+        <div class="q-subject" id="q-subject">Subject</div>
       </div>
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--accent2);">${freshCount}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">Not Yet Asked</div>
+      <div class="progress-bar"><div class="progress-fill" id="q-progress" style="width:10%"></div></div>
+      <div class="dots-nav" id="dots-nav"></div>
+      <div class="timer-wrap" id="timer-wrap">
+        <div class="timer-circle">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle class="timer-track" cx="22" cy="22" r="18"/>
+            <circle class="timer-ring" cx="22" cy="22" r="18" id="timer-ring"/>
+          </svg>
+          <div class="timer-num" id="timer-num">25</div>
+        </div>
+        <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%"></div></div>
       </div>
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--warning);">${askedCount}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">Asked This Cycle</div>
+      <div class="question-card"><div class="question-text" id="q-text">Loading…</div></div>
+      <div class="options-list" id="options-list"></div>
+      <div class="quiz-nav mt-12">
+        <button class="btn-secondary" id="btn-prev" onclick="quizNav(-1)" disabled>Prev</button>
+        <button class="btn-secondary" id="btn-next" onclick="quizNav(1)">Next</button>
+        <button class="btn-submit hidden" id="btn-submit" onclick="submitQuiz()">Submit</button>
       </div>
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--text);">${byType.mcq||0}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">MCQ</div>
-      </div>
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--text);">${byType.flashcard||0}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">Flashcard</div>
-      </div>
-      ${dupes > 0 ? `<div style="background:rgba(248,81,73,0.1); border:1px solid rgba(248,81,73,0.3); border-radius:6px; padding:0.6rem 1rem; text-align:center;">
-        <div style="font-size:1.4rem; font-weight:700; color:var(--danger);">${dupes}</div>
-        <div style="font-size:0.75rem; color:var(--muted);">Duplicates (removed)</div>
-      </div>` : ''}
     </div>
-    <table class="scores-table">
-      <thead><tr>
-        <th>Subject</th><th>Total</th><th>Fresh</th><th>Asked</th><th>Cycle Progress</th><th>Type Mix</th>
-      </tr></thead>
-      <tbody>${subjectRows}</tbody>
-    </table>`;
-}
+  </div>
 
+  <!-- RESULTS -->
+  <div id="pg-result" class="page">
+    <div class="result-wrap">
+      <div class="score-display fade-up">
+        <span class="grade-badge" id="res-grade">S</span>
+        <div class="score-frac" id="res-frac">10 / 10</div>
+        <div class="score-pts">+<span id="res-pts">100</span> pts · <span id="res-type" style="color:var(--muted);">Daily Quiz</span></div>
+      </div>
+      <div class="section-title">Answer Review</div>
+      <div class="review-list" id="review-list"></div>
+      <button class="btn-primary w-full mt-16" onclick="showPage('dashboard')">Back to Dashboard</button>
+    </div>
+  </div>
 
-async function pushGist(data) {
-  const res = await fetch(`https://api.github.com/gists/${STATE.gistId}`, {
-    method: 'PATCH',
-    headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      files: { 'scores.json': { content: JSON.stringify(data, null, 2) } }
-    })
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || 'Gist update failed');
-  }
-}
+  <!-- LEADERBOARD -->
+  <div id="pg-leaderboard" class="page">
+    <div class="lb-wrap">
+      <div class="section-title">All Players</div>
+      <div class="lb-card" id="lb-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+    </div>
+  </div>
 
-// ── SEND CYCLE REPORT CARDS ──────────────────────────────────────────────────
-async function sendCycleReports() {
-  const ch = document.getElementById('cfgChannel').value.trim();
-  if (!ch) {
-    showAlert('actionAlert', 'error', '❌ Enter a Channel ID first (needed so the bot knows where to post the confirmation).');
-    return;
-  }
-  const cycleNum = parseInt(document.getElementById('cfgCycleReportNum').value);
-  if (!cycleNum || cycleNum < 1) {
-    showAlert('actionAlert', 'error', '❌ Enter a valid cycle number.');
-    return;
-  }
-  if (!confirm(`Send Cycle #${cycleNum} report cards to all players via DM? Make sure to run this BEFORE resetting scores.`)) return;
+  <!-- PROFILE -->
+  <div id="pg-profile" class="page">
+    <div class="prof-wrap">
+      <div class="prof-hero fade-up">
+        <img id="prof-avatar" class="prof-avatar hidden" src="" alt="avatar"/>
+        <div id="prof-avatar-fallback" class="prof-avatar-fallback hidden"></div>
+        <div class="prof-info">
+          <div class="prof-name" id="prof-name">—</div>
+          <div class="prof-id" id="prof-id">#0000000000000000</div>
+          <div class="prof-rank-badge mt-4" id="prof-rank">Unranked</div>
+        </div>
+      </div>
+      <div class="section-title mt-12">Stats</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="s-val" id="prof-pts">—</div><div class="s-lbl">Points</div></div>
+        <div class="stat-card"><div class="s-val white" id="prof-streak">—</div><div class="s-lbl">Streak</div></div>
+        <div class="stat-card"><div class="s-val" id="prof-correct">—</div><div class="s-lbl">Correct</div></div>
+        <div class="stat-card"><div class="s-val gold" id="prof-acc">—</div><div class="s-lbl">Accuracy</div></div>
+      </div>
+      <div class="section-title mt-12">30-Day Activity</div>
+      <div class="calendar-wrap">
+        <div class="cal-header">
+          <div class="cal-day-label">S</div><div class="cal-day-label">M</div><div class="cal-day-label">T</div>
+          <div class="cal-day-label">W</div><div class="cal-day-label">T</div><div class="cal-day-label">F</div>
+          <div class="cal-day-label">S</div>
+        </div>
+        <div class="calendar-grid" id="cal-grid"></div>
+      </div>
+      <div class="section-title mt-12">Report Card</div>
+      <div class="report-card-wrap" id="report-card"><div class="center-spinner"><div class="spinner"></div></div></div>
+      <div class="section-title mt-12">Missed Questions</div>
+      <div class="missed-section-header" onclick="toggleMissed()" id="missed-header">
+        <div class="msh-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;stroke:var(--red-main);flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+          <span class="msh-title">Questions You Got Wrong</span>
+          <span class="missed-count-badge" id="missed-count">0</span>
+        </div>
+        <span class="missed-chevron" id="missed-chevron">▼</span>
+      </div>
+      <div class="missed-body" id="missed-body"><div id="missed-list"></div></div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
 
-  showAlert('actionAlert', 'info', `⏳ Triggering cycle #${cycleNum} report card workflow...`);
-  try {
-    const res = await fetch(`https://api.github.com/repos/${STATE.repo}/actions/workflows/quiz.yml/dispatches`, {
-      method: 'POST',
-      headers: { Authorization: `token ${STATE.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ref: 'main',
-        inputs: {
-          channel_id: ch,
-          override_channel_id: ch,
-          send_cycle_report_now: String(cycleNum)
-        }
-      })
-    });
-    if (res.status === 204) {
-      showAlert('actionAlert', 'success', `✅ Cycle #${cycleNum} report cards triggered! Bot will DM all players in ~30 seconds.`);
-    } else if (res.status === 403) {
-      showAlert('actionAlert', 'error', '❌ Token needs "workflow" scope.');
-    } else {
-      const err = await res.json();
-      throw new Error(err.message || `Status ${res.status}`);
-    }
-  } catch(e) {
-    showAlert('actionAlert', 'error', `❌ ${e.message}`);
-  }
-}
+  <!-- PRACTICE -->
+  <div id="pg-practice" class="page">
+    <div class="pg-inner">
+      <div id="practice-setup">
+        <div class="section-title">Practice Mode</div>
+        <div class="practice-limit-bar">
+          <div class="plb-left">
+            <span class="plb-label">Daily Limit</span>
+            <span class="plb-count"><span id="practice-used">0</span> / 50</span>
+          </div>
+          <div class="plb-track"><div class="plb-fill" id="practice-limit-fill" style="width:0%"></div></div>
+        </div>
+        <div class="section-title mt-12">Subject</div>
+        <div class="practice-subject-grid" id="practice-subject-grid">
+          <button class="subject-chip active" data-subject="all" onclick="selectSubject(this)">All Subjects</button>
+        </div>
+        <div class="section-title mt-12">Questions</div>
+        <div class="practice-count-row">
+          <button class="count-chip active" data-count="10" onclick="selectCount(this)">10</button>
+          <button class="count-chip" data-count="20" onclick="selectCount(this)">20</button>
+          <button class="count-chip" data-count="30" onclick="selectCount(this)">30</button>
+          <button class="count-chip" data-count="50" onclick="selectCount(this)">50</button>
+        </div>
+        <div class="section-title mt-12">Timer</div>
+        <div class="practice-count-row">
+          <button class="count-chip active" data-timer="0" onclick="selectTimer(this)">Off</button>
+          <button class="count-chip" data-timer="15" onclick="selectTimer(this)">15s</button>
+          <button class="count-chip" data-timer="25" onclick="selectTimer(this)">25s</button>
+          <button class="count-chip" data-timer="45" onclick="selectTimer(this)">45s</button>
+        </div>
+        <div class="section-title mt-12">Answer Reveal</div>
+        <div class="practice-count-row">
+          <button class="count-chip active" data-mode="after" onclick="selectMode(this)">After All</button>
+          <button class="count-chip" data-mode="immediately" onclick="selectMode(this)">Immediately</button>
+        </div>
+        <div class="code-error mt-8" id="practice-setup-err"></div>
+        <button class="btn-primary w-full mt-12" onclick="startPractice()">Start Practice</button>
+      </div>
+      <div id="practice-quiz" class="hidden">
+        <div class="quiz-header"><div class="q-counter" id="pq-counter">Q 1 / 10</div><div class="q-subject" id="pq-subject">Subject</div></div>
+        <div class="progress-bar"><div class="progress-fill" id="pq-progress" style="width:10%"></div></div>
+        <div class="dots-nav" id="pq-dots"></div>
+        <div class="timer-wrap" id="pq-timer-wrap">
+          <div class="timer-circle">
+            <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="timer-track" cx="22" cy="22" r="18"/><circle class="timer-ring" cx="22" cy="22" r="18" id="pq-timer-ring"/></svg>
+            <div class="timer-num" id="pq-timer-num">25</div>
+          </div>
+          <div class="timer-bar-wrap"><div class="timer-bar" id="pq-timer-bar" style="width:100%"></div></div>
+        </div>
+        <div class="question-card"><div class="question-text" id="pq-text">Loading…</div></div>
+        <div class="options-list" id="pq-options"></div>
+        <div id="pq-feedback" class="pq-feedback hidden"></div>
+        <div class="quiz-nav mt-12">
+          <button class="btn-secondary" id="pq-prev" onclick="practiceNav(-1)" disabled>Prev</button>
+          <button class="btn-secondary" id="pq-next" onclick="practiceNav(1)">Next</button>
+          <button class="btn-submit hidden" id="pq-submit" onclick="submitPractice()">Submit</button>
+        </div>
+      </div>
+      <div id="practice-result" class="hidden">
+        <div class="score-display fade-up">
+          <span class="grade-badge" id="pr-grade">A</span>
+          <div class="score-frac" id="pr-frac">0 / 10</div>
+          <div class="score-pts">Practice · <span id="pr-subject-label" style="color:var(--muted);">All Subjects</span></div>
+        </div>
+        <div class="section-title">Review</div>
+        <div class="review-list" id="pr-review"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn-secondary" onclick="showPage('dashboard')">Home</button>
+          <button class="btn-primary" style="flex:1;" onclick="resetPractice()">Practice Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function setStatus(state, text) {
-  const dot  = document.getElementById('statusDot');
-  const span = document.getElementById('statusText');
-  dot.className = 'status-dot' + (state === 'connected' ? ' connected' : state === 'error' ? ' error' : '');
-  span.textContent = text;
-}
+  <!-- SYLLABUS TRACKER -->
+  <div id="pg-syllabus" class="page">
+    <div class="pg-inner">
+      <div class="section-title">Syllabus Tracker</div>
 
-function showAlert(id, type, msg) {
-  const el = document.getElementById(id);
-  el.className = `alert alert-${type} show`;
-  el.textContent = msg;
-  if (type === 'success') setTimeout(() => el.classList.remove('show'), 4000);
-}
+      <!-- Subject overview rings -->
+      <div class="syllabus-overview" id="syllabus-overview"></div>
 
-// Load saved credentials from localStorage
-window.onload = () => {
-  const saved = localStorage.getItem('quiz_admin');
-  if (saved) {
-    try {
-      const d = JSON.parse(saved);
-      if (d.token) document.getElementById('githubToken').value = d.token;
-      if (d.repo)  document.getElementById('githubRepo').value  = d.repo;
-      if (d.gistId) document.getElementById('gistId').value = d.gistId;
-    } catch(e) {}
-  }
-};
+      <!-- Subject accordions -->
+      <div id="syllabus-subjects"></div>
 
-// Save to localStorage when connecting
-const _origConnect = connect;
-connect = async function() {
-  localStorage.setItem('quiz_admin', JSON.stringify({
-    token: document.getElementById('githubToken').value.trim(),
-    repo:  document.getElementById('githubRepo').value.trim(),
-    gistId: document.getElementById('gistId').value.trim()
-  }));
-  await _origConnect();
-};
-</script>
+    </div>
+  </div>
+
+  <!-- VOCABULARY -->
+  <div id="pg-vocabulary" class="page">
+    <div class="pg-inner">
+      <!-- Vocab header -->
+      <div class="vocab-header">
+        <div>
+          <div class="section-title" style="margin:0 0 4px;">Vocabulary</div>
+          <div class="vocab-streak-row">
+            <span class="vocab-streak" id="vocab-streak-display">0 day streak</span>
+            <span class="vocab-xp" id="vocab-xp-display">0 XP</span>
+          </div>
+        </div>
+        <div class="vocab-daily-progress">
+          <div class="vdp-ring" id="vdp-ring">
+            <svg viewBox="0 0 44 44"><circle class="timer-track" cx="22" cy="22" r="18"/><circle class="vdp-arc" cx="22" cy="22" r="18" id="vdp-arc"/></svg>
+            <div class="vdp-label" id="vdp-label">0/20</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vocab screens -->
+      <div id="vocab-learn" class="hidden"><!-- learning card --></div>
+      <div id="vocab-quiz" class="hidden"><!-- quiz card --></div>
+      <div id="vocab-done" class="hidden"><!-- done state --></div>
+      <div id="vocab-loading" class="center-spinner"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- EXAM HISTORY -->
+  <div id="pg-history" class="page">
+    <div class="pg-inner">
+      <div class="section-title">Exam History</div>
+      <div id="history-full-list"></div>
+    </div>
+  </div>
+
+  <!-- SIMULATIONS -->
+  <div id="pg-simulations" class="page">
+    <div class="pg-inner">
+      <div class="section-title">Physics Simulations</div>
+      <div class="sim-notice">Opens in a new tab — Quiz Chaos stays open here.</div>
+      <div class="sim-grid">
+        <div class="sim-card" onclick="openSim('https://adnanxmacro.github.io/Vector-/sailors-playbook.html','Sailor\'s Gospel')">
+          <div class="sim-icon" style="background:rgba(0,150,255,0.1);border-color:rgba(0,150,255,0.25);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(0,150,255,0.9)" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="sim-info">
+            <div class="sim-title">Sailor's Gospel</div>
+            <div class="sim-desc">Boat-river vector problems</div>
+            <div class="sim-tag">Vector</div>
+          </div>
+          <div class="sim-arrow">→</div>
+        </div>
+        <div class="sim-card" onclick="openSim('https://adnanxmacro.github.io/Vector-/cc.html','Cannon Carnival')">
+          <div class="sim-icon" style="background:rgba(255,100,0,0.1);border-color:rgba(255,100,0,0.25);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,120,0,0.9)" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="sim-info">
+            <div class="sim-title">Cannon Carnival</div>
+            <div class="sim-desc">Projectile motion simulator</div>
+            <div class="sim-tag">Projectile</div>
+          </div>
+          <div class="sim-arrow">→</div>
+        </div>
+        <div class="sim-card" onclick="openSim('https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_all.html','Pendulum Lab')">
+          <div class="sim-icon" style="background:rgba(150,0,255,0.1);border-color:rgba(150,0,255,0.25);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(160,50,255,0.9)" stroke-width="1.5"><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="8" y2="19"/><circle cx="8" cy="20" r="2"/></svg>
+          </div>
+          <div class="sim-info">
+            <div class="sim-title">Pendulum Lab</div>
+            <div class="sim-desc">Periodic motion & SHM</div>
+            <div class="sim-tag">Oscillation</div>
+          </div>
+          <div class="sim-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="pg-admin" class="page">
+    <div class="pg-inner">
+      <div id="admin-lock" class="admin-lock fade-up">
+        <div class="admin-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="admin-lock-title">Admin Panel</div>
+        <div class="admin-lock-sub">Enter password to continue</div>
+        <input class="code-input admin-pw-input" id="admin-pw" type="password" placeholder="Password" autocomplete="off" onkeydown="if(event.key==='Enter')adminLogin()"/>
+        <button class="btn-primary w-full mt-8" onclick="adminLogin()">Unlock</button>
+        <div class="code-error" id="admin-pw-err"></div>
+      </div>
+      <div id="admin-dash" class="hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="section-title" style="margin:0;">Admin Panel</div>
+          <button class="admin-refresh-btn" onclick="loadAdminData()">Refresh</button>
+        </div>
+        <div class="stats-grid mt-8">
+          <div class="stat-card"><div class="s-val" id="adm-total-players">—</div><div class="s-lbl">Real Players</div></div>
+          <div class="stat-card"><div class="s-val green" id="adm-today-done">—</div><div class="s-lbl">Done Today</div></div>
+          <div class="stat-card"><div class="s-val" id="adm-catchup-pending">—</div><div class="s-lbl">Catchup Owed</div></div>
+          <div class="stat-card"><div class="s-val white" id="adm-sessions">—</div><div class="s-lbl">Sessions</div></div>
+        </div>
+        <div class="section-title mt-12">Today's Quiz</div>
+        <div class="quiz-status-card" id="adm-quiz-info"><div class="center-spinner"><div class="spinner"></div></div></div>
+        <div class="section-title mt-12">Push Notification</div>
+        <div class="notif-form">
+          <input class="notif-input" id="notif-title" placeholder="Title" maxlength="60"/>
+          <textarea class="notif-input notif-textarea" id="notif-body" placeholder="Message body" rows="3" maxlength="200"></textarea>
+          <div class="notif-color-row">
+            <span class="notif-color-label">Color</span>
+            <button class="notif-color-btn active" data-color="red" onclick="selectNotifColor(this)"><span style="background:var(--red-main)"></span>Red</button>
+            <button class="notif-color-btn" data-color="gold" onclick="selectNotifColor(this)"><span style="background:var(--gold)"></span>Gold</button>
+            <button class="notif-color-btn" data-color="white" onclick="selectNotifColor(this)"><span style="background:var(--text)"></span>White</button>
+          </div>
+          <button class="btn-primary w-full mt-8" onclick="pushNotification()">Push Notification</button>
+          <div class="code-error" id="notif-err"></div>
+        </div>
+        <div class="section-title mt-12">Completed Today</div>
+        <div class="lb-card" id="adm-done-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+        <div class="section-title mt-12">Missed Today</div>
+        <div class="lb-card" id="adm-missed-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+        <div class="section-title mt-12">Catchup Owed</div>
+        <div class="lb-card" id="adm-catchup-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+        <div class="section-title mt-12">Fake Player Control</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="btn-primary" style="flex:1;" onclick="bulkSimulateFakes()">Simulate All</button>
+          <button class="btn-secondary" style="flex:1;" onclick="showAddFakeForm()">Add Fake Player</button>
+        </div>
+        <div id="fake-form" class="fake-form hidden">
+          <div class="fake-form-title" id="fake-form-title">Add Fake Player</div>
+          <input class="code-input fake-input" id="fake-username" placeholder="Username" style="letter-spacing:0;font-size:14px;text-transform:none;"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+            <div><div class="fake-input-label">Points</div><input class="code-input fake-input" id="fake-points" type="number" placeholder="0" style="letter-spacing:0;font-size:14px;"/></div>
+            <div><div class="fake-input-label">Streak</div><input class="code-input fake-input" id="fake-streak" type="number" placeholder="5" style="letter-spacing:0;font-size:14px;"/></div>
+            <div><div class="fake-input-label">Correct</div><input class="code-input fake-input" id="fake-correct" type="number" placeholder="0" style="letter-spacing:0;font-size:14px;"/></div>
+            <div><div class="fake-input-label">Total</div><input class="code-input fake-input" id="fake-total" type="number" placeholder="0" style="letter-spacing:0;font-size:14px;"/></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn-primary" style="flex:1;" id="fake-save-btn" onclick="saveFakePlayer()">Save</button>
+            <button class="btn-secondary" onclick="hideFakeForm()">Cancel</button>
+          </div>
+          <div class="code-error" id="fake-form-err"></div>
+        </div>
+        <div class="lb-card" id="adm-fake-list"><div class="center-spinner"><div class="spinner"></div></div></div>
+        <div class="section-title mt-12">All Real Players</div>
+        <div class="lb-card" id="adm-all-players"><div class="center-spinner"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ BOTTOM NAV ══════════ -->
+  <nav id="bot-nav" class="hidden">
+    <button class="nav-btn active" id="nav-home" onclick="navTap(this,'dashboard')">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" id="nav-quiz" onclick="navTap(this,'quiz')">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>
+      </div>
+      <span>Quiz</span>
+    </button>
+    <button class="nav-btn" id="nav-ranks" onclick="navTap(this,'leaderboard')">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <span>Ranks</span>
+    </button>
+    <button class="nav-btn" id="nav-profile" onclick="navTap(this,'profile')">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span>Profile</span>
+    </button>
+    <button class="nav-btn" id="nav-more" onclick="toggleMoreMenu()">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      </div>
+      <span>More</span>
+    </button>
+  </nav>
+
+  <!-- MORE MENU -->
+  <div id="more-overlay" class="more-overlay hidden" onclick="closeMoreMenu()"></div>
+  <div id="more-menu" class="more-menu hidden">
+    <div class="more-menu-handle"></div>
+    <div class="more-menu-title">More</div>
+    <div class="more-menu-grid">
+      <button class="more-item" onclick="moreNav('practice')">
+        <div class="more-item-icon" style="background:rgba(196,30,58,0.12);border-color:rgba(196,30,58,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red-main)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+        </div>
+        <span>Practice</span>
+      </button>
+      <button class="more-item" onclick="moreNav('syllabus')">
+        <div class="more-item-icon" style="background:rgba(0,180,80,0.12);border-color:rgba(0,180,80,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(0,200,83,0.9)" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <span>Syllabus</span>
+      </button>
+      <button class="more-item" onclick="moreNav('vocabulary')">
+        <div class="more-item-icon" style="background:rgba(130,0,255,0.12);border-color:rgba(130,0,255,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(160,50,255,0.9)" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span>Vocabulary</span>
+      </button>
+      <button class="more-item" onclick="moreNav('simulations')">
+        <div class="more-item-icon" style="background:rgba(0,100,255,0.12);border-color:rgba(0,100,255,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(60,140,255,0.9)" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <span>Simulations</span>
+      </button>
+      <button class="more-item" onclick="moreNav('history')">
+        <div class="more-item-icon" style="background:rgba(255,130,0,0.12);border-color:rgba(255,130,0,0.25);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,150,30,0.9)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <span>History</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- Chapter note modal -->
+  <div id="note-modal-overlay" class="note-modal-overlay hidden" onclick="closeNoteModal()"></div>
+  <div id="note-modal" class="note-modal hidden">
+    <div class="note-modal-header">
+      <div class="note-modal-title" id="note-modal-title">Chapter Notes</div>
+      <button class="note-modal-close" onclick="closeNoteModal()">✕</button>
+    </div>
+    <div class="note-modal-hint">Use @goal: @reminder: @finish: @left: to set smart reminders</div>
+    <textarea class="note-textarea" id="note-textarea" placeholder="Add notes, goals, reminders...&#10;@goal: finish chapter 3&#10;@reminder: review formulas&#10;@finish: all exercises&#10;@left: page 45"></textarea>
+    <button class="btn-primary w-full mt-8" onclick="saveChapterNote()">Save Note</button>
+  </div>
+
+  <!-- Smart reminder popup -->
+  <div id="reminder-popup" class="reminder-popup hidden">
+    <div class="reminder-popup-inner">
+      <div class="reminder-tag" id="reminder-tag">Goal</div>
+      <div class="reminder-text" id="reminder-text"></div>
+      <button class="reminder-dismiss" onclick="dismissReminder()">Got it</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
