@@ -17,6 +17,9 @@ let quizAnswers   = {};
 let quizIndex     = 0;
 let isCatchup     = false;
 let timerInterval = null;
+let lastExamExport = null;
+let quizTimeLeft   = {}; // per-question remaining seconds, persists across navigation
+let quizTimedOut   = {}; // per-question flag once its timer has hit 0
 let timerRemaining= 25;
 
 // Practice
@@ -26,6 +29,8 @@ let practiceAnswers   = {};
 let practiceIndex     = 0;
 let practiceConfig    = { subject:'all', count:10, timer:0, mode:'after' };
 let practiceTimerInt  = null;
+let practiceTimeLeft  = {}; // per-question remaining seconds, persists across navigation
+let practiceTimedOut  = {};
 let practiceTimerSecs = 0;
 
 // Vocab
@@ -39,10 +44,15 @@ let vocabFlipped  = false;
 let syllabusData  = null; // loaded from localStorage
 let noteTarget    = null; // { subjectKey, chapterIndex }
 
-// Admin
-let adminUnlocked = false;
-let editingFakeId = null;
-let notifColor    = 'red';
+// Admin (adminToken/adminJsLoaded declared near the admin-loading code further down;
+// editingFakeId/notifColor live in admin.js, which only loads after login)
+
+// PDF Hub
+let pdfHubData = null;
+const pdfState = { pub: { path: [] }, admin: { path: [] } };
+
+// Leaderboard
+let lbMode = 'alltime'; // 'alltime' | 'weekly'
 
 // ── UTILS ────────────────────────────────────────────────────────────────────
 function escHtml(s) {
@@ -97,12 +107,6 @@ async function fetchHistory(id){ const d=await apiFetch('/history?id='+encodeURI
 async function fetchNotifications(){
   try{ return await apiFetch('/notifications'); }catch{ return []; }
 }
-async function workerPost(path,body){
-  const res=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json','X-Worker-Secret':'J111005376a'},body:JSON.stringify(body)});
-  if(!res.ok)throw new Error('HTTP '+res.status);
-  return res.json();
-}
-
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 function loadUser(){
   const p=new URLSearchParams(location.search);
@@ -122,7 +126,7 @@ function logout(){
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
-const NAV_MAP={dashboard:'home',quiz:'quiz',leaderboard:'ranks',profile:'profile'};
+const NAV_MAP={dashboard:'home',exams:'quiz',quiz:'quiz',practice:'quiz',result:'quiz',leaderboard:'ranks',profile:'profile'};
 
 function navTap(btn,page){
   // Bounce animation
@@ -132,7 +136,7 @@ function navTap(btn,page){
 }
 
 function showPage(name){
-  if(name==='quiz'&&quizQuestions.length===0){ toast('Enter the code to start the quiz','info'); name='dashboard'; }
+  if(name==='quiz'&&quizQuestions.length===0){ toast('Enter the code from Discord to start the exam','info'); name='exams'; }
   currentPage=name;
   clearTimer(); clearPracticeTimer();
 
@@ -154,13 +158,15 @@ function showPage(name){
 
   if(name==='login')       loadLoginPage();
   if(name==='dashboard')   loadDashboard();
+  if(name==='exams')       loadExamsHub();
   if(name==='leaderboard') loadLeaderboard();
   if(name==='profile')     loadProfile();
-  if(name==='syllabus')    loadSyllabus();
+  if(name==='syllabus')    { loadSyllabus(); scheduleSylReminderBanner(); }
   if(name==='practice')    loadPracticePage();
   if(name==='vocabulary')  loadVocab();
-  if(name==='history')     loadHistoryPage();
   if(name==='admin')       initAdminPage();
+  if(name==='pdfhub')      loadPdfHub('pub');
+  if(name==='journal')     loadJournalPage();
   if(name==='simulations') {} // static
 }
 
@@ -186,12 +192,101 @@ function openSim(url,name){
   toast(`Opening ${name} in a new tab — Quiz Chaos stays here`,'info');
 }
 
+// ── RECHECK / FLAG QUESTION ─────────────────────────────────────────────────────
+const SUPPORT_DISCORD_URL='https://discord.com/users/710746320071032863';
+
+function getCurrentQ(ctx){
+  if(ctx==='practice') return practiceQuestions[practiceIndex];
+  if(ctx==='main')     return quizQuestions[quizIndex];
+  return null;
+}
+
+function recheckQuestion(ctx){
+  const q=getCurrentQ(ctx);
+  if(!q||!q.question){ toast('No question loaded to recheck','error'); return; }
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(q.question)}`,'_blank');
+  toast('Opened the question in a new tab','info');
+}
+
+async function flagQuestion(ctx){
+  const q=getCurrentQ(ctx);
+
+  if(!q||!q.question){
+    // General report — no specific question in context (e.g. opened from the more menu)
+    window.open(SUPPORT_DISCORD_URL,'_blank');
+    toast('Opened Discord — describe the issue there','info');
+    return;
+  }
+
+  const optsText=['A','B','C','D'].map(k=>`${k}) ${q.options?.[k]??''}`).join('\n');
+  const flagText=`🚩 Flagged Question\nSubject: ${q.subject||'—'}\n\n${q.question}\n\n${optsText}\n\nMarked answer: ${q.answer||'—'}`;
+
+  try{
+    await navigator.clipboard.writeText(flagText);
+    toast('Question copied — paste it in the Discord chat that just opened','success');
+  }catch{
+    toast('Could not copy automatically — opening Discord, please describe the question','error');
+  }
+  window.open(SUPPORT_DISCORD_URL,'_blank');
+}
+
+// ── PILOT REQUEST ────────────────────────────────────────────────────────────
+function openPilotModal(){
+  document.getElementById('pilot-college').value='';
+  document.getElementById('pilot-contact').value='';
+  document.getElementById('pilot-message').value='';
+  document.getElementById('pilot-err').textContent='';
+  document.getElementById('pilot-modal-overlay').classList.remove('hidden');
+  document.getElementById('pilot-modal').classList.remove('hidden');
+}
+function closePilotModal(){
+  document.getElementById('pilot-modal-overlay').classList.add('hidden');
+  document.getElementById('pilot-modal').classList.add('hidden');
+}
+async function submitPilotRequest(){
+  const college=document.getElementById('pilot-college').value.trim();
+  const contact=document.getElementById('pilot-contact').value.trim();
+  const message=document.getElementById('pilot-message').value.trim();
+  const errEl=document.getElementById('pilot-err');
+  if(!college||!contact){ errEl.textContent='College name and contact are required'; return; }
+  errEl.textContent='';
+
+  const text=`🎓 Pilot Request\nFrom: ${user?.username||'Unknown'} (${user?.discord_id||'—'})\nCollege: ${college}\nContact: ${contact}${message?`\n\nDetails:\n${message}`:''}`;
+
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('Request copied — paste it in the Discord chat that just opened','success');
+  }catch{
+    toast('Could not copy automatically — opening Discord, please share the details','error');
+  }
+  window.open(SUPPORT_DISCORD_URL,'_blank');
+  closePilotModal();
+}
+
 // ── LOGIN ─────────────────────────────────────────────────────────────────────
+let loginCounterVal = null;
+let loginCounterTimer = null;
+function startLoginCounter(){
+  if(loginCounterVal===null) loginCounterVal = getDailyPoolSize();
+  document.getElementById('login-players').textContent = formatNum(loginCounterVal);
+  if(loginCounterTimer) clearInterval(loginCounterTimer);
+  loginCounterTimer = setInterval(()=>{
+    const el=document.getElementById('login-players');
+    if(!el || !document.getElementById('pg-login').classList.contains('active')){
+      clearInterval(loginCounterTimer);
+      return;
+    }
+    const delta = Math.floor(Math.random()*21)-10; // -10..+10
+    loginCounterVal = Math.min(1400, Math.max(670, loginCounterVal+delta));
+    el.textContent = formatNum(loginCounterVal);
+  }, 2600);
+}
+
 async function loadLoginPage(){
+  startLoginCounter();
   try{
     const data=await fetchScores();
     const ids=Object.keys(data.scores||{});
-    document.getElementById('login-players').textContent=ids.length;
     document.getElementById('login-sessions').textContent=data.session_count||0;
     const sorted=ids.map(id=>({...data.scores[id],id})).sort((a,b)=>(b.points||0)-(a.points||0)).slice(0,5);
     const medals=['🥇','🥈','🥉'];
@@ -199,7 +294,6 @@ async function loadLoginPage(){
       ?'<div class="empty-state">No players yet</div>'
       :sorted.map((p,i)=>`<div class="public-lb-row"><div class="lb-rank">${medals[i]||(i+1)}</div><div class="lb-name">${escHtml(p.username)}</div><div class="lb-pts">${formatNum(p.points)}</div></div>`).join('');
   }catch{
-    document.getElementById('login-players').textContent='—';
     document.getElementById('login-sessions').textContent='—';
     document.getElementById('login-lb-list').innerHTML='<div class="empty-state">Could not load</div>';
   }
@@ -207,6 +301,120 @@ async function loadLoginPage(){
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 const LEVELS=[{name:'Initiate',min:0,max:500},{name:'Scholar',min:500,max:1500},{name:'Expert',min:1500,max:3000},{name:'Master',min:3000,max:Infinity}];
+
+// Permanent activity tier — based on total days/quizzes completed (from days_completed)
+const ACTIVITY_TIERS=[
+  {name:'Bronze',  min:0,  icon:'🥉'},
+  {name:'Silver',  min:15, icon:'🥈'},
+  {name:'Gold',    min:40, icon:'🥇'},
+  {name:'Diamond', min:80, icon:'💎'},
+];
+function getActivityTier(days){
+  let t=ACTIVITY_TIERS[0];
+  for(const tier of ACTIVITY_TIERS){ if(days>=tier.min) t=tier; }
+  return t;
+}
+// ── DRAGON GROWTH / SHIELD STREAK WIDGET ────────────────────────────────────────
+// 7-day cycles grow your dragon from a baby to its next life stage. Every completed
+// cycle evolves it further. Missing 1-2 consecutive days cracks the shield but the
+// dragon is safe; missing a 3rd resets it (handled server-side, lazily).
+const DRAGON_TIERS=[
+  {name:'Baby',     img:'assets/dragons/dragon-tier0-baby.gif'},
+  {name:'Young',    img:'assets/dragons/dragon-tier1-young.gif'},
+  {name:'Juvenile', img:'assets/dragons/dragon-tier2-juvenile.gif'},
+  {name:'Mature',   img:'assets/dragons/dragon-tier3-mature.gif'},
+  {name:'Adult',    img:'assets/dragons/dragon-tier4-adult.gif'},
+];
+const DRAGON_EMPTY_IMG='assets/dragons/dragon-empty.png';
+
+function daysBetweenBD(a,b){
+  const da=new Date(a+'T00:00:00Z').getTime();
+  const db=new Date(b+'T00:00:00Z').getTime();
+  return Math.round((db-da)/86400000);
+}
+
+function getDragonState(streak,lastDate){
+  const today=getBDDate();
+  const cycleIndex = streak>0 ? Math.floor((streak-1)/7) : 0;
+  const tier = DRAGON_TIERS[Math.min(cycleIndex,DRAGON_TIERS.length-1)];
+  const dayInCycle = streak>0 ? (((streak-1)%7)+1) : 0; // 1-7, how far through this stage's growth
+  const gap = (streak>0 && lastDate) ? daysBetweenBD(lastDate,today) : 0;
+  // gap 0-1 = safe (today or "haven't played today yet" — totally normal)
+  // gap 2   = 1 day fully missed -> grace, 2 days left before reset
+  // gap 3   = 2 days fully missed -> grace, 1 day left (last chance)
+  // gap 4+  = already reset server-side (streak comes back as 0)
+  const cracks = streak>0 ? Math.max(0,Math.min(2,gap-1)) : 0;
+  const daysLeftToBreak = Math.max(0,4-gap);
+  let phase='none';
+  if(streak>0){
+    if(cracks===0) phase = dayInCycle===7 ? 'complete' : 'building';
+    else if(cracks===1) phase='grace1';
+    else phase='grace2';
+  }
+  // Scale the sprite up gradually across the 7-day cycle (0.55 -> 1.0) so growth is visible
+  // even though each stage is a single sprite, not 7 separate frames.
+  const growScale = streak>0 ? (0.55 + (dayInCycle/7)*0.45).toFixed(2) : 0.5;
+  return {streak,tier,cycleIndex,dayInCycle,cracks,gap,daysLeftToBreak,phase,growScale};
+}
+
+const DRAGON_PHASE_MSG={
+  none:      (s)=>`No dragon yet — log in today to hatch one`,
+  building:  (s)=>`🥚 Growing — Day ${s.dayInCycle}/7 of its ${s.tier.name} stage. Come back tomorrow!`,
+  complete:  (s)=>`✨ Fully grown ${s.tier.name}! Shield holding strong — ${s.streak} day streak`,
+  grace1:    (s)=>`⚠️ Grace period — 2 days left. Log in to repair the shield (your dragon is safe for now).`,
+  grace2:    (s)=>`🚨 Last chance! Your dragon vanishes tomorrow if you don't log in today.`,
+};
+const DRAGON_PHASE_CLASS={none:'',building:'',complete:'safe',grace1:'warn',grace2:'danger'};
+
+function buildDragonHTML(state){
+  const {tier,streak,cracks,phase,growScale}=state;
+  const img = streak>0 ? tier.img : DRAGON_EMPTY_IMG;
+  const shieldHtml = streak>0 ? `<div class="dragon-shield crack-${cracks}">🛡️</div>` : '';
+  const statusCls = DRAGON_PHASE_CLASS[phase];
+
+  return `
+    <div class="castle-header">
+      <div class="castle-tier-name">${streak>0?tier.name:'No'} Dragon</div>
+      <div class="castle-progress-tag">${streak>0?`Day ${state.dayInCycle}/7`:'Not hatched'}</div>
+      <div class="castle-streak-num">${streak}🔥</div>
+    </div>
+    <div class="dragon-stage">
+      ${shieldHtml}
+      <img class="dragon-sprite ${streak===0?'dormant':''}" src="${img}" alt="${tier.name} dragon" style="transform:scale(${growScale})"/>
+    </div>
+    <div class="castle-status ${statusCls}">${DRAGON_PHASE_MSG[phase](state)}</div>`;
+}
+
+// Small icon + "Day X/7" summary — used on Profile so it doesn't duplicate the full
+// Home widget. Tapping it jumps to the Dashboard where the full dragon widget lives.
+function buildDragonCompactHTML(state){
+  const {tier,dayInCycle,streak,phase}=state;
+  const dot = phase==='grace1' ? '🟡' : phase==='grace2' ? '🔴' : streak>0 ? '🟢' : '⚪';
+  const label = streak===0 ? 'No dragon yet' : `${tier.name} Dragon — Day ${dayInCycle}/7`;
+  const img = streak>0 ? tier.img : DRAGON_EMPTY_IMG;
+  return `<div class="castle-compact" onclick="showPage('dashboard')">
+    <img class="castle-compact-icon dragon-compact-icon" src="${img}" alt=""/>
+    <div class="castle-compact-info">
+      <div class="castle-compact-label">${label}</div>
+      <div class="castle-compact-sub">${dot} ${streak} day streak — tap to view</div>
+    </div>
+  </div>`;
+}
+
+function renderCastleWidget(elId,streak,lastDate,compact){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  const state=getDragonState(streak,lastDate);
+  el.innerHTML = compact ? buildDragonCompactHTML(state) : buildDragonHTML(state);
+
+  // Detect a break that just happened (client had a higher streak recorded last time we checked)
+  const key='dragon_last_streak_'+(user?.discord_id||'anon');
+  const prevSeen=Number(localStorage.getItem(key)||0);
+  if(prevSeen>=3 && streak===0){
+    toast('💔 Your dragon flew away! Log in daily to hatch a new one.','error');
+  }
+  localStorage.setItem(key,String(streak));
+}
 function getLevelInfo(pts){
   const l=LEVELS.find((lv,i)=>pts<lv.max||i===LEVELS.length-1)||LEVELS[0];
   const pct=l.max===Infinity?100:Math.min(100,((pts-l.min)/(l.max-l.min)*100));
@@ -243,16 +451,28 @@ function updateNavAvatar(){
   else{ ini.textContent=(user.username||'P')[0].toUpperCase(); ini.classList.remove('hidden'); img.classList.add('hidden'); }
 }
 
+const GREETING_POOL={
+  morning:  ['Good morning','Rise and grind','Morning, early bird!','Fresh start, huh?','Welcome again Doc!','How is life going?'],
+  afternoon:['Good afternoon','Feeling lucky?','Back for more?','Midday hustle time','Because you\'re special'],
+  evening:  ['Good evening','Look who\'s back!','Ready for round two?','Evening grind time','Almost fell for you, cutie pie'],
+  night:    ['Late night grinding?','Burning the midnight oil?','Still up?','Night owl mode: activated','Welcome again Doc!'],
+};
+function pickGreeting(hr){
+  const bucket = hr<5 ? 'night' : hr<12 ? 'morning' : hr<17 ? 'afternoon' : hr<21 ? 'evening' : 'night';
+  const pool=GREETING_POOL[bucket];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
 function renderDashHero(scores){
   const me=scores?.scores?.[user.discord_id];
   const myStreak=scores?.streaks?.[user.discord_id]?.streak||0;
+  const myLastDate=scores?.streaks?.[user.discord_id]?.last_date||'';
   const pts=me?.points||0;
   const acc=accuracyNum(me?.correct||0,me?.total||0);
   const lvl=getLevelInfo(pts);
 
   const hr=new Date(Date.now()+6*3600000).getHours();
-  const greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
-  document.getElementById('dash-greeting').textContent=greet;
+  document.getElementById('dash-greeting').textContent=pickGreeting(hr);
   document.getElementById('dash-username').textContent=user.username;
   document.getElementById('dash-level-badge').textContent=lvl.name;
   document.getElementById('dash-pts-hero').textContent=formatNum(pts);
@@ -261,6 +481,7 @@ function renderDashHero(scores){
   document.getElementById('level-fill').style.width=lvl.pct+'%';
   document.getElementById('level-current-label').textContent=formatNum(pts)+' pts';
   document.getElementById('level-next-label').textContent=lvl.nextName==='Max'?'Max Level':'Next: '+lvl.nextName+' ('+(lvl.ptsLeft)+' pts)';
+  renderCastleWidget('dash-castle-widget',myStreak,myLastDate);
 
   const owed=me?.catchup_owed||0;
   const sec=document.getElementById('catchup-section');
@@ -271,6 +492,8 @@ function renderDashHero(scores){
   } else sec.classList.add('hidden');
 }
 
+// Passive dashboard notification — no interactive code entry here anymore,
+// that lives on the Exams hub now. Just tells you what's going on and where to go.
 function renderQuizStatus(daily,history){
   const card=document.getElementById('quiz-status-card');
   const now=Date.now(), bdDate=getBDDate();
@@ -292,11 +515,51 @@ function renderQuizStatus(daily,history){
     card.innerHTML=`<div class="status-badge expired"><span class="dot"></span>Expired</div><div class="status-title">Today's Quiz Closed</div><div class="status-sub">Closed at 3:00 AM BD · Opens again at 5:00 AM BD</div>`;return;
   }
   if(isOpen){
-    if(Date.now()>=daily.expires_at){
-      card.innerHTML=`<div class="status-badge expired"><span class="dot"></span>Expired</div><div class="status-title">Today's Quiz Closed</div><div class="status-sub">Opens again at 5:00 AM Bangladesh time</div>`;return;
-    }
     const exp=new Date(daily.expires_at+6*3600000).toISOString().slice(11,16);
-    card.innerHTML=`<div class="status-badge live"><span class="dot"></span>Live Now</div><div class="status-title">Quiz is Open</div><div class="status-sub">Closes at ${escHtml(exp)} BD · Enter code from Discord</div><div class="code-entry"><input class="code-input" id="code-field" placeholder="ENTER CODE" maxlength="6" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')verifyCode()"/><button class="btn-primary" id="code-btn" onclick="verifyCode()">Go</button></div><div class="code-error" id="code-err"></div>`;
+    card.innerHTML=`<div class="status-badge live"><span class="dot"></span>Live Now</div><div class="status-title">🎯 Daily Quiz is live!</div><div class="status-sub">Closes at ${escHtml(exp)} BD</div><button class="btn-primary w-full mt-8" onclick="showPage('exams')">Go to Exams to Participate →</button>`;
+  }
+}
+
+// Full interactive card — lives on the Exams hub. Same states as above, but this
+// one actually has the code-entry flow that unlocks the daily quiz.
+function renderExamDailyCard(daily,history){
+  const card=document.getElementById('exam-daily-card');
+  if(!card)return;
+  const now=Date.now(), bdDate=getBDDate();
+  const todayDone=history.includes(bdDate);
+  if(!daily||!daily.date){
+    card.innerHTML=`<div class="eoc-icon">🗓️</div><div class="eoc-body"><div class="status-badge waiting"><span class="dot"></span>Waiting</div><div class="eoc-title">No Quiz Posted Yet</div><div class="eoc-sub">Check back after 5 AM Bangladesh time</div></div>`;return;
+  }
+  const isOpen=now>=daily.open_at&&now<daily.expires_at;
+  const isExpired=now>=daily.expires_at;
+  const notYet=now<daily.open_at;
+  if(todayDone){
+    card.innerHTML=`<div class="eoc-icon">✅</div><div class="eoc-body"><div class="status-badge done"><span class="dot"></span>Completed</div><div class="eoc-title">Done for Today</div><div class="eoc-sub">Well done. See you tomorrow.</div></div>`;return;
+  }
+  if(notYet){
+    const t=new Date(daily.open_at+6*3600000).toISOString().slice(11,16);
+    card.innerHTML=`<div class="eoc-icon">🗓️</div><div class="eoc-body"><div class="status-badge waiting"><span class="dot"></span>Scheduled</div><div class="eoc-title">Quiz Not Open Yet</div><div class="eoc-sub">Opens at ${escHtml(t)} BD</div></div>`;return;
+  }
+  if(isExpired){
+    card.innerHTML=`<div class="eoc-icon">⏰</div><div class="eoc-body"><div class="status-badge expired"><span class="dot"></span>Expired</div><div class="eoc-title">Today's Quiz Closed</div><div class="eoc-sub">Closed at 3:00 AM BD · Opens again at 5:00 AM BD</div></div>`;return;
+  }
+  if(isOpen){
+    const exp=new Date(daily.expires_at+6*3600000).toISOString().slice(11,16);
+    card.innerHTML=`<div class="eoc-icon">📅</div><div class="eoc-body"><div class="status-badge live"><span class="dot"></span>Live Now</div><div class="eoc-title">Daily Exam</div><div class="eoc-sub">Closes at ${escHtml(exp)} BD · Enter code from Discord</div><div class="code-entry"><input class="code-input" id="code-field" placeholder="ENTER CODE" maxlength="6" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')verifyCode()"/><button class="btn-primary" id="code-btn" onclick="verifyCode()">Go</button></div><div class="code-error" id="code-err"></div></div>`;
+  }
+}
+
+async function loadExamsHub(){
+  const card=document.getElementById('exam-daily-card');
+  card.innerHTML='<div class="center-spinner"><div class="spinner"></div></div>';
+  try{
+    const [daily,history]=await Promise.all([
+      fetchDaily().catch(()=>null),
+      fetchHistory(user.discord_id).catch(()=>[]),
+    ]);
+    renderExamDailyCard(daily,Array.isArray(history)?history:[]);
+  }catch{
+    card.innerHTML='<div class="empty-state">Failed to load. Check your connection.</div>';
   }
 }
 
@@ -345,7 +608,7 @@ async function loadQuiz(catchup){
   isCatchup=catchup;
   quizQuestions=catchup?(dailyData.catchup_questions||[]):(dailyData.questions||[]);
   if(!quizQuestions.length){ toast(catchup?'No catch-up questions available':'No questions available','error'); return; }
-  quizAnswers={}; quizIndex=0;
+  quizAnswers={}; quizIndex=0; quizTimeLeft={}; quizTimedOut={};
   showPage('quiz');
   renderQuestion();
 }
@@ -374,9 +637,10 @@ function renderQuestion(){
   });
   // Options
   const optList=document.getElementById('options-list'); optList.innerHTML='';
+  const answered=!!quizAnswers[q.id];
   ['A','B','C','D'].forEach(k=>{
     const btn=document.createElement('button');
-    btn.className='option-btn'+(quizAnswers[q.id]===k?' selected':'');
+    btn.className='option-btn'+(quizAnswers[q.id]===k?' selected':'')+(answered?' locked':'');
     btn.innerHTML=`<span class="option-key">${k}</span><span>${escHtml(q.options?.[k]??'')}</span>`;
     btn.addEventListener('click',()=>selectOption(k)); optList.appendChild(btn);
   });
@@ -391,8 +655,10 @@ function renderQuestion(){
 }
 
 function selectOption(key){
+  const q=quizQuestions[quizIndex];
+  if(quizAnswers[q.id])return; // already answered — locked in, ignore further taps
   clearTimer();
-  quizAnswers[quizQuestions[quizIndex].id]=key;
+  quizAnswers[q.id]=key;
   renderQuestion();
   if(quizIndex<quizQuestions.length-1) setTimeout(()=>{ quizIndex++; renderQuestion(); },300);
 }
@@ -415,10 +681,30 @@ async function submitQuiz(){
 }
 
 // ── TIMER ─────────────────────────────────────────────────────────────────────
+// Per-question, persisted in quizTimeLeft — navigating away and back (dot-nav,
+// prev/next) does NOT grant a fresh 25s. Once a question's timer hits 0 it stays
+// locked at 0; answering a question also freezes its clock (no point ticking down
+// on something already decided).
 const TIMER_SECONDS=25;
 function startTimer(){
-  clearTimer(); timerRemaining=TIMER_SECONDS; updateTimerUI(timerRemaining);
-  timerInterval=setInterval(()=>{ timerRemaining--; updateTimerUI(timerRemaining); if(timerRemaining<=0){ clearTimer(); autoAdvance(); } },1000);
+  clearTimer();
+  const q=quizQuestions[quizIndex];
+  if(!q)return;
+  if(quizTimeLeft[q.id]===undefined) quizTimeLeft[q.id]=TIMER_SECONDS;
+  const alreadyAnswered=!!quizAnswers[q.id];
+  const alreadyTimedOut=!!quizTimedOut[q.id];
+  updateTimerUI(quizTimeLeft[q.id]);
+  if(alreadyAnswered||alreadyTimedOut)return; // frozen — no countdown for a settled question
+  timerInterval=setInterval(()=>{
+    quizTimeLeft[q.id]--;
+    updateTimerUI(quizTimeLeft[q.id]);
+    if(quizTimeLeft[q.id]<=0){
+      quizTimeLeft[q.id]=0;
+      quizTimedOut[q.id]=true;
+      clearTimer();
+      autoAdvance();
+    }
+  },1000);
 }
 function clearTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
 function updateTimerUI(secs,prefix=''){
@@ -459,50 +745,277 @@ function renderResults(res){
       <div class="review-body"><div class="review-given-row"><span class="rev-label">Correct: </span><span class="rev-correct">${escHtml(q.answer)} — ${escHtml(q.options?.[q.answer]??'')}</span></div>${!isC?`<div class="review-given-row"><span class="rev-label">Your answer: </span><span class="rev-given-wrong">${escHtml(given)}</span></div>`:''} ${q.explanation?`<div class="review-explanation">${escHtml(q.explanation)}</div>`:''}</div>
     </div>`;
   }).join('');
+  lastExamExport={
+    type:isCatchup?'Catch-Up Session':'Daily Quiz',
+    date:getBDDate(), correct:res.correct, total:res.total, points:res.points,
+    questions:prev.map(q=>{ const r=resultMap[q.id]||{}; return{question:q.question,options:q.options,answer:q.answer,given:r.given||quizAnswers[q.id]||'—',isCorrect:!!r.correct,explanation:q.explanation||'',subject:q.subject||''}; }),
+  };
   quizQuestions=[]; quizAnswers={};
 }
 
+function exportLastExam(){
+  if(!lastExamExport){ toast('Nothing to export yet','error'); return; }
+  const e=lastExamExport;
+  const acc=e.total?Math.round(e.correct/e.total*100):0;
+  let out=`QUIZ CHAOS — EXAM EXPORT\n`;
+  out+=`${'='.repeat(40)}\n`;
+  out+=`Type: ${e.type}\nDate: ${e.date}\nScore: ${e.correct}/${e.total} (${acc}%)${e.points?` · +${e.points} pts`:''}\n`;
+  out+=`${'='.repeat(40)}\n\n`;
+  e.questions.forEach((q,i)=>{
+    out+=`Q${i+1}. [${q.isCorrect?'CORRECT':'WRONG'}]${q.subject?` (${q.subject})`:''}\n${q.question}\n`;
+    ['A','B','C','D'].forEach(k=>{ if(q.options?.[k]!==undefined) out+=`   ${k}) ${q.options[k]}\n`; });
+    out+=`Correct answer: ${q.answer}\n`;
+    if(!q.isCorrect) out+=`Your answer: ${q.given}\n`;
+    if(q.explanation) out+=`Explanation: ${q.explanation}\n`;
+    out+=`\n`;
+  });
+  const mistakes=e.questions.filter(q=>!q.isCorrect);
+  if(mistakes.length){
+    out+=`${'='.repeat(40)}\nMISTAKES SUMMARY (${mistakes.length})\n${'='.repeat(40)}\n\n`;
+    mistakes.forEach((q,i)=>{ out+=`${i+1}. ${q.question}\n   Correct: ${q.answer} — ${q.options?.[q.answer]??''}\n   You picked: ${q.given} — ${q.options?.[q.given]??''}\n\n`; });
+  }
+  const blob=new Blob([out],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`quiz-chaos-${e.date}-${e.type.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.txt`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('Exam exported','success');
+}
+
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
+// ── FAKE RANK ESTIMATION (cosmetic only — never changes real data) ─────────────
+// Deterministic pseudo-random fraction in [0,1) from a string seed, so results
+// are stable for everyone on the same day instead of jumping around per reload.
+function seededFrac(seedStr){
+  let h=0;
+  for(let i=0;i<seedStr.length;i++){ h=(h*31+seedStr.charCodeAt(i))>>>0; }
+  h^=h<<13; h>>>=0; h^=h>>>17; h^=h<<5; h>>>=0;
+  return h/4294967295;
+}
+// Stable "active players today" figure — same number the login counter is based on
+function getDailyPoolSize(){
+  return Math.floor(670 + seededFrac('pool-'+getBDDate())*(1400-670));
+}
+// Estimates where a user outside the real top 25 would "plausibly" sit, given how
+// far their score is from the #25 cutoff. Small gap -> just past 25. Big gap or a
+// fresh account -> deep in the pool, capped short of dead-last so it stays believable.
+function estimateFakeRank(userScore, top25FloorScore, userId){
+  const pool=getDailyPoolSize();
+  const capRank=Math.round(pool*0.75);
+  const gap=Math.max(0, top25FloorScore-userScore);
+  const mid=300, steep=60; // tuned so ~100pt gap -> low 50s, ~450pt+ gap -> deep pool
+  const t=1/(1+Math.exp((mid-gap)/steep));
+  let rank=26+Math.round((capRank-26)*t);
+  const jitter=Math.round((seededFrac('jitter-'+getBDDate()+'-'+userId)-0.5)*20); // ±10, stable per user/day
+  return Math.min(pool-10, Math.max(27, rank+jitter));
+}
+
+function toggleLbMode(mode){
+  if(lbMode===mode)return;
+  lbMode=mode;
+  document.querySelectorAll('.lb-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  renderLeaderboard();
+}
+
 async function loadLeaderboard(){
   const list=document.getElementById('lb-list');
   list.innerHTML='<div class="center-spinner"><div class="spinner"></div></div>';
   try{
-    const data=await fetchScores();
-    const sorted=Object.keys(data.scores||{}).map(id=>({id,...data.scores[id],streak:data.streaks?.[id]?.streak||0})).sort((a,b)=>(b.points||0)-(a.points||0));
-    if(!sorted.length){ list.innerHTML='<div class="empty-state">No players yet</div>'; return; }
-    const medals=['🥇','🥈','🥉'];
-    list.innerHTML=sorted.map((p,i)=>{
-      const isMe=user&&p.id===user.discord_id;
-      const acc=accuracy(p.correct||0,p.total||0);
-      return`<div class="lb-item${isMe?' me':''}"> ${i<3?`<div class="rank-medal">${medals[i]}</div>`:`<div class="rank-num">${i+1}</div>`}<div class="lb-info"><div class="lb-username">${escHtml(p.username)}${isMe?' <span style="color:var(--red-bright);font-size:10px;font-weight:700;">you</span>':''}</div><div class="lb-meta">${acc} · ${p.streak} day streak</div></div><div class="lb-right"><div class="lb-pts-big">${formatNum(p.points)}</div><div class="lb-streak">${formatNum(p.correct||0)} correct</div></div></div>`;
-    }).join('');
+    scoresData=await fetchScores();
+    renderLeaderboard();
   }catch{ list.innerHTML='<div class="empty-state">Failed to load</div>'; }
+}
+
+function renderLeaderboard(){
+  const list=document.getElementById('lb-list');
+  if(!scoresData){ list.innerHTML='<div class="empty-state">Failed to load</div>'; return; }
+  const data=scoresData;
+  const weeklyPts=data.weekly?.points||{};
+  const isWeekly=lbMode==='weekly';
+
+  let sorted=Object.keys(data.scores||{}).map(id=>({
+    id,...data.scores[id],
+    streak:data.streaks?.[id]?.streak||0,
+    weeklyPts:weeklyPts[id]||0,
+  }));
+  sorted.sort((a,b)=> isWeekly ? (b.weeklyPts-a.weeklyPts) : ((b.points||0)-(a.points||0)) );
+  if(isWeekly) sorted=sorted.filter(p=>p.weeklyPts>0);
+
+  // Work out the real user's standing against the FULL list before we cap the display to 25
+  let yourRankHtml='';
+  if(user){
+    const myIndex=sorted.findIndex(p=>p.id===user.discord_id);
+    const myVal=isWeekly?(weeklyPts[user.discord_id]||0):(scoresData?.scores?.[user.discord_id]?.points||0);
+    if(myIndex>=25 && sorted.length>=25){
+      const floorScore=isWeekly?sorted[24].weeklyPts:sorted[24].points;
+      const gap=Math.max(0,floorScore-myVal);
+      const fakeRank=estimateFakeRank(myVal,floorScore,user.discord_id);
+      yourRankHtml=`<div class="lb-your-rank">
+        <div class="lb-your-rank-num">#${formatNum(fakeRank)}</div>
+        <div class="lb-your-rank-info">
+          <div class="lb-your-rank-label">Your Rank</div>
+          <div class="lb-your-rank-gap">${gap>0?`${formatNum(gap)} pts from Top 25`:'Right on the edge of Top 25'}</div>
+        </div>
+      </div>`;
+    } else if(myIndex<0 && sorted.length>=25){
+      // User has no entry at all yet (e.g. hasn't played this week) — still show them a plausible spot
+      const floorScore=isWeekly?sorted[24].weeklyPts:sorted[24].points;
+      const fakeRank=estimateFakeRank(0,floorScore,user.discord_id);
+      yourRankHtml=`<div class="lb-your-rank">
+        <div class="lb-your-rank-num">#${formatNum(fakeRank)}</div>
+        <div class="lb-your-rank-info">
+          <div class="lb-your-rank-label">Your Rank</div>
+          <div class="lb-your-rank-gap">${isWeekly?'Play today to start climbing':'Complete a quiz to get ranked'}</div>
+        </div>
+      </div>`;
+    }
+  }
+
+  sorted=sorted.slice(0,25);
+
+  if(!sorted.length){ list.innerHTML=`<div class="empty-state">${isWeekly?'No points scored yet this week':'No players yet'}</div>`+yourRankHtml; return; }
+
+  const medals=['🥇','🥈','🥉'];
+  const podium=sorted.slice(0,3);
+  const rest=sorted.slice(3);
+
+  let html='';
+  if(podium.length){
+    // Reorder visually as 2nd-1st-3rd for a classic podium look
+    const order=[podium[1],podium[0],podium[2]].filter(Boolean);
+    html+=`<div class="lb-podium">`+order.map(p=>{
+      if(!p)return'';
+      const rank=sorted.indexOf(p)+1;
+      const isMe=user&&p.id===user.discord_id;
+      const tier=getActivityTier(p.days_completed||0);
+      const val=isWeekly?p.weeklyPts:p.points;
+      return`<div class="lb-podium-slot rank-${rank}${isMe?' me':''}">
+        <div class="lb-podium-medal">${medals[rank-1]}</div>
+        <div class="lb-podium-name">${escHtml(p.username)}</div>
+        <div class="lb-podium-pts">${formatNum(val)}</div>
+        <div class="lb-podium-stand">${rank}</div>
+      </div>`;
+    }).join('')+`</div>`;
+  }
+
+  html+=rest.map((p,i)=>{
+    const rank=i+4;
+    const isMe=user&&p.id===user.discord_id;
+    const acc=accuracy(p.correct||0,p.total||0);
+    const tier=getActivityTier(p.days_completed||0);
+    const val=isWeekly?p.weeklyPts:p.points;
+    const trophyBadge=p.weekly_trophies?`<span class="lb-trophy" title="${p.weekly_trophies}x Weekly Champion">🏆${p.weekly_trophies>1?'×'+p.weekly_trophies:''}</span>`:'';
+    return`<div class="lb-item${isMe?' me':''}">
+      <div class="rank-num">${rank}</div>
+      <div class="lb-info">
+        <div class="lb-username">${escHtml(p.username)}${trophyBadge}<span class="lb-tier-icon" title="${tier.name} tier — ${p.days_completed||0} days completed">${tier.icon}</span>${isMe?' <span style="color:var(--red-bright);font-size:10px;font-weight:700;">you</span>':''}</div>
+        <div class="lb-meta">${acc} · ${p.streak} day streak</div>
+      </div>
+      <div class="lb-right">
+        <div class="lb-pts-big">${formatNum(val)}</div>
+        <div class="lb-streak">${isWeekly?'this week':formatNum(p.correct||0)+' correct'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.innerHTML=html+yourRankHtml;
 }
 
 // ── PROFILE ───────────────────────────────────────────────────────────────────
 async function loadProfile(){
   if(!user)return;
-  const av=avatarUrl(user.discord_id,user.avatar);
-  const img=document.getElementById('prof-avatar'), fall=document.getElementById('prof-avatar-fallback');
+
+  // Avatar
+  const av   = avatarUrl(user.discord_id, user.avatar);
+  const img  = document.getElementById('prof-avatar');
+  const fall = document.getElementById('prof-avatar-fallback');
   if(av){ img.src=av; img.classList.remove('hidden'); fall.classList.add('hidden'); }
   else{ fall.textContent=(user.username||'P')[0].toUpperCase(); fall.classList.remove('hidden'); img.classList.add('hidden'); }
-  document.getElementById('prof-name').textContent=user.username;
-  document.getElementById('prof-id').textContent='#'+user.discord_id;
+
+  document.getElementById('prof-name').textContent = user.username;
+  document.getElementById('prof-id').textContent   = '#' + user.discord_id;
+
   try{
-    const [scores,history]=await Promise.all([fetchScores(),fetchHistory(user.discord_id).catch(()=>[])]);
-    const me=scores?.scores?.[user.discord_id];
-    const myStreak=scores?.streaks?.[user.discord_id]?.streak||0;
-    const sorted=Object.keys(scores?.scores||{}).map(id=>({id,pts:scores.scores[id]?.points||0})).sort((a,b)=>b.pts-a.pts);
-    const rank=sorted.findIndex(p=>p.id===user.discord_id)+1;
-    document.getElementById('prof-rank').textContent=rank>0?`Rank #${rank}`:'Unranked';
-    document.getElementById('prof-pts').textContent=formatNum(me?.points||0);
-    document.getElementById('prof-streak').textContent=myStreak;
-    document.getElementById('prof-correct').textContent=formatNum(me?.correct||0);
-    document.getElementById('prof-acc').textContent=accuracy(me?.correct||0,me?.total||0);
-    renderCalendar(Array.isArray(history)?history:[]);
-    renderReportCard(me,scores);
-    renderMissedQuestions(me?.wrong_questions||[]);
-  }catch{ toast('Failed to load profile','error'); renderCalendar([]); renderReportCard(null,null); renderMissedQuestions([]); }
+    const [scores, history] = await Promise.all([
+      fetchScores(),
+      fetchHistory(user.discord_id).catch(()=>[]),
+    ]);
+
+    const me       = scores?.scores?.[user.discord_id];
+    const myStreak = scores?.streaks?.[user.discord_id]?.streak || 0;
+    const myLastDate = scores?.streaks?.[user.discord_id]?.last_date || '';
+    const pts      = me?.points || 0;
+    const correct  = me?.correct || 0;
+    const total    = me?.total   || 0;
+
+    // Rank
+    const sorted = Object.keys(scores?.scores||{})
+      .map(id=>({id, pts:scores.scores[id]?.points||0}))
+      .sort((a,b)=>b.pts-a.pts);
+    const realIndex = sorted.findIndex(p=>p.id===user.discord_id);
+    let rank = realIndex+1;
+    if((realIndex>=25 || realIndex<0) && sorted.length>=25){
+      const floorScore=sorted[24].pts;
+      rank = estimateFakeRank(pts, floorScore, user.discord_id);
+    }
+
+    // Level
+    const lvl = getLevelInfo(pts);
+
+    // Identity card
+    document.getElementById('prof-rank').textContent        = rank>0 ? `#${rank}` : 'Unranked';
+    document.getElementById('prof-rank-callout').textContent= rank>0 ? `#${rank}` : '—';
+    document.getElementById('prof-level-badge').textContent = lvl.name;
+    renderCastleWidget('prof-castle-widget',myStreak,myLastDate,true);
+
+    // Permanent activity tier — based on total days/quizzes completed
+    const tier = getActivityTier(me?.days_completed || 0);
+    const tierEl = document.getElementById('prof-tier-badge');
+    tierEl.textContent = `${tier.icon} ${tier.name}`;
+    tierEl.classList.remove('hidden');
+
+    // Weekly champion trophy count (permanent record of past top-5 weeks)
+    const trophyEl = document.getElementById('prof-trophy-badge');
+    if(me?.weekly_trophies){
+      trophyEl.textContent = `🏆 ×${me.weekly_trophies}`;
+      trophyEl.classList.remove('hidden');
+    } else {
+      trophyEl.classList.add('hidden');
+    }
+
+    // Level arc on avatar ring (stroke-dasharray 226 = 2π×36)
+    const arc    = document.getElementById('prof-level-arc');
+    const arcPct = lvl.pct / 100;
+    if(arc) {
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        arc.style.strokeDashoffset = 226 * (1 - arcPct);
+      }));
+    }
+
+    // Level bar
+    document.getElementById('prof-level-fill').style.width  = lvl.pct + '%';
+    document.getElementById('prof-level-pts').textContent   = formatNum(pts) + ' pts';
+    document.getElementById('prof-level-next').textContent  =
+      lvl.nextName === 'Max' ? 'Max Level' : 'Next: ' + lvl.nextName + ' (' + lvl.ptsLeft + ' pts)';
+
+    // Stat row
+    document.getElementById('prof-pts').textContent     = formatNum(pts);
+    document.getElementById('prof-streak').textContent  = myStreak;
+    document.getElementById('prof-correct').textContent = formatNum(correct);
+    document.getElementById('prof-acc').textContent     = accuracy(correct, total);
+
+    // Calendar, report card, missed
+    renderCalendar(Array.isArray(history) ? history : []);
+    renderReportCard(me, scores);
+    renderMissedQuestions(me?.wrong_questions || []);
+
+  } catch(e) {
+    toast('Failed to load profile', 'error');
+    renderCalendar([]);
+    renderReportCard(null, null);
+    renderMissedQuestions([]);
+  }
 }
 
 function renderCalendar(doneDates){
@@ -513,6 +1026,14 @@ function renderCalendar(doneDates){
     let cls='cal-day'; if(doneDates.includes(d))cls+=' done'; if(d===today)cls+=' today';
     return`<div class="${cls}" title="${d}"></div>`;
   }).join('');
+
+  const hint=document.getElementById('cal-sparse-hint');
+  if(doneDates.length<7){
+    hint.textContent=`${doneDates.length}/30 days logged so far — this fills in as you keep your streak going!`;
+    hint.classList.remove('hidden');
+  } else {
+    hint.classList.add('hidden');
+  }
 }
 
 function subjectGrade(acc){ if(acc>=90)return'S'; if(acc>=80)return'A+'; if(acc>=70)return'A'; if(acc>=60)return'B'; if(acc>=50)return'C'; return'D'; }
@@ -525,6 +1046,7 @@ function renderReportCard(me,scores){
   const og=subjectGrade(totalAcc);
   const sorted=keys.map(sub=>{ const s=subjects[sub]; const acc=accuracyNum(s.correct||0,s.total||0); return{sub,correct:s.correct||0,total:s.total||0,acc,g:subjectGrade(acc)}; }).sort((a,b)=>b.acc-a.acc);
   wrap.innerHTML=`<div class="rc-summary"><div class="rc-overall-grade">${og}</div><div class="rc-summary-info"><div class="rc-summary-title">Overall Performance</div><div class="rc-summary-sub">${me?.correct||0} / ${me?.total||0} correct · ${totalAcc}%</div></div><div class="rc-total-pts">${formatNum(me?.points||0)}<span>points</span></div></div>`
+    +`<div class="rc-legend">${['S','A+','A','B','C','D'].map(g=>`<span class="rc-legend-item"><span class="rc-legend-dot ${gradeClass(g)}"></span>${g}</span>`).join('')}</div>`
     +sorted.map((s,i)=>{ const gc=gradeClass(s.g); return`<div class="rc-subject-row fade-up" style="animation-delay:${(i*0.05).toFixed(2)}s"><div class="rc-subject-header"><div class="rc-subject-name">${escHtml(s.sub)}</div><div class="rc-grade-pill ${gc}">${escHtml(s.g)}</div></div><div class="rc-stats-row"><div class="rc-correct-total">${s.correct} / ${s.total}</div><div class="rc-bar-wrap"><div class="rc-bar ${gc}" style="width:0%" data-width="${s.acc}%"></div></div><div class="rc-acc-label">${s.acc}%</div></div></div>`; }).join('');
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ wrap.querySelectorAll('.rc-bar[data-width]').forEach(b=>b.style.width=b.dataset.width); }));
 }
@@ -559,18 +1081,6 @@ function saveExamHistory(session){
   if(h.length>50)h.length=50;
   localStorage.setItem('qc_history',JSON.stringify(h));
 }
-function loadHistoryPage(){
-  const el=document.getElementById('history-full-list');
-  const sessions=getExamHistory();
-  if(!sessions.length){ el.innerHTML='<div class="empty-state" style="padding:40px;">No sessions recorded yet</div>'; return; }
-  el.innerHTML=sessions.map(s=>{
-    const acc=s.total?Math.round(s.correct/s.total*100):0;
-    const g=s.grade||grade(acc);
-    const typeLabel=s.type==='daily'?'Daily Quiz':s.type==='catchup'?'Catch-Up':'Practice'+(s.subject&&s.subject!=='All'?' — '+s.subject:'');
-    return`<div class="history-item"><div class="hi-grade" style="color:${gradeColor(g)}">${g}</div><div class="hi-info"><div class="hi-title">${escHtml(typeLabel)}</div><div class="hi-meta">${escHtml(s.date)} · ${s.correct}/${s.total} correct</div></div><div class="hi-right"><div class="hi-pts">+${formatNum(s.points)}</div><div class="hi-acc">${acc}%</div></div></div>`;
-  }).join('');
-}
-
 // ── PRACTICE ──────────────────────────────────────────────────────────────────
 const PRACTICE_LIMIT=50;
 function getPracticeData(){ try{ const d=JSON.parse(localStorage.getItem('qc_practice')||'{}'); return d.date===getBDDate()?d:{date:getBDDate(),used:0,asked:[]}; }catch{ return{date:getBDDate(),used:0,asked:[]}; } }
@@ -620,7 +1130,7 @@ function startPractice(){
   let fresh=pool.filter(q=>!askedNorm.has(normalize(q.question)));
   if(fresh.length<count){ fresh=pool; d.asked=[]; savePracticeData(d); }
   practiceQuestions=randomSample(fresh,count).map((q,i)=>({...q,id:'pq'+(i+1)}));
-  practiceAnswers={}; practiceIndex=0;
+  practiceAnswers={}; practiceIndex=0; practiceTimeLeft={}; practiceTimedOut={};
   document.getElementById('practice-setup').classList.add('hidden');
   document.getElementById('practice-result').classList.add('hidden');
   document.getElementById('practice-quiz').classList.remove('hidden');
@@ -650,9 +1160,10 @@ function renderPracticeQuestion(){
     const btn=document.createElement('button');
     let cls='option-btn'; if(practiceAnswers[q.id]===k)cls+=' selected';
     if(isRev){ if(k===q.answer)cls+=' correct'; else if(practiceAnswers[q.id]===k)cls+=' wrong'; }
+    else if(practiceAnswers[q.id]) cls+=' locked';
     btn.className=cls;
     btn.innerHTML=`<span class="option-key">${k}</span><span>${escHtml(q.options?.[k]??'')}</span>`;
-    if(!isRev) btn.addEventListener('click',()=>selectPracticeOption(k)); else btn.disabled=true;
+    if(!isRev&&!practiceAnswers[q.id]) btn.addEventListener('click',()=>selectPracticeOption(k)); else btn.disabled=true;
     pqOpts.appendChild(btn);
   });
   if(isRev) showPqFeedback(q,practiceAnswers[q.id]);
@@ -672,15 +1183,34 @@ function showPqFeedback(q,given){
 }
 
 function selectPracticeOption(key){
-  const q=practiceQuestions[practiceIndex]; practiceAnswers[q.id]=key; clearPracticeTimer();
+  const q=practiceQuestions[practiceIndex];
+  if(practiceAnswers[q.id])return; // already answered — locked in
+  practiceAnswers[q.id]=key; clearPracticeTimer();
   if(practiceConfig.mode==='immediately'){ renderPracticeQuestion(); if(practiceIndex<practiceQuestions.length-1) setTimeout(()=>{ practiceIndex++; renderPracticeQuestion(); },2000); }
   else{ renderPracticeQuestion(); if(practiceIndex<practiceQuestions.length-1) setTimeout(()=>{ practiceIndex++; renderPracticeQuestion(); },300); }
 }
 function practiceNav(dir){ clearPracticeTimer(); practiceIndex=Math.max(0,Math.min(practiceQuestions.length-1,practiceIndex+dir)); renderPracticeQuestion(); }
 
 function startPracticeTimer(){
-  clearPracticeTimer(); practiceTimerSecs=practiceConfig.timer; updateTimerUI(practiceTimerSecs,'pq-');
-  practiceTimerInt=setInterval(()=>{ practiceTimerSecs--; updateTimerUI(practiceTimerSecs,'pq-'); if(practiceTimerSecs<=0){ clearPracticeTimer(); if(practiceIndex<practiceQuestions.length-1){ practiceIndex++; renderPracticeQuestion(); } else{ renderPracticeQuestion(); toast('Time up!','error'); } } },1000);
+  clearPracticeTimer();
+  const q=practiceQuestions[practiceIndex];
+  if(!q)return;
+  if(practiceTimeLeft[q.id]===undefined) practiceTimeLeft[q.id]=practiceConfig.timer;
+  const alreadyAnswered=!!practiceAnswers[q.id];
+  const alreadyTimedOut=!!practiceTimedOut[q.id];
+  updateTimerUI(practiceTimeLeft[q.id],'pq-');
+  if(alreadyAnswered||alreadyTimedOut)return;
+  practiceTimerInt=setInterval(()=>{
+    practiceTimeLeft[q.id]--;
+    updateTimerUI(practiceTimeLeft[q.id],'pq-');
+    if(practiceTimeLeft[q.id]<=0){
+      practiceTimeLeft[q.id]=0;
+      practiceTimedOut[q.id]=true;
+      clearPracticeTimer();
+      if(practiceIndex<practiceQuestions.length-1){ practiceIndex++; renderPracticeQuestion(); }
+      else{ renderPracticeQuestion(); toast('Time up!','error'); }
+    }
+  },1000);
 }
 function clearPracticeTimer(){ if(practiceTimerInt){ clearInterval(practiceTimerInt); practiceTimerInt=null; } }
 
@@ -703,6 +1233,11 @@ function submitPractice(){
   document.getElementById('practice-quiz').classList.add('hidden');
   document.getElementById('practice-result').classList.remove('hidden');
   updatePracticeLimitUI();
+  lastExamExport={
+    type:'Practice Session ('+(practiceConfig.subject==='all'?'All Subjects':practiceConfig.subject)+')',
+    date:getBDDate(), correct, total, points:0,
+    questions:results.map(q=>({question:q.question,options:q.options,answer:q.answer,given:q.given||'—',isCorrect:q.isCorrect,explanation:q.explanation||'',subject:q.subject||''})),
+  };
 }
 function resetPractice(){ practiceQuestions=[]; practiceAnswers={}; clearPracticeTimer(); document.getElementById('practice-result').classList.add('hidden'); document.getElementById('practice-setup').classList.remove('hidden'); updatePracticeLimitUI(); }
 
@@ -864,13 +1399,40 @@ function saveChapterNote(){
   toast('Note saved','success');
 }
 
-// Smart reminders
+// Smart reminders — each tag has a pool of playful phrasings, picked at random
 const TAG_CONFIG={
-  '@goal:':{type:'goal',msg:(name,text)=>`Hey ${name}! Forgot about your goal — "${text}"?`},
-  '@reminder:':{type:'reminder',msg:(name,text)=>`Hey ${name}! You set a reminder — "${text}"`},
-  '@finish:':{type:'finish',msg:(name,text)=>`Hey ${name}! Did you finish — "${text}"?`},
-  '@left:':{type:'left',msg:(name,text)=>`Hey ${name}! You left off at — "${text}"`},
+  '@goal:':{type:'goal',msgs:[
+    (name,text)=>`Don't fall asleep, ${name} — you promised you'd finish "${text}"!`,
+    (name,text)=>`${name}, your goal is watching you sleep on it: "${text}" 👀`,
+    (name,text)=>`Plot twist: "${text}" isn't going to finish itself.`,
+    (name,text)=>`Achievement locked until you do this: "${text}"`,
+    (name,text)=>`Your future self called — still waiting on "${text}"`,
+    (name,text)=>`Bro really set "${text}" as a goal and vanished 💀`,
+  ]},
+  '@reminder:':{type:'reminder',msgs:[
+    (name,text)=>`Ding ding! ${name}, you set a reminder: "${text}"`,
+    (name,text)=>`This is your friendly (annoying) nudge: "${text}"`,
+    (name,text)=>`${name}, remember this? "${text}"`,
+    (name,text)=>`Tick tock. You wanted a reminder for: "${text}"`,
+    (name,text)=>`Past-you left this for present-you: "${text}"`,
+  ]},
+  '@finish:':{type:'finish',msgs:[
+    (name,text)=>`Unfinished business, ${name}: "${text}" — still hanging.`,
+    (name,text)=>`Cliffhanger alert: "${text}" needs an ending.`,
+    (name,text)=>`${name}, did "${text}" finish itself? (No.)`,
+    (name,text)=>`"${text}" is still sitting there. Judging you.`,
+  ]},
+  '@left:':{type:'left',msgs:[
+    (name,text)=>`Right where you left it, ${name}: "${text}"`,
+    (name,text)=>`Picking up the trail: "${text}"`,
+    (name,text)=>`Your bookmark says: "${text}"`,
+    (name,text)=>`Continue where you dropped off — "${text}"`,
+  ]},
 };
+function pickReminderMsg(config,name,text){
+  const pool=config.msgs;
+  return pool[Math.floor(Math.random()*pool.length)](name,text);
+}
 
 function getAllTaggedNotes(){
   const data=getSyllabusData(), tagged=[];
@@ -895,15 +1457,17 @@ function getAllTaggedNotes(){
 let reminderTimeout=null;
 function scheduleReminderCheck(){
   if(reminderTimeout)clearTimeout(reminderTimeout);
-  const delay=Math.floor(Math.random()*(3600000-1800000))+1800000; // 30-60 min
+  const delay=Math.floor(Math.random()*(240000-90000))+90000; // 1.5-4 min — most sessions are short, so keep this snappy
   reminderTimeout=setTimeout(showRandomReminder,delay);
 }
 function showRandomReminder(){
+  // Skip the floating popup while the dedicated syllabus banner already owns this page
+  if(document.getElementById('pg-syllabus')?.classList.contains('active')){ scheduleReminderCheck(); return; }
   const notes=getAllTaggedNotes();
   if(!notes.length){ scheduleReminderCheck(); return; }
   const pick=notes[Math.floor(Math.random()*notes.length)];
   const name=user?.username||'Student';
-  const msg=pick.config.msg(name,pick.text);
+  const msg=pickReminderMsg(pick.config,name,pick.text);
   document.getElementById('reminder-text').textContent=msg;
   const tagEl=document.getElementById('reminder-tag');
   tagEl.textContent=pick.config.type.charAt(0).toUpperCase()+pick.config.type.slice(1);
@@ -912,6 +1476,29 @@ function showRandomReminder(){
   scheduleReminderCheck();
 }
 function dismissReminder(){ document.getElementById('reminder-popup').classList.add('hidden'); }
+
+// Dedicated inline banner shown shortly after opening the Syllabus Tracker itself —
+// this is the page where tagged notes actually live, so surface them here fast.
+let sylReminderTimeout=null;
+function scheduleSylReminderBanner(){
+  if(sylReminderTimeout)clearTimeout(sylReminderTimeout);
+  sylReminderTimeout=setTimeout(showSylReminderBanner,3500);
+}
+function showSylReminderBanner(){
+  const banner=document.getElementById('syl-reminder-banner');
+  if(!banner||!document.getElementById('pg-syllabus')?.classList.contains('active'))return;
+  const notes=getAllTaggedNotes();
+  if(!notes.length)return;
+  const pick=notes[Math.floor(Math.random()*notes.length)];
+  const name=user?.username||'Student';
+  const msg=pickReminderMsg(pick.config,name,pick.text);
+  document.getElementById('syl-reminder-text').textContent=msg;
+  const tagEl=document.getElementById('syl-reminder-tag');
+  tagEl.textContent=pick.config.type.charAt(0).toUpperCase()+pick.config.type.slice(1);
+  tagEl.className='reminder-tag '+pick.config.type;
+  banner.classList.remove('hidden');
+}
+function dismissSylReminder(){ document.getElementById('syl-reminder-banner').classList.add('hidden'); }
 
 // ── VOCABULARY ────────────────────────────────────────────────────────────────
 const VOCAB_BANK=[
@@ -1205,115 +1792,350 @@ function initParticles(){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
+let adminToken = null;
+let adminJsLoaded = false;
+
 function initAdminPage(){
-  if(adminUnlocked){ document.getElementById('admin-lock').classList.add('hidden'); document.getElementById('admin-dash').classList.remove('hidden'); loadAdminData(); }
-  else{ document.getElementById('admin-lock').classList.remove('hidden'); document.getElementById('admin-dash').classList.add('hidden'); document.getElementById('admin-pw').value=''; document.getElementById('admin-pw-err').textContent=''; }
+  if(adminToken){
+    document.getElementById('admin-lock').classList.add('hidden');
+    document.getElementById('admin-dash').classList.remove('hidden');
+    ensureAdminAssetsLoaded().then(()=>loadAdminData());
+  } else {
+    document.getElementById('admin-lock').classList.remove('hidden');
+    document.getElementById('admin-dash').classList.add('hidden');
+    document.getElementById('admin-pw').value='';
+    document.getElementById('admin-pw-err').textContent='';
+  }
 }
-function adminLogin(){
+
+async function adminLogin(){
   const pw=document.getElementById('admin-pw').value;
   const errEl=document.getElementById('admin-pw-err');
-  if(pw!=='J111005376a'){ errEl.textContent='Wrong password.'; document.getElementById('admin-pw').value=''; return; }
-  adminUnlocked=true; errEl.textContent='';
-  document.getElementById('admin-lock').classList.add('hidden');
-  document.getElementById('admin-dash').classList.remove('hidden');
-  loadAdminData();
-}
-
-async function loadAdminData(){
-  try{
-    const [scores,daily]=await Promise.all([fetchScores(),fetchDaily().catch(()=>null)]);
-    const allScores=scores?.scores||{}, streaks=scores?.streaks||{};
-    const realIds=Object.keys(allScores).filter(id=>!id.startsWith('700000000000000'));
-    const bdDate=getBDDate();
-    const histMap={};
-    await Promise.all(realIds.map(async id=>{ try{ histMap[id]=await fetchHistory(id); }catch{ histMap[id]=[]; } }));
-    const donePlayers=realIds.filter(id=>histMap[id]?.includes(bdDate));
-    const missedPlayers=realIds.filter(id=>!histMap[id]?.includes(bdDate));
-    const catchupPlayers=realIds.filter(id=>(allScores[id]?.catchup_owed||0)>0);
-    document.getElementById('adm-total-players').textContent=realIds.length;
-    document.getElementById('adm-today-done').textContent=donePlayers.length;
-    document.getElementById('adm-catchup-pending').textContent=catchupPlayers.length;
-    document.getElementById('adm-sessions').textContent=formatNum(scores?.session_count||0);
-    // Quiz info
-    const qc=document.getElementById('adm-quiz-info');
-    if(!daily||!daily.date){ qc.innerHTML='<div class="empty-state" style="padding:20px;">No quiz posted yet</div>'; }
-    else{
-      const now=Date.now(), openBD=new Date(daily.open_at+6*3600000).toISOString().slice(11,16), expBD=new Date(daily.expires_at+6*3600000).toISOString().slice(11,16);
-      const status=now>=daily.open_at&&now<daily.expires_at?'Live':now>=daily.expires_at?'Expired':'Scheduled';
-      qc.innerHTML=`<div class="adm-quiz-row"><span class="adm-quiz-label">Date</span><span class="adm-quiz-val">${escHtml(daily.date)}</span></div><div class="adm-quiz-row"><span class="adm-quiz-label">Code</span><span class="adm-quiz-val" style="color:var(--red-main);letter-spacing:3px;">${escHtml(daily.code||'—')}</span></div><div class="adm-quiz-row"><span class="adm-quiz-label">Status</span><span class="adm-quiz-val">${status}</span></div><div class="adm-quiz-row"><span class="adm-quiz-label">Window</span><span class="adm-quiz-val">${openBD} → ${expBD} BD</span></div><div class="adm-quiz-row"><span class="adm-quiz-label">Completion</span><span class="adm-quiz-val">${donePlayers.length} / ${realIds.length}</span></div>`;
-    }
-    renderAdminList('adm-done-list',donePlayers,allScores,streaks,'done');
-    renderAdminList('adm-missed-list',missedPlayers,allScores,streaks,'missed');
-    // Catchup list
-    const cuEl=document.getElementById('adm-catchup-list');
-    const cuSorted=catchupPlayers.sort((a,b)=>(allScores[b]?.catchup_owed||0)-(allScores[a]?.catchup_owed||0));
-    cuEl.innerHTML=cuSorted.length?cuSorted.map((id,i)=>{ const s=allScores[id]; return`<div class="adm-row"><div class="adm-rank">${i+1}</div><div class="adm-name">${escHtml(s.username)}</div><div class="adm-badge catchup">${s.catchup_owed} owed</div><div class="adm-meta">${formatNum(s.points)}pts</div></div>`; }).join(''):'<div class="empty-state" style="padding:20px;">All caught up</div>';
-    // Fake list
-    renderFakePlayerList(allScores,streaks);
-    // All players
-    const allSorted=realIds.map(id=>({id,...allScores[id],streak:streaks[id]?.streak||0})).sort((a,b)=>(b.points||0)-(a.points||0));
-    document.getElementById('adm-all-players').innerHTML=allSorted.map((p,i)=>{ const doneT=histMap[p.id]?.includes(bdDate); const acc=p.total?Math.round(p.correct/p.total*100):0; return`<div class="adm-row"><div class="adm-rank">#${i+1}</div><div class="adm-name">${escHtml(p.username)}<div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">${p.id}</div></div><div style="text-align:right;"><div class="adm-badge ${doneT?'done':'missed'}" style="margin-bottom:3px;">${doneT?'Done':'Missed'}</div><div class="adm-meta">${formatNum(p.points)}pts · ${acc}%${p.catchup_owed?` · <span style="color:var(--yellow);">${p.catchup_owed} owed</span>`:''}</div></div></div>`; }).join('');
-  }catch(e){ toast('Failed to load admin data: '+e.message,'error'); }
-}
-
-function renderAdminList(elId,ids,allScores,streaks,type){
-  const el=document.getElementById(elId);
-  if(!ids.length){ el.innerHTML=`<div class="empty-state" style="padding:20px;">${type==='done'?'No completions yet':'All players done today'}</div>`; return; }
-  el.innerHTML=ids.map((id,i)=>{ const p=allScores[id]; const acc=p.total?Math.round(p.correct/p.total*100):0; return`<div class="adm-row"><div class="adm-rank">${i+1}</div><div class="adm-name">${escHtml(p.username)}</div><div class="adm-meta">${formatNum(p.points)}pts · ${acc}%</div></div>`; }).join('');
-}
-
-// Notifications push
-function selectNotifColor(btn){ document.querySelectorAll('.notif-color-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); notifColor=btn.dataset.color; }
-
-async function pushNotification(){
-  const title=document.getElementById('notif-title').value.trim();
-  const body=document.getElementById('notif-body').value.trim();
-  const errEl=document.getElementById('notif-err');
-  if(!title||!body){ errEl.textContent='Title and body required'; return; }
+  const btn=document.querySelector('#admin-lock .btn-primary');
   errEl.textContent='';
+  if(btn){ btn.disabled=true; btn.textContent='Checking…'; }
   try{
-    await workerPost('/push-notification',{title,body,color:notifColor,date:getBDDate()});
-    toast('Notification pushed!','success');
-    document.getElementById('notif-title').value='';
-    document.getElementById('notif-body').value='';
-  }catch(e){ errEl.textContent='Failed: '+e.message; }
+    const res=await fetch(API+'/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
+    if(!res.ok){ errEl.textContent='Wrong password.'; document.getElementById('admin-pw').value=''; return; }
+    const data=await res.json();
+    adminToken=data.token;
+    document.getElementById('admin-lock').classList.add('hidden');
+    document.getElementById('admin-dash').classList.remove('hidden');
+    await ensureAdminAssetsLoaded();
+    loadAdminData();
+  }catch(e){
+    errEl.textContent='Login failed: '+e.message;
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Unlock'; }
+  }
 }
 
-// Fake players
-function showAddFakeForm(){ editingFakeId=null; document.getElementById('fake-form-title').textContent='Add Fake Player'; document.getElementById('fake-username').value=''; document.getElementById('fake-points').value=''; document.getElementById('fake-streak').value='5'; document.getElementById('fake-correct').value=''; document.getElementById('fake-total').value=''; document.getElementById('fake-form-err').textContent=''; document.getElementById('fake-form').classList.remove('hidden'); }
-function showEditFakeForm(id,s,streak){ editingFakeId=id; document.getElementById('fake-form-title').textContent='Edit — '+s.username; document.getElementById('fake-username').value=s.username; document.getElementById('fake-points').value=s.points||0; document.getElementById('fake-streak').value=streak||5; document.getElementById('fake-correct').value=s.correct||0; document.getElementById('fake-total').value=s.total||0; document.getElementById('fake-form-err').textContent=''; document.getElementById('fake-form').classList.remove('hidden'); }
-function hideFakeForm(){ document.getElementById('fake-form').classList.add('hidden'); editingFakeId=null; }
-async function saveFakePlayer(){
-  const btn=document.getElementById('fake-save-btn'), errEl=document.getElementById('fake-form-err');
-  const username=document.getElementById('fake-username').value.trim();
-  if(!username){ errEl.textContent='Username required'; return; }
-  const data={username,points:document.getElementById('fake-points').value||0,streak:document.getElementById('fake-streak').value||5,correct:document.getElementById('fake-correct').value||0,total:document.getElementById('fake-total').value||0};
-  btn.disabled=true; btn.textContent='…'; errEl.textContent='';
-  try{ await workerPost('/manage-fake',editingFakeId?{action:'edit',id:editingFakeId,data}:{action:'add',data}); toast(editingFakeId?'Updated!':'Added!','success'); hideFakeForm(); await loadAdminData(); }
-  catch(e){ errEl.textContent='Failed: '+e.message; }
-  finally{ btn.disabled=false; btn.textContent='Save'; }
+// Admin markup + admin-only code are never shipped to a regular visitor — they're
+// fetched only after a successful server-verified login, so opening DevTools as a
+// normal user shows no trace of fake-player controls, bulk bot add, etc.
+async function ensureAdminAssetsLoaded(){
+  if(adminJsLoaded)return;
+  const dashEl=document.getElementById('admin-dash');
+  const html=await fetch('admin-page.html').then(r=>r.text());
+  dashEl.innerHTML=html;
+  await new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='admin.js';
+    s.onload=resolve; s.onerror=()=>reject(new Error('Failed to load admin.js'));
+    document.body.appendChild(s);
+  });
+  adminJsLoaded=true;
 }
-async function deleteFakePlayer(id,name){ if(!confirm(`Delete "${name}"?`))return; try{ await workerPost('/manage-fake',{action:'delete',id}); toast('Deleted','success'); await loadAdminData(); }catch(e){ toast('Failed: '+e.message,'error'); } }
-async function simulateFake(id){ try{ await workerPost('/simulate-fakes',{ids:[id],date:getBDDate()}); toast('Simulated!','success'); await loadAdminData(); }catch(e){ toast('Failed: '+e.message,'error'); } }
-async function bulkSimulateFakes(){
-  const btn=event.target; btn.disabled=true; btn.textContent='Simulating...';
-  try{ const res=await workerPost('/simulate-fakes',{date:getBDDate()}); toast(`Simulated ${res.simulated} players!`,'success'); await loadAdminData(); }
-  catch(e){ toast('Failed: '+e.message,'error'); }
-  finally{ btn.disabled=false; btn.textContent='Simulate All'; }
+
+
+// ── PDF HUB ───────────────────────────────────────────────────────────────────
+async function loadPdfHub(mode){
+  const listId = mode==='admin' ? 'adm-pdf-list' : 'pdf-hub-list';
+  const el = document.getElementById(listId);
+  if(!el) return;
+  el.innerHTML='<div class="center-spinner"><div class="spinner"></div></div>';
+  try{
+    pdfHubData = await apiFetch('/pdf-hub');
+    pdfState[mode].path = [];
+    renderPdfHub(mode);
+  }catch{ el.innerHTML='<div class="empty-state">Failed to load</div>'; }
 }
-function renderFakePlayerList(allScores,streaks){
-  const el=document.getElementById('adm-fake-list'); if(!el)return;
-  const fakes=Object.keys(allScores).filter(id=>id.startsWith('700000000000000')).map(id=>({id,...allScores[id],streak:streaks[id]?.streak||0})).sort((a,b)=>(b.points||0)-(a.points||0));
-  if(!fakes.length){ el.innerHTML='<div class="empty-state" style="padding:20px;">No fake players yet</div>'; return; }
-  el.innerHTML=fakes.map(p=>{ const acc=p.total?Math.round(p.correct/p.total*100):0; return`<div class="fake-player-row"><div class="fake-player-info"><div class="fake-player-name">${escHtml(p.username)}</div><div class="fake-player-meta">${formatNum(p.points)} pts · ${acc}% · ${p.streak} streak</div></div><div class="fake-action-btns"><button class="fake-btn sim" onclick="simulateFake('${p.id}')">Sim</button><button class="fake-btn edit" onclick="showEditFakeForm('${p.id}',${JSON.stringify({username:p.username,points:p.points,correct:p.correct,total:p.total})},${p.streak})">Edit</button><button class="fake-btn del" onclick="deleteFakePlayer('${p.id}','${escHtml(p.username)}')">Del</button></div></div>`; }).join('');
+
+function pdfNode(mode){
+  let node = pdfHubData || {folders:[],files:[]};
+  for(const step of pdfState[mode].path){
+    node = (node.folders||[]).find(f=>f.id===step.id);
+    if(!node) return {folders:[],files:[]};
+  }
+  return node;
+}
+
+function pdfEsc(s){ return escHtml(s).replace(/'/g,"&#39;"); }
+
+function renderPdfHub(mode){
+  const isAdmin = mode==='admin';
+  const listId  = isAdmin?'adm-pdf-list':'pdf-hub-list';
+  const crumbId = isAdmin?'adm-pdf-crumb':'pdf-hub-crumb';
+  const el = document.getElementById(listId);
+  const crumbEl = document.getElementById(crumbId);
+  if(!el) return;
+  const path = pdfState[mode].path;
+  const node = pdfNode(mode);
+
+  if(crumbEl){
+    crumbEl.innerHTML = `<span class="pdf-crumb${path.length===0?' active':''}" onclick="pdfGoCrumb('${mode}',0)">Hub</span>` +
+      path.map((s,i)=>` <span class="pdf-crumb-sep">/</span> <span class="pdf-crumb${i===path.length-1?' active':''}" onclick="pdfGoCrumb('${mode}',${i+1})">${escHtml(s.name)}</span>`).join('');
+  }
+
+  const folders = node.folders||[], files = node.files||[];
+  if(!folders.length && !files.length){
+    el.innerHTML = `<div class="empty-state">Empty folder${isAdmin?' — add something below':''}</div>`;
+    return;
+  }
+  el.innerHTML =
+    folders.map(f=>`<div class="pdf-item pdf-folder" onclick="pdfOpenFolder('${mode}','${f.id}','${pdfEsc(f.name)}')">
+      <div class="pdf-item-icon">📁</div>
+      <div class="pdf-item-name">${escHtml(f.name)}</div>
+      ${isAdmin?`<button class="pdf-del-btn" onclick="event.stopPropagation();deletePdfItem('folder','${f.id}','${pdfEsc(f.name)}')">✕</button>`:'<div class="pdf-item-arrow">→</div>'}
+    </div>`).join('') +
+    files.map(f=>`<div class="pdf-item pdf-file" onclick="pdfOpenFile('${pdfEsc(f.url)}','${pdfEsc(f.name)}')">
+      <div class="pdf-item-icon">📄</div>
+      <div class="pdf-item-name">${escHtml(f.name)}</div>
+      ${isAdmin?`<button class="pdf-del-btn" onclick="event.stopPropagation();deletePdfItem('file','${f.id}','${pdfEsc(f.name)}')">✕</button>`:'<div class="pdf-item-arrow">↗</div>'}
+    </div>`).join('');
+}
+
+function pdfOpenFolder(mode,id,name){ pdfState[mode].path.push({id,name}); renderPdfHub(mode); }
+function pdfGoCrumb(mode,i){ pdfState[mode].path = pdfState[mode].path.slice(0,i); renderPdfHub(mode); }
+function pdfOpenFile(url,name){ window.open(url,'_blank'); toast(`Opening ${name}`,'info'); }
+
+
+// ── STUDY JOURNAL ────────────────────────────────────────────────────────────
+// Entirely local to this device (localStorage) — it's a personal journal, not
+// something that needs to sync across devices or be visible to anyone else.
+function getJournalKey(){ return 'qc_journal_'+(user?.discord_id||'anon'); }
+function loadJournalData(){
+  try{
+    const raw=localStorage.getItem(getJournalKey());
+    if(!raw) return {weaknesses:'',targets:[],activeSession:null};
+    return {weaknesses:'',targets:[],activeSession:null,...JSON.parse(raw)};
+  }catch{ return {weaknesses:'',targets:[],activeSession:null}; }
+}
+function saveJournalData(j){ localStorage.setItem(getJournalKey(),JSON.stringify(j)); }
+
+function loadJournalPage(){
+  const j=loadJournalData();
+  document.getElementById('jr-weakness').value=j.weaknesses||'';
+  renderJournalTargets(j);
+  renderSessionArea(j);
+}
+
+// -- Weakness notes --
+function saveJournalWeakness(){
+  const j=loadJournalData();
+  j.weaknesses=document.getElementById('jr-weakness').value;
+  saveJournalData(j);
+  toast('Notes saved','success');
+}
+
+// -- Daily targets --
+function renderJournalTargets(j){
+  const el=document.getElementById('jr-targets-list');
+  if(!j.targets.length){ el.innerHTML='<div class="empty-state" style="padding:16px;">No targets yet — add your first one above</div>'; return; }
+  el.innerHTML=j.targets.map((t,i)=>`
+    <div class="jr-target-item">
+      <div class="jr-checkbox ${t.done?'checked':''}" onclick="toggleJournalTarget(${i})">${t.done?'✓':''}</div>
+      <div class="jr-target-text ${t.done?'done':''}">${escHtml(t.text)}</div>
+      <button class="pdf-del-btn" onclick="deleteJournalTarget(${i})">✕</button>
+    </div>`).join('');
+}
+function addJournalTarget(){
+  const inp=document.getElementById('jr-target-input');
+  const text=inp.value.trim();
+  if(!text){ toast('Write a target first','error'); return; }
+  const j=loadJournalData();
+  j.targets.push({text,done:false});
+  saveJournalData(j);
+  inp.value='';
+  renderJournalTargets(j);
+}
+function toggleJournalTarget(i){
+  const j=loadJournalData();
+  if(!j.targets[i])return;
+  j.targets[i].done=!j.targets[i].done;
+  saveJournalData(j);
+  renderJournalTargets(j);
+}
+function deleteJournalTarget(i){
+  const j=loadJournalData();
+  j.targets.splice(i,1);
+  saveJournalData(j);
+  renderJournalTargets(j);
+}
+function clearCompletedTargets(){
+  const j=loadJournalData();
+  const before=j.targets.length;
+  j.targets=j.targets.filter(t=>!t.done);
+  saveJournalData(j);
+  renderJournalTargets(j);
+  if(j.targets.length<before) toast('Cleared completed targets','success');
+}
+
+// -- Study session designer / timer --
+let sessionTickInterval=null;
+const SESSION_PRESETS=[15,25,45,60];
+
+function renderSessionArea(j){
+  const el=document.getElementById('jr-session-area');
+  if(!el)return;
+  if(sessionTickInterval){ clearInterval(sessionTickInterval); sessionTickInterval=null; }
+
+  if(j.activeSession){
+    renderActiveSessionUI(j);
+  } else {
+    el.innerHTML=`
+      <input class="code-input fake-input" id="jr-session-label" placeholder="What are you working on? e.g. Chemistry Ch 3" style="letter-spacing:0;font-size:14px;text-transform:none;width:100%;"/>
+      <div class="jr-preset-row">
+        ${SESSION_PRESETS.map(m=>`<button class="jr-preset-chip" data-min="${m}" onclick="selectSessionPreset(${m})">${m}m</button>`).join('')}
+      </div>
+      <input class="code-input fake-input mt-8" id="jr-session-custom" type="number" min="1" max="240" placeholder="Or enter custom minutes" style="letter-spacing:0;font-size:14px;text-transform:none;width:100%;"/>
+      <button class="btn-primary w-full mt-8" onclick="startStudySession()">▶ Start Session</button>`;
+  }
+}
+function selectSessionPreset(min){
+  document.getElementById('jr-session-custom').value=min;
+  document.querySelectorAll('.jr-preset-chip').forEach(c=>c.classList.toggle('active',Number(c.dataset.min)===min));
+}
+function startStudySession(){
+  const label=document.getElementById('jr-session-label').value.trim();
+  const mins=Number(document.getElementById('jr-session-custom').value);
+  if(!label){ toast('Give this session a target','error'); return; }
+  if(!mins||mins<1){ toast('Pick or enter a duration','error'); return; }
+  const j=loadJournalData();
+  j.activeSession={label,durationMin:mins,startTs:Date.now(),endTs:Date.now()+mins*60000};
+  saveJournalData(j);
+  renderSessionArea(j);
+  toast(`Session started — ${mins} min on "${label}"`,'success');
+  armSessionWatcher();
+}
+function stopStudySession(){
+  const j=loadJournalData();
+  j.activeSession=null;
+  saveJournalData(j);
+  renderSessionArea(j);
+  toast('Session stopped','info');
+}
+function renderActiveSessionUI(j){
+  const el=document.getElementById('jr-session-area');
+  const s=j.activeSession;
+  el.innerHTML=`
+    <div class="jr-timer-box">
+      <div class="jr-timer-label">${escHtml(s.label)}</div>
+      <div class="jr-timer-clock" id="jr-timer-clock">--:--</div>
+      <button class="btn-secondary w-full mt-8" onclick="stopStudySession()">Stop Session</button>
+    </div>`;
+  tickSessionClock();
+  sessionTickInterval=setInterval(tickSessionClock,1000);
+}
+function tickSessionClock(){
+  const j=loadJournalData();
+  const s=j.activeSession;
+  const clockEl=document.getElementById('jr-timer-clock');
+  if(!s||!clockEl){ if(sessionTickInterval){clearInterval(sessionTickInterval);sessionTickInterval=null;} return; }
+  const remaining=s.endTs-Date.now();
+  if(remaining<=0){
+    completeStudySession();
+    return;
+  }
+  const mm=String(Math.floor(remaining/60000)).padStart(2,'0');
+  const ss=String(Math.floor((remaining%60000)/1000)).padStart(2,'0');
+  clockEl.textContent=`${mm}:${ss}`;
+}
+function completeStudySession(){
+  if(sessionTickInterval){ clearInterval(sessionTickInterval); sessionTickInterval=null; }
+  const j=loadJournalData();
+  const s=j.activeSession;
+  if(!s)return;
+  j.activeSession=null;
+  saveJournalData(j);
+  if(document.getElementById('pg-journal')?.classList.contains('active')) renderSessionArea(j);
+
+  // Reuse the existing reminder-popup UI for a prominent break nudge
+  const tagEl=document.getElementById('reminder-tag');
+  tagEl.textContent='Break Time';
+  tagEl.className='reminder-tag break';
+  document.getElementById('reminder-text').textContent=`🎉 "${s.label}" session complete! Take a 5-10 min break before your next round.`;
+  document.getElementById('reminder-popup').classList.remove('hidden');
+}
+
+// Fires the break reminder even if the user has navigated away from the Journal page —
+// checked once at app start, since the timer itself only ticks visibly while the page is open.
+function armSessionWatcher(){
+  const j=loadJournalData();
+  if(!j.activeSession)return;
+  const remaining=j.activeSession.endTs-Date.now();
+  if(remaining<=0){ completeStudySession(); return; }
+  setTimeout(()=>{
+    // Re-check in case it was stopped manually in the meantime
+    const latest=loadJournalData();
+    if(latest.activeSession && latest.activeSession.endTs<=Date.now()) completeStudySession();
+  }, remaining+250);
+}
+
+// ── SPLASH SCREEN ─────────────────────────────────────────────────────────────
+const SPLASH_STEPS = [
+  { label: 'Initialising...', pct: 15  },
+  { label: 'Loading assets...', pct: 35 },
+  { label: 'Connecting...', pct: 60    },
+  { label: 'Fetching data...', pct: 80 },
+  { label: 'Ready', pct: 100           },
+];
+
+function setSplashProgress(pct, label) {
+  const fill  = document.getElementById('splash-loader-fill');
+  const lbl   = document.getElementById('splash-loader-label');
+  if (fill) fill.style.width  = pct + '%';
+  if (lbl)  lbl.textContent   = label;
+}
+
+function hideSplash() {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) return;
+  splash.classList.add('hiding');
+  setTimeout(() => splash.classList.add('hidden'), 520);
+}
+
+async function runSplash() {
+  // Step through progress labels
+  for (let i = 0; i < SPLASH_STEPS.length - 1; i++) {
+    const step  = SPLASH_STEPS[i];
+    setSplashProgress(step.pct, step.label);
+    // Earlier steps faster, last step holds a bit longer
+    const delay = i < 2 ? 200 + Math.random() * 150 : 300 + Math.random() * 200;
+    await new Promise(r => setTimeout(r, delay));
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-function init(){
+async function init(){
   initParticles();
+
+  // Run splash animation concurrently with data loading
+  await runSplash();
+
   loadUser();
-  if(location.hash==='#admin'){ document.body.classList.remove('no-chrome'); document.getElementById('top-nav').classList.remove('hidden'); showPage('admin'); return; }
-  if(user){ document.body.classList.remove('no-chrome'); showPage('dashboard'); }
+
+  setSplashProgress(100, 'Ready');
+  await new Promise(r => setTimeout(r, 350));
+
+  hideSplash();
+
+  if(location.hash==='#admin'){
+    document.body.classList.remove('no-chrome');
+    document.getElementById('top-nav').classList.remove('hidden');
+    showPage('admin'); return;
+  }
+  if(user){ document.body.classList.remove('no-chrome'); showPage('dashboard'); armSessionWatcher(); }
   else showPage('login');
 }
 
